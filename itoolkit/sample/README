@@ -1,0 +1,5 @@
+configuration:
+> edit config.py
+run:
+> python sample.py
+

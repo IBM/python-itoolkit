@@ -1,0 +1,110 @@
+ 
+************************
+XMLSERVICE Toolkit (see doc/itoolkit.txt)
+************************
+Module itoolkit
+---------------
+This module XMLSERVICE toolkit interface.
+
+License: 
+  BSD (LICENSE)
+  -- or --
+  http://yips.idevcloud.com/wiki/index.php/XMLService/LicenseXMLService
+
+Configure (**** IMPORTANT ****):
+  Requires XMLSERVICE library installed, see following link installation 
+  http://yips.idevcloud.com/wiki/index.php/XMLService/XMLSERVICE
+  (use crtxml for XMLSERVICE library)
+
+Install:
+  > export PATH=/QOpenSys/python/bin:$PATH
+  > export LIBPATH=/QOpenSys/python/lib
+  > easy_install itoolkit-1.0-py3.4.egg
+
+Environment variables:
+  IBM i library for XMLSERVICE
+  > export XMLSERVICE=XMLSERVICE
+
+Transport classes:
+  class iLibCall:             Transport XMLSERVICE direct job call (within job/process calls).
+  class iDB2Call:             Transport XMLSERVICE calls over DB2 connection.
+  class iRestCall:            Transport XMLSERVICE calls over standard HTTP rest.
+
+XMLSERVICE classes:
+  Base:
+  class iToolKit:             Main iToolKit XMLSERVICE collector and output parser.
+  class iBase:                IBM i XMLSERVICE call addable operation(s).
+
+  *CMDs:
+  class iCmd(iBase):          IBM i XMLSERVICE call *CMD not returning *OUTPUT.
+
+  PASE:
+  class iSh(iBase):           IBM i XMLSERVICE call 5250 *CMD returning *OUTPUT.
+  class iCmd5250(iSh):        IBM i XMLSERVICE call PASE utilities.
+
+  *PGM or *SRVPGM:
+  class iPgm (iBase):         IBM i XMLSERVICE call *PGM.
+  class iSrvPgm (iPgm):       IBM i XMLSERVICE call *SRVPGM.
+  class iParm (iBase):        Parameter child node for iPgm or iSrvPgm
+  class iRet (iBase):         Return structure child node for iSrvPgm
+  class iDS (iBase):          Data structure child node for iPgm, iSrvPgm,
+                              or nested iDS data structures.
+  class iData (iBase):        Data value child node for iPgm, iSrvPgm,
+                              or iDS data structures.
+
+  DB2:
+  class iSqlQuery (iBase):    IBM i XMLSERVICE call DB2 execute direct SQL statment.
+  class iSqlPrepare (iBase):  IBM i XMLSERVICE call DB2 prepare SQL statment.
+  class iSqlExecute (iBase):  IBM i XMLSERVICE call execute a DB2 prepare SQL statment.
+  class iSqlFetch (iBase):    IBM i XMLSERVICE call DB2 fetch results/rows of SQL statment.
+  class iSqlParm (iBase):     Parameter child node for iSqlExecute.
+  class iSqlFree (iBase):     IBM i XMLSERVICE call DB2 free open handles.
+
+  Anything (XMLSERVICE XML, if no class exists):
+  class iXml(iBase):          IBM i XMLSERVICE raw xml input.
+
+Import:
+  1) XMLSERVICE direct call (current job) - local only
+  from itoolkit import *
+  from itoolkit.lib.ilibcall import *
+  itransport = iLibCall()
+  Note:
+  XMLSERVICE library search order:
+  1) environment variable 'XMLSERVICE' (export XMLSERVICE=QXMLSERV)
+  2) QXMLSERV -- IBM PTF library (DG1 PTFs)
+  3) XMLSERVICE -- download library (crtxml)
+
+  2) XMLSERVICE db2 call (QSQSRVR job) - local/remote
+  from itoolkit import *
+  from itoolkit.db2.idb2call import *
+  itransport = iDB2Call(user,password)
+  -- or -
+  conn = ibm_db.connect(database, user, password)
+  itransport = iDB2Call(conn)
+  Note:
+  XMLSERVICE library search order:
+  1) lib parm -- iDB2Call(...,'XMLSERVICE')
+  1) environment variable 'XMLSERVICE' (export XMLSERVICE=XMLSERVICE)
+  2) QXMLSERV -- IBM PTF library (DG1 PTFs)
+
+  3) XMLSERVICE http/rest/web call (Apache job) - local/remote
+  from itoolkit import *
+  from itoolkit.rest.irestcall import *
+  itransport = iRestCall(url,user,password)
+
+Samples (itoolkit/sample):
+  > export PATH=/QOpenSys/python/bin:$PATH
+  > export LIBPATH=/QOpenSys/python/lib
+  > cd /QOpenSys/python/lib/python3.4/site-packages/itoolkit-1.0-py3.4.egg/itoolkit/doc
+  > python icmd5250_dspsyssts.py
+
+Tests (itoolkit/test):
+  > export PATH=/QOpenSys/python/bin:$PATH
+  > export LIBPATH=/QOpenSys/python/lib
+  > cd /QOpenSys/python/lib/python3.4/site-packages/itoolkit-1.0-py3.4.egg/itoolkit/sample
+  > python tests.py
+
+Debug (itoolkit/sample):
+  # itoolkit/sample/istop_msg_qsysopr_before_pgm_call.py
+  itransport = iLibCall("*here *debug") # i will stop, inquiry message qsysopr
+

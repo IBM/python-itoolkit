@@ -50,7 +50,7 @@ examples:
 make doc:
 > python make_doc.py
 
-versions change:
+remember versions change:
 > setup.py
 version='x.x' to 'n.n'
 > setup-lite.py

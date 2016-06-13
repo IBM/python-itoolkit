@@ -2,8 +2,17 @@
 
 ### Python Toolkit (PHP) ###
 The Python is a Python wrapper over the XMLSERVICE open source project from IBM. 
-This python wheel/egg is now jointly maintained by IBM and the KrengelTech Litmis team. 
+This python .whl/.egg is now jointly maintained by IBM and the KrengelTech Litmis team. 
 All future work will be done in this repo.
+
+###Documentation###
+* http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python
+
+###New whl/egg (laptop, etc.)###
+* http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python
+
+
+###Installation###
 
 ```
 =====
@@ -37,6 +46,10 @@ pip install dist/itoolkit-lite*py2-none*.whl
 -- or --
 easy_install dist/itoolkit-lite*2.7.egg
 
+```
+
+###Builder Notes:###
+```
 =======
 Builder:
 =======
@@ -57,11 +70,7 @@ version='x.x' to 'n.n'
 version='x.x' to 'n.n'
 > itoolkit/__init__.py
 __version__ = "x.x" to "n.n"
-```
 
-
-###Notes:###
-```
 Can be problem for egg builds.
 
 unable to execute '/QOpenSys/python/lib/python3.4/config/ld_so_aix': No such file or directory

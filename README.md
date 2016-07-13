@@ -80,3 +80,6 @@ ln -s /QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/config-3.4m /QOpenSys/
 /QOpenSys/ranger/home/RANGER/python
 /QOpenSys/ranger2/home/ranger2/python
 ```
+
+#License
+MIT.  View [`LICENSE`](https://bitbucket.org/litmis/python-itoolkit/src) file.

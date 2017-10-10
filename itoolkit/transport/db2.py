@@ -36,7 +36,7 @@ if sys.version_info >= (3,0):
   import urllib.parse
 import xml.dom.minidom
 # import inspect
-import ibm_db
+import ibm_db_dbi as db2
 
 class iDB2Call:
     """
@@ -65,7 +65,11 @@ class iDB2Call:
     """
     def __init__(self, iuid, ipwd=0, idb2=0, ictl=0, ipc=0, isiz=0, ilib=0):
         # manditory
+        
+        self.conn = db2.connect()
+        
         self.uid = iuid
+        
         if not isinstance(self.uid, str):
           if ipwd == 0:
             ipwd = "*NONE"  
@@ -113,15 +117,20 @@ class iDB2Call:
         data += " lib (" + str(self.lib) + ")"
         return data
 
-    def call(self, itool):
+    def execute(self, xml_or_toolkit):
         """Call xmlservice with accumulated input XML.
 
         Args:
-          itool  - iToolkit object
+          xml_or_toolkit  - XML string or iToolkit object
 
         Returns:
           xml
         """
+        try:
+            xml = xml_or_toolkit.xml_in()
+        except AttributeError:
+            xml = str(xml_or_toolkit)
+        
         if isinstance(self.uid, str):
           conn = ibm_db.connect(self.db2, self.uid, self.pwd)
         else:
@@ -131,7 +140,7 @@ class iDB2Call:
         stmt = ibm_db.prepare(conn, sql)
         ipc = self.ipc
         ctl = self.ctl
-        xml_in = itool.xml_in()
+        xml_in = xml_or_toolkit.xml_in()
         xml_out = ""
         ibm_db.bind_param(stmt, 1, ipc, ibm_db.SQL_PARAM_INPUT)
         ibm_db.bind_param(stmt, 2, ctl, ibm_db.SQL_PARAM_INPUT)

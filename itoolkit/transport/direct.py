@@ -18,22 +18,10 @@ Note:
   2) QXMLSERV -- IBM PTF library (DG1 PTFs)
   3) XMLSERVICE -- download library (crtxml)
 """
-import sys
-import os
-import re
-import urllib
-if sys.version_info >= (3,0):
-  """
-  urllib has been split up in Python 3. 
-  The urllib.urlencode() function is now urllib.parse.urlencode(), 
-  and the urllib.urlopen() function is now urllib.request.urlopen().
-  """
-  import urllib.request
-  import urllib.parse
-import xml.dom.minidom
-# import inspect
-import itoolkit.itoollib
 
+from . import _direct
+
+def connect():
 
 class iLibCall:
     """
@@ -76,7 +64,7 @@ class iLibCall:
         data += " pase_ccsid (" + str(self.pase_ccsid) + ")"
         return data
 
-    def call(self, itool):
+    def execute(self, itool):
         """Call xmlservice with accumulated input XML.
 
         Args:

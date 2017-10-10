@@ -2,65 +2,65 @@
 """
 IBM i python toolkit. 
 
-The toolkit runs both local and remote to IBM i using iDB2Call or iRestCall. 
-However, class iLibCall process local calls will only work on IBM i (similar to IBM i CL).
+The toolkit runs both local and remote to IBM i using iDB2execute or iRestexecute. 
+However, class iLibexecute process local executes will only work on IBM i (similar to IBM i CL).
 
 Transport classes:
-  class iLibCall:             Transport XMLSERVICE direct job call (within job/process calls).
-  class iDB2Call:             Transport XMLSERVICE calls over DB2 connection.
-  class iRestCall:            Transport XMLSERVICE calls over standard HTTP rest.
+  class iLibexecute:             Transport XMLSERVICE direct job execute (within job/process executes).
+  class iDB2execute:             Transport XMLSERVICE executes over DB2 connection.
+  class iRestexecute:            Transport XMLSERVICE executes over standard HTTP rest.
 
 XMLSERVICE classes:
   Base:
   class iToolKit:             Main iToolKit XMLSERVICE collector and output parser.
-  class iBase:                IBM i XMLSERVICE call addable operation(s).
+  class _Base:                IBM i XMLSERVICE execute addable operation(s).
 
   *CMDs:
-  class iCmd(iBase):          IBM i XMLSERVICE call *CMD not returning *OUTPUT.
+  class iCmd(_Base):          IBM i XMLSERVICE execute *CMD not returning *OUTPUT.
 
   PASE:
-  class iSh(iBase):           IBM i XMLSERVICE call 5250 *CMD returning *OUTPUT.
-  class iCmd5250(iSh):        IBM i XMLSERVICE call PASE utilities.
+  class iSh(_Base):           IBM i XMLSERVICE execute 5250 *CMD returning *OUTPUT.
+  class iCmd5250(iSh):        IBM i XMLSERVICE execute PASE utilities.
 
   *PGM or *SRVPGM:
-  class iPgm (iBase):         IBM i XMLSERVICE call *PGM.
-  class iSrvPgm (iPgm):       IBM i XMLSERVICE call *SRVPGM.
-  class iParm (iBase):        Parameter child node for iPgm or iSrvPgm
-  class iRet (iBase):         Return structure child node for iSrvPgm
-  class iDS (iBase):          Data structure child node for iPgm, iSrvPgm,
-                              or nested iDS data structures.
-  class iData (iBase):        Data value child node for iPgm, iSrvPgm,
-                              or iDS data structures.
+  class iPgm (_Base):         IBM i XMLSERVICE execute *PGM.
+  class iSrvPgm (iPgm):       IBM i XMLSERVICE execute *SRVPGM.
+  class include_param (_Base):        Parameter child node for iPgm or iSrvPgm
+  class include_return (_Base):         Return structure child node for iSrvPgm
+  class inlude_ds (_Base):          Data structure child node for iPgm, iSrvPgm,
+                              or nested inlude_ds data structures.
+  class iData (_Base):        Data value child node for iPgm, iSrvPgm,
+                              or inlude_ds data structures.
 
   DB2:
-  class iSqlQuery (iBase):    IBM i XMLSERVICE call DB2 execute direct SQL statment.
-  class iSqlPrepare (iBase):  IBM i XMLSERVICE call DB2 prepare SQL statment.
-  class iSqlExecute (iBase):  IBM i XMLSERVICE call execute a DB2 prepare SQL statment.
-  class iSqlFetch (iBase):    IBM i XMLSERVICE call DB2 fetch results/rows of SQL statment.
-  class iSqlParm (iBase):     Parameter child node for iSqlExecute.
-  class iSqlFree (iBase):     IBM i XMLSERVICE call DB2 free open handles.
+  class iSqlQuery (_Base):    IBM i XMLSERVICE execute DB2 execute direct SQL statment.
+  class iSqlPrepare (_Base):  IBM i XMLSERVICE execute DB2 prepare SQL statment.
+  class iSqlExecute (_Base):  IBM i XMLSERVICE execute execute a DB2 prepare SQL statment.
+  class iSqlFetch (_Base):    IBM i XMLSERVICE execute DB2 fetch results/rows of SQL statment.
+  class iSqlParm (_Base):     Parameter child node for iSqlExecute.
+  class iSqlFree (_Base):     IBM i XMLSERVICE execute DB2 free open handles.
 
   Anything (XMLSERVICE XML, if no class exists):
-  class iXml(iBase):          IBM i XMLSERVICE raw xml input.
+  class iXml(_Base):          IBM i XMLSERVICE raw xml input.
 
 Import:
-  1) XMLSERVICE direct call (current job) - local only
+  1) XMLSERVICE direct execute (current job) - local only
   from itoolkit import *
-  from itoolkit.lib.ilibcall import *
-  itransport = iLibCall()
+  from itoolkit.lib.ilibexecute import *
+  transportport = iLibexecute()
 
-  2) XMLSERVICE db2 call (QSQSRVR job) - local/remote
+  2) XMLSERVICE db2 execute (QSQSRVR job) - local/remote
   from itoolkit import *
-  from itoolkit.db2.idb2call import *
-  itransport = iDB2Call(user,password)
+  from itoolkit.db2.idb2execute import *
+  transportport = iDB2execute(user,password)
   -- or -
   conn = ibm_db.connect(database, user, password)
-  itransport = iDB2Call(conn)
+  transportport = iDB2execute(conn)
 
-  3) XMLSERVICE http/rest/web call (Apache job) - local/remote
+  3) XMLSERVICE http/rest/web execute (Apache job) - local/remote
   from itoolkit import *
-  from itoolkit.rest.irestcall import *
-  itransport = iRestCall(url,user,password)
+  from itoolkit.rest.irestexecute import *
+  transportport = iRestexecute(url,user,password)
 
 Samples (itoolkit/sample):
   > cd /QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/site-packages/itoolkit/sample
@@ -120,77 +120,90 @@ Links:
 import sys
 import os
 import re
-import urllib
 import time
-if sys.version_info >= (3,0):
-  """
-  urllib has been split up in Python 3. 
-  The urllib.urlencode() function is now urllib.parse.urlencode(), 
-  and the urllib.urlopen() function is now urllib.request.urlopen().
-  """
-  import urllib.request
-  import urllib.parse
-import xml.dom.minidom
+import math
+import abc
+import struct
+import datetime
+
+from collections import OrderedDict
+#from xml.dom.minidom import parseString
+#from xml.dom import Node
+from io import StringIO, BytesIO
+
+from xml.etree.ElementTree import fromstring, ElementTree
+
+from uuid import uuid4
 # import inspect
 
-class iBase:
+
+if sys.version_info >= (3,0):
+    def _is_string(obj):
+        return isinstance(obj, str)
+else:
+    def _is_string(obj):
+        return isinstance(obj, basestring) or isinstance(obj, unicode)
+
+def _ensure_key_is_string(key):
+    if not _is_string(key):
+        raise ValueError("Key must be a string type")
+
+class _Base:
     """
-    IBM i XMLSERVICE call addable operation(s).
+    IBM i XMLSERVICE execute addable operation(s).
 
       Args:
         iopt (dict): user options (see descendents)
         idft (dict): default options (see descendents)
 
       Example:
-        itransport = iLibCall()
+        transportport = iLibexecute()
         itool = iToolKit()
         itool.add(iCmd('chglibl', 'CHGLIBL LIBL(XMLSERVICE)'))
         itool.add(iSh('ps', 'ps -ef'))
         ... so on ...
-        itool.call(itransport)
+        itool.execute(transportport)
 
       Returns:
-        iBase (obj)
+        _Base (obj)
 
       Notes:
         iopt  (dict): XMLSERVICE elements, attributes and values
                       'k' - element <x>
                       'v' - value <x>value</x>
-                      'i' - attribute <x var='ikey'>
-                      'c' - iBase children
+                      'i' - attribute <x var='key'>
+                      'c' - _Base children
                       ... many more idft + iopt ...
                       'error' - <x 'error'='fast'>
     """
-    def __init__(self, iopt={}, idft={}):
-        # xml defaults
-        self.opt = idft
-        # xml options
-        for k,v in iopt.items():
-          self.opt[k] = v
-        # my children objects
-        self.opt['c'] = []
+    def __init__(self, type, value=None, attributes=None):
+        self.type = type
+        self.value = value
+        self.attributes = attributes
+        self.success = False
+        self._data = ""
+        self._error = {}
+
+    #def add(self, obj):
+        #"""Additional mini dom xml child nodes.
+
+        #Args:
+          #obj (_Base) : additional child object 
+
+        #Example:
+          #itool = iToolKit()
+          #itool.add(
+            #iPgm('zzexecute','ZZexecute')             <--- child of iToolkit
+            #.addParm(iData('INCHARA','1a','a')) <--- child of iPgm 
+            #)
+
+        #Returns:
+          #(void)
+        #"""
+        #self.opt['c'].append(obj)
 
 
-    def add(self, obj):
-        """Additional mini dom xml child nodes.
-
-        Args:
-          obj (iBase) : additional child object 
-
-        Example:
-          itool = iToolKit()
-          itool.add(
-            iPgm('zzcall','ZZCALL')             <--- child of iToolkit
-            .addParm(iData('INCHARA','1a','a')) <--- child of iPgm 
-            )
-
-        Returns:
-          (void)
-        """
-        self.opt['c'].append(obj)
-
-
-    def xml_in(self):
+    def xml_in(self, key):
         """Return XML string of collected mini dom xml child nodes.
 
         Args:
@@ -199,9 +212,49 @@ class iBase:
         Returns:
           XML (str)
         """
-        return self.make().toxml()
+        if callable(value):
+            value = self.value()
+        else:
+            value = self.value
+            
+        return "<{0} var='{1}' {2}>{3}</{0}>".format(
+                self.type,
+                key,
+                " ".join([ "{}='{}'".format(k,v) for k,v in self.attributes.items()]),
+                "" if value is None else '<![CDATA[{}]]>'.format(value))
 
-    def make(self):
+    def make(self, key):
+        return fromstring(self.xml_in(key))
+    
+    @abc.abstractmethod
+    def _parse(self, node):
+        """Should parse a node and set the flags"""
+    
+    @staticmethod
+    def _parse_error(parent):
+        error = {}
+        
+        for node in parent:
+            if node.tag == 'error' and len(node) > 0:
+                continue
+            
+            if node.tag == 'jobinfo':
+                error['jobinfo'] = _Base._parse_error(node)
+            else:
+                error[node.tag] = node.text
+                
+        return error
+    
+    def succeeded(self):
+        return self.success
+    
+    def data(self):
+        return self._data
+    
+    def error_info(self):
+        return self._error
+        
+    def old_make(self):
         """Assemble coherent mini dom xml, including child nodes.
 
         Args:
@@ -211,34 +264,39 @@ class iBase:
           xml.dom.minidom (obj)
         """
         # XMLSERVICE
-        xmli = ""
+        xml = ""
         if 'j' in self.opt:
-          xmli += '<' + self.opt['j'] + " var='" + self.opt['i'] + "'>\n"
-        xmli += '<' + self.opt['k']
-        for k,v in self.opt.items():
-          if len(k) > 1:
-            xmli += " " + k +"='" + v + "'"
-        xmli += " var='" + self.opt['i'] + "'>"
-        if len(self.opt['v']) > 0:
-          xmli += '<![CDATA[' + self.opt['v'] + ']]>'
-        xmli += '</' + self.opt['k'] + '>' + "\n"
+            xml += "<{} var='{}'>\n".format(self.opt['j'], self.opt['i'])
+        
+        attrs = " ".join([ "{}='{}'".format(k,v) for k,v in self.opt.items() if len(k) > 1])
+        xml += "<{} var='{}' {}>".format(self.opt['k'], self.opt['i'], attrs)
+        
+        if 'v' in self.opt:
+            xml += '<![CDATA[{}]]>'.format(self.opt['v'])
+        
+        xml += "</{}>\n".format(self.opt['k'])
+        
         if 'j' in self.opt:
-          xmli += '</' + self.opt['j'] + '>' + "\n"
+            xml += "</{}>\n".format(self.opt['j'])
+        
         # build my children
-        parent = xml.dom.minidom.parseString(xmli).firstChild
+        parent = fromstring(xml)
+        is_sql = parent.tag == "sql"
+        
         for obj in self.opt['c']:
-          if parent.tagName == "sql" and isinstance(obj, iSqlParm):
-            parent.childNodes[1].appendChild(obj.make())
-          else:
-            parent.appendChild(obj.make())
+            if is_sql and isinstance(obj, iSqlParm):
+                parent.childNodes[1].appendChild(obj.make())
+            else:
+                parent.appendChild(obj.make())
+        
         return parent
 
-class iCmd(iBase):
+class CLCommand(_Base):
     """
-    IBM i XMLSERVICE call *CMD not returning *OUTPUT.
+    IBM i XMLSERVICE execute *CMD not returning *OUTPUT.
 
     Args:
-      ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
+      key  (str): XML <key>...operation ...</key> for parsing output.
       icmd  (str): IBM i command no output (see 5250 command prompt).
       iopt (dict): option - dictionay of options (below)
         {'error':'on|off|fast'}   : optional - XMLSERVICE error choice {'error':'fast'}
@@ -261,16 +319,50 @@ class iCmd(iBase):
             error='on|off|fast'                                        (1.7.6)
             ]>IBM i command</cmd>
     """
-    def __init__(self, ikey, icmd, iopt={}):
-        # parent class
-        if "?" in icmd:
-           myexec = 'rexx'
-        else:
-           myexec = 'cmd'
-        iBase.__init__(self, iopt, {'i':ikey,'k':'cmd','v':icmd, 'exec':myexec, 'error':'fast'})
+    def _need_rexx(command):
+        # FIXME: This will mess up if you have a '?' inside a string parameter
+        return "?" in command
+    
+    def __init__(self, command, use_rexx=None, on_error='fast'):
+        if use_rexx is None:
+            use_rexx = CLCommand._need_rexx(command)
 
+        method = 'rexx' if use_rexx else 'cmd'
+        
+        super().__init__('cmd', command, {'exec': method, 'error': on_error})
+    
+    def _parse(self, node):
+        self.success = False
+        self._data = {}
+        self._error = {}
+        
+        assert len(node) > 0
+        for child in node:
+            if child.tag == 'success':
+                self.success = True
+            if child.tag == 'error':
+                self.success = False
+                self._error = self._parse_error(node)
+            elif child.tag == 'row':
+                # We only expect one data node inside the row node
+                assert len(child) == 1
+                
+                data_node = child[0]
+                assert data_node.tag == 'data'
+                
+                key = data_node.attrib['desc']
+                value = data_node.text
+                
+                self._data[key] = value
+        
+        # If the command did not return any data (exec=cmd never do, and
+        # rexx commands without output parameters do not), there's no point
+        # returning an empty dict, just set it to None
+        # TODO: Should we do this?
+        if len(self._data) == 0:
+            self._data = None
 
-class iSh(iBase):
+class ShellCall(_Base):
     """
     IBM i XMLSERVICE call PASE utilities.
 
@@ -301,14 +393,22 @@ class iSh(iBase):
            error='on|off|fast'                                       (1.7.6)
            ]>(PASE utility)</sh>
     """
-    def __init__(self, ikey, icmd, iopt={}):
-        # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'sh','v':icmd, 'error':'fast'})
-
-
-class iCmd5250(iSh):
+    #def __init__(self, ikey, icmd, iopt={}):
+        ## parent class
+        #iBase.__init__(self,iopt, {'i':ikey,'k':'sh','v':icmd, 'error':'fast'})
+        
+    def __init__(self, command, on_error='fast'):
+        super().__init__('sh', command, {'error': on_error})
+    
+    def _parse(self, node):
+        # No way to detect whether the command succeeded or not
+        self.success = True
+        self._error = {}
+        self._data = node.text
+        
+class CLCommandOutput(ShellCall):
     """
-    IBM i XMLSERVICE call 5250 *CMD returning *OUTPUT.
+    IBM i XMLSERVICE call PASE utilities.
 
     Args:
       ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
@@ -318,17 +418,16 @@ class iCmd5250(iSh):
         {'row':'on|off'}         : optional - XMLSERVICE <row>line output</row> choice {'row':'off'}
 
     Example:
-      iCmd5250('dsplibl','dsplibl')
-      iCmd5250('wrkactjob','wrkactjob')
+      iSh('ls /home/xml/master | grep -i xml')
 
     Returns:
-      iCmd5250 (obj)
+      iSh (obj)
 
     Notes:
-      This is a subclass of iSh, therefore XMLSERVICE perfoms 
-      standard PASE shell popen fork/exec calls.
-
-      /QOpenSys/usr/bin/system 'wrkactjob'
+      XMLSERVICE perfoms standard PASE shell popen calls,
+      therefore, additional job will be forked,
+      utilities will be exec'd, and stdout will
+      be collected to be returned.
 
       Please note, this is a relatively slow operation,
       use sparingly on high volume web sites.   
@@ -338,12 +437,296 @@ class iCmd5250(iSh):
            error='on|off|fast'                                       (1.7.6)
            ]>(PASE utility)</sh>
     """
-    def __init__(self, ikey, icmd, iopt={}):
-        # parent class
-        iSh.__init__(self,ikey, "/QOpenSys/usr/bin/system " + icmd)
+    #def __init__(self, ikey, icmd, iopt={}):
+        ## parent class
+        #iBase.__init__(self,iopt, {'i':ikey,'k':'sh','v':icmd, 'error':'fast'})
+        
+    def __init__(self, command, on_error='fast'):
+        sh_command = '/QOpenSys/usr/bin/system "{}"'.format(command)
+        super().__init__(sh_command, on_error)
 
+class DataFieldBase():
+    def __init__(self):
+        pass
+    
+    @abc.abstractmethod
+    def _encode(self):
+        pass
+    
+    @abc.abstractmethod
+    def _decode(self):
+        pass
+    
+    def encode(self):
+        str(value)
+    
+    def _xml(self, key):
+        if value is None:
+            value = ''
+        elif self._hex and not self._value_is_hex_encoded:
+            value = self._encode()
+        else:
+            value = self.encode()
+        
+        return "<data var='{1}' {2}>{3}</data>".format(
+                key,
+                " ".join([ "{}='{}'".format(k,v) for k,v in self._attrs.items()]),
+                "" if not value else '<![CDATA[{}]]>'.format(self._value))
 
-class iPgm (iBase):
+class _TypeBase():
+    @classmethod
+    def match(cls, value):
+        return False
+    
+    @classmethod
+    def create(cls, *args, **kwargs):
+        return None
+    
+    def __init__(self, type):
+        self._type = type
+        self._varying = False
+        self._always_hex = False
+    
+    def type_string(self):
+        return self._type
+    
+    def varying(self):
+        return self._varying
+    
+    def encode(self, value):
+        return str(value)
+    
+    def decode(self, value):
+        return value
+    
+class IntType(_TypeBase):
+    def __init__(self), size, signed):
+        digits = {
+            1: '3',
+            2: '5',
+            4: '10',
+            8: '20',
+        }[size]
+        letter = 'i' if signed else 'u'
+        super().__init(digits + letter + '0')
+        
+        self._size = size
+        self._signed = signed
+    
+    def __ensure_range(self, value):
+        bits = 8 * self._size
+        
+        if self._signed:
+            min_val = 0
+            max_val = 2**bits
+        else:
+            bits -= 1
+            min_val = -2**bits
+            max_val =  2**bits - 1
+            
+        if value < min_val or value > max_val:
+            raise ValueError("value not in range")
+    
+    __pack_mapping = {
+        1: ('B', 'b'),
+        2: ('H', 'h'),
+        4: ('I', 'i'),
+        8: ('Q', 'q'),
+    }
+    #def _encode_hex(self, value):
+        #self.__ensure_range(value)
+        #fmt = '>' + __pack_mapping[self._size][int(self._signed)]
+        #data = struct.pack(fmt, value)
+        #return data.encode('hex')
+    
+    #def _decode_hex(self, hex):
+        #self.__ensure_range(value)
+        #data = hex.decode('hex')
+        #fmt = '>' + __pack_mapping[self._size][int(self._signed)]
+        #return struct.unpack(fmt, data)[0]
+    
+    def encode(self, value):
+        self.__ensure_range(value)
+        return str(value)
+    
+    #@classmethod
+    #def match(cls, value):
+        #return False
+
+class FloatType(_TypeBase):
+    def __init__(self, is_double):
+        super().__init__('8f4' if is_double else '4f2')
+        self._double = is_double
+    
+class ZonedType(_TypeBase):
+    def __init__(self, precision, scale):
+        super().__init__("{}s{}".format(precision, scale))
+    
+class PackedType(_TypeBase):
+    def __init__(self, precision, scale):
+        super().__init__("{}p{}".format(precision, scale))
+    
+class BinaryType(_TypeBase):
+    def __init__(self, length):
+        super().__init__(int(length) + "b")
+        self._always_hex = True
+        
+    def _encode_hex(self, value):
+        return value.encode('hex')
+    
+    def _decode_hex(self, hex):
+        return hex.decode('hex')
+        
+class HoleType(_TypeBase):
+    def __init__(self, length):
+        super().__init__(int(length) + "h")
+        
+    def _encode_hex(self, value):
+        return None
+    
+    def _decode_hex(self, hex):
+        return None
+        
+    def encode(self, value):
+        return None
+    
+    def decode(self, value):
+        return None
+    
+class CharType(_TypeBase):
+    def __init__(self, length, varying=False):
+        super().__init__(int(length) + "a")
+        self._varying = varying
+        
+class BooleanType(CharType):
+    def __init__(self):
+        super().__init__(4)
+        
+    def encode(self, value):
+        # TODO: Verify this is right
+        return '*YES' if value else '*NO '
+    
+    def decode(self, value):
+        return True if value == '*YES' else False
+        
+class TimeType(CharType):
+    def __init__(self):
+        super().__init__(8)
+        
+    _format = '%H.%M.%S'
+    def encode(self, value):
+        if isinstance(value, datetime.time):
+            return value.strftime(self._format)
+        else:
+            return str(value)
+        
+    def encode(self, value):
+        return datetime.strptime(self._format).time()
+        
+class DateType(CharType):
+    def __init__(self):
+        super().__init__(10)
+        
+    _format = '%Y-%m-%d'
+    def encode(self, value):
+        if isinstance(value, datetime.date):
+            return value.strftime(self._format)
+        else:
+            return str(value)
+        
+    def encode(self, value):
+        return datetime.strptime(self._format).date()
+        
+class TimestampType(CharType):
+    def __init__(self):
+        super().__init__(26)
+        
+    _format = '%Y-%m-%d-%H.%M.%S.%f'
+    def encode(self, value):
+        if isinstance(value, datetime.datetime):
+            return value.strftime(self._format)
+        else:
+            return str(value)
+        
+    def encode(self, value):
+        return datetime.strptime(self._format)
+
+    
+class DataField():
+    _supported_types = (
+        IntType,
+        FloatType,
+        CharType,
+        ZonedType,
+        PackedType,
+        BinaryType,
+        HoleType,
+        BooleanType,
+        TimeType,
+        DateType,
+        TimestampType,
+    )
+    def __init__(self, type, value=None, varying=False, array_count=None, **kwargs):
+        self._type = None
+        
+        for cls in self._supported_types:
+            if cls.match(type):
+                self._type = cls.create(type, varying)
+                break
+        
+        if not self._type:
+            raise ValueError('Unknown type ' + type)
+        
+        self._orig_value = value
+        self._value = value
+        
+        self._attrs = kwargs
+        
+        
+        self._attrs['type'] = self._type.type_string()
+        if self._type.varying():
+            self._attrs['varying'] = self._type.varying()
+        
+        if array_count:
+            self._attrs['dim'] = array_count
+        
+        ## If the user asked for hex, the value must be given as a hex string
+        #self._value_is_hex_encoded = self._attrs.get('hex', 'off') != 'on'
+        
+        #if sys.version_info >= (3,0) and hasattr(value, 'decode'):
+            #use_hex = true
+            
+            ## Value given as bytes, so we must hex encode it
+            #self._value_is_hex_encoded = False
+        
+        #if use_hex:
+            #self._hex = True
+            #self._attrs['hex'] = 'on'
+        #else:
+            ##self._hex = False
+            
+            #try:
+                #del self._attrs['hex']
+            #except AttributeError:
+                #pass
+        
+        #self._value = value
+
+class DataStructure():
+    def __init__(self, array_count=None, **kwargs):
+        self._count = array_count
+        self._attrs = kwargs
+        self._fields = []
+        
+    def add(self, field, *args, **kwargs):
+        if not isinstance(field, DataField):
+            field = DataField(field, *args, **kwargs)
+        
+        self._fields.append(field)
+        
+        
+
+class ProgramCall(_Base):
     """
     IBM i XMLSERVICE call *PGM.
 
@@ -382,12 +765,23 @@ class iPgm (iBase):
            error='on|off|fast'                        (1.7.6)
            ]> ... </pgm>
     """
-    def __init__(self, ikey, iname, iopt={}):
-        # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'k':'pgm','v':'','name':iname,'error':'fast'})
-        self.pcnt = 0;
+    
+    def __init__(self, name, library='*LIBL', ile=True, on_error='fast'):
+        mode = 'ile' if ile else 'opm'
+        super().__init__('pgm', self.__value, {'lib': library, 'name': name, 'error': on_error})
+        
+        self._args = OrderedDict()
 
-    def addParm(self, obj):
+    def set_args(self, **kwargs):
+        for k,v in kwargs.items():
+            if isinstance(v, dict):
+                self.append(k, **v)
+            elif isinstance(v, (DataField, DataStructure)):
+                self.append(k, v)
+            else:
+                raise ValueError("Invalid arguments")
+    
+    def append(self, name, obj, type='in', by_ref=True):
         """Add a parameter child node.
 
         Args:
@@ -396,495 +790,59 @@ class iPgm (iBase):
         Returns:
           (void)
         """
-        self.pcnt += 1
-        p = iParm('p' + str(self.pcnt))
-        p.add(obj)
-        self.add(p)
-        return self
-
-class iSrvPgm (iPgm):
-    """
-    IBM i XMLSERVICE call *SRVPGM.
-
-    Args:
-      ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      iname (str): IBM i *PGM or *SRVPGM name
-      ifunc (str): IBM i *SRVPGM function export.
-      iopt (dict): option - dictionay of options (below)
-        {'error':'on|off|fast'} : optional - XMLSERVICE error choice {'error':'fast'}
-        {'lib':'mylib'}         : optional - IBM i library name
-        {'mode':'opm|ile'}      : optional - XMLSERVICE error choice {'mode':'ile'} 
-
-    Example:
-      see iPgm
-
-    Returns:
-      iSrvPgm (obj)
-
-    Notes:
-      pgm:
-        <pgm name='' 
-          [lib='' 
-           func='' 
-           mode='opm|ile' 
-           error='on|off|fast'                        (1.7.6)
-           ]> ... </pgm>
-    """
-    def __init__(self, ikey, iname, ifunc, iopt={}):
-        # parent class
-        iPgm.__init__(self, ikey, iname, {'func':ifunc})
-
-    def addRet(self, obj):
-        """Add a return structure child node.
-
-        Args:
-          obj   (obj): iData object or iDs object.
-
-        Returns:
-          (void)
-        """
-        self.pcnt += 1
-        p = iRet('r' + str(self.pcnt))
-        p.add(obj)
-        self.add(p)
-        return self
-
-
-class iParm (iBase):
-    """
-    Parameter child node for iPgm or iSrvPgm (see iPgm.addParm)
-
-    Args:
-      ikey  (str): ikey  (str): XML <parm ... var="ikey"> for parsing output.
-      iopt (dict): option - dictionay of options (below)
-        {'io':'in|out|both|omit'} : optional - XMLSERVICE param type {'io':both'}.
-
-    Example:
-      see iPgm
-
-    Returns:
-      iParm (obj)
-
-    Notes:
-      This class is not used directly, but is used by iPgm.addParm
-      or iSrvPgm.addParm.
-
-      pgm parameters:
-        <pgm>
-        <parm [io='in|out|both|omit'                  (omit 1.2.3)
-               by='val|ref'
-               ]>(see <ds> and <data>)</parm>
-        </pgm>
-    """
-    def __init__(self, ikey, iopt={}):
-        # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'parm','v':'','io':'both'})
-
-class iRet (iBase):
-    """
-    Return structure child node for iSrvPgm (see iSrvPgm.addRet)
-
-    Args:
-      ikey  (str): XML <return ... var="ikey"> for parsing output.
-
-    Example:
-      see iPgm
-
-    Returns:
-      iRet (obj)
-
-    Notes:
-      This class is not used directly, but is used by iSrvPgm.addRet.
-
-      pgm return:
-        <pgm>
-        <return>(see <ds> and <data>)</return>
-        </pgm>
-    """
-    def __init__(self, ikey):
-        # parent class
-        iopt={}
-        iBase.__init__(self,iopt, {'i':ikey,'k':'return','v':''})
-
-class iDS (iBase):
-    """
-    Data structure child node for iPgm, iSrvPgm,
-    or nested iDS data structures.
-
-    Args:
-      ikey  (str): XML <ds ... var="ikey"> for parsing output.
-      iopt (dict): option - dictionay of options (below)
-        {'dim':'n'}     : optional - XMLSERVICE dimension/occurs number.
-        {'dou':'label'} : optional - XMLSERVICE do until label.
-        {'len':'label'} : optional - XMLSERVICE calc length label.
-
-    Example:
-      see iPgm
-
-    Returns:
-      iDS (obj)
-
-    Notes:
-      pgm data structure:
-        <ds [dim='n' dou='label'
-             len='label'                                 (1.5.4) 
-             data='records'                              (1.7.5)
-             ]>(see <data>)</ds>
-    """
-    def __init__(self, ikey, iopt={}):
-        # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'ds','v':''})
-
-    def addData(self, obj):
-        """Add a iData or iDS child node.
-
-        Args:
-          obj   (obj): iData object or iDs object.
-
-        Returns:
-          (void)
-        """
-        self.add(obj)
-        return self
-
-class iData (iBase):
-    """
-    Data value child node for iPgm, iSrvPgm,
-    or iDS data structures.
-
-    Args:
-      ikey  (str): XML <data ... var="ikey"> for parsing output.
-      iparm (obj): dom for parameter or return or ds.
-      itype (obj): data type [see XMLSERVICE types, '3i0', ...].
-      ival  (obj): data type value.
-      iopt (dict): option - dictionay of options (below)
-        {'dim':'n'}               : optional - XMLSERVICE dimension/occurs number.
-        {'varying':'on|off|2|4'}  : optional - XMLSERVICE varying {'varying':'off'}.
-        {'hex':'on|off'}          : optional - XMLSERVICE hex chracter data {'hex':'off'}.
-        {'enddo':'label'}         : optional - XMLSERVICE enddo until label.
-        {'setlen':'label'}        : optional - XMLSERVICE set calc length label.
-        {'offset':'n'}            : optional - XMLSERVICE offset label.
-        {'next':'label'}          : optional - XMLSERVICE next offset label (value).
-
-    Example:
-      see iPgm
-
-    Returns:
-      iData (obj)
-
-    Notes:
-      pgm data elements:
-        <data type='data types' 
-           [dim='n' 
-            varying='on|off|2|4' 
-            enddo='label' 
-            setlen='label'                                                (1.5.4)
-            offset='label'
-            hex='on|off' before='cc1/cc2/cc3/cc4' after='cc4/cc3/cc2/cc1' (1.6.8)
-            trim='on|off'                                                 (1.7.1)
-            next='nextoff'                                                (1.9.2)
-            ]>(value)</data>
-
-      C types          RPG types                     XMLSERVICE types                                   SQL types
-      ===============  ============================  ================================================   =========
-      int8/byte        D myint8    3i 0              <data type='3i0'/>                                 TINYINT   (unsupported DB2)
-      int16/short      D myint16   5i 0 (4b 0)       <data type='5i0'/>                                 SMALLINT
-      int32/int        D myint32  10i 0 (9b 0)       <data type='10i0'/>                                INTEGER
-      int64/longlong   D myint64  20i 0              <data type='20i0'/>                                BIGINT
-      uint8/ubyte      D myuint8   3u 0              <data type='3u0'/>
-      uint16/ushort    D myuint16  5u 0              <data type='5u0'/>
-      uint32/uint      D myuint32 10u 0              <data type='10u0'/>
-      uint64/ulonglong D myuint64 20u 0              <data type='20u0'/>
-      char             D mychar   32a                <data type='32a'/>                                 CHAR(32)
-      varchar2         D myvchar2 32a   varying      <data type='32a' varying='on'/>                    VARCHAR(32)
-      varchar4         D myvchar4 32a   varying(4)   <data type='32a' varying='4'/>
-      packed           D mydec    12p 2              <data type='12p2'/>                                DECIMAL(12,2)
-      zoned            D myzone   12s 2              <data type='12s2'/>                                NUMERIC(12,2)
-      float            D myfloat   4f                <data type='4f2'/>                                 FLOAT
-      real/double      D myreal    8f                <data type='8f4'/>                                 REAL
-      binary           D mybin    (any)              <data type='9b'>F1F2F3</data>                      BINARY
-      hole (no out)    D myhole   (any)              <data type='40h'/>
-      boolean          D mybool    1n                <data type='4a'/>                                  CHAR(4)
-      time             D mytime     T   timfmt(*iso) <data type='8A'>09.45.29</data>                    TIME
-      timestamp        D mystamp    Z                <data type='26A'>2011-12-29-12.45.29.000000</data> TIMESTAMP
-      date             D mydate     D   datfmt(*iso) <data type='10A'>2009-05-11</data>                 DATE
-    """
-    def __init__(self, ikey, itype, ival, iopt={}):
-        # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'k':'data','v':ival,'type':itype})
-
-
-class iSqlQuery (iBase):
-    """
-    IBM i XMLSERVICE call DB2 execute direct SQL statment.
-
-    Args:
-      ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      isql  (str): IBM i query (see 5250 strsql).
-      iopt (dict): option - dictionay of options (below)
-        {'error':'on|off|fast'} : optional - XMLSERVICE error choice {'error':'fast'}
-        {'conn':'label'}        : optional - XMLSERVICE connection label
-        {'stmt':'label'}        : optional - XMLSERVICE stmt label
-        {'options':'label'}     : optional - XMLSERVICE options label
-
-    Example:
-      iSqlQuery('custquery', "select * from QIWS.QCUSTCDT where LSTNAM='Jones' or LSTNAM='Vine'")
-      iSqlFetch('custfetch')
-
-    Returns:
-      iSqlQuery (obj)
-
-    Notes:
-      <sql><query [conn='label' stmt='label' options='label' error='on|off|fast']></sql>
-    """
-    def __init__(self, ikey, isql, iopt={}):
-        # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'query','v':isql, 'error':'fast'})
-
-
-class iSqlPrepare (iBase):
-    """
-    IBM i XMLSERVICE call DB2 prepare SQL statment.
-
-    Args:
-      ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      isql  (str): IBM i query (see 5250 strsql).
-      iopt (dict): option - dictionay of options (below)
-        {'error':'on|off|fast'} : optional - XMLSERVICE error choice {'error':'fast'}
-        {'conn':'label'}        : optional - XMLSERVICE connection label
-        {'stmt':'label'}        : optional - XMLSERVICE stmt label
-        {'options':'label'}     : optional - XMLSERVICE options label
-
-    Example:
-      iSqlPrepare('callprep', "call mylib/mycall(?,?,?)")
-      iSqlExecute('callexec')
-       .addParm(iSqlParm('var1','a'))
-       .addParm(iSqlParm('var2','b'))
-       .addParm(iSqlParm('var3','32.1234'))
-      iSqlFetch('callfetch')
-      iSqlFree('alldone')
-
-    Returns:
-      iSqlPrepare (obj)
-
-    Notes:
-      <sql><prepare [conn='label' stmt='label' options='label' error='on|off|fast']></sql>
-    """
-    def __init__(self, ikey, isql, iopt={}):
-        # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'prepare','v':isql, 'error':'fast'})
-
-
-class iSqlExecute (iBase):
-    """
-    IBM i XMLSERVICE call execute a DB2 prepare SQL statment.
-
-    Args:
-      ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      iopt (dict): option - dictionay of options (below)
-        {'error':'on|off|fast'} : optional - XMLSERVICE error choice {'error':'fast'}
-        {'conn':'label'}        : optional - XMLSERVICE connection label
-        {'stmt':'label'}        : optional - XMLSERVICE stmt label
-        {'options':'label'}     : optional - XMLSERVICE options label
-
-    Example:
-      see iSqlPrepare
-
-    Returns:
-      iSqlExecute (obj)
-
-    Notes:
-      <sql><execute [stmt='label'  error='on|off|fast']></sql>
-    """
-    def __init__(self, ikey, iopt={}):
-        # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'execute','v':'', 'error':'fast'})
-        self.pcnt = 0;
-
-    def addParm(self, obj):
-        """Add a iSqlParm child node.
-
-        Args:
-          obj   (obj): iSqlParm object.
-
-        Returns:
-          (void)
-        """
-        self.add(obj)
-        return self
-
-
-class iSqlFetch (iBase):
-    """
-    IBM i XMLSERVICE call DB2 fetch results/rows of SQL statment.
-
-    Args:
-      ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      iopt (dict): option - dictionay of options (below)
-        {'error':'on|off|fast'} : optional - XMLSERVICE error choice {'error':'fast'}
-        {'stmt':'label'}        : optional - XMLSERVICE stmt label
-        {'block':'all|n'}       : optional - XMLSERVICE block records {'block':'all'}
-        {'desc':'on|off'}       : optional - XMLSERVICE block records {'desc':'on'}
-        {'rec':'n'}             : optional - XMLSERVICE block records
-
-    Example:
-      see iSqlPrepare or iSqlQuery
-
-    Returns:
-      none
-
-    Notes:
-      <sql>
-      <fetch [stmt='label' block='all|n' rec='n' desc='on|off' error="on|off|fast"/>
-                          (default=all)         (default=on)  (default='off')
-      </sql>
-    """
-    def __init__(self, ikey, iopt={}):
-        # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'fetch','v':'','block':'all', 'error':'fast'})
-
-
-class iSqlParm (iBase):
-    """
-    Parameter child node for iSqlExecute (see iSqlExecute.addParm)
-
-    Args:
-      ikey  (str): XML <parm ... var="ikey"> for parsing output.
-      ival  (str): data value.
-      iopt (dict): option - dictionay of options (below)
-        {'io':'in|out|both|omit'} : optional - XMLSERVICE param type {'io':both'}.
-
-    Example:
-      see iSqlPrepare
-
-    Returns:
-      iSqlParm (obj)
-
-    Notes:
-      This class is not used directly, but is used by iSqlExecute.addParm.
-
-      <sql>
-      <execute>
-      <parm [io='in|out|both']>val</parm>
-      </execute>
-      <sql>
-    """
-    def __init__(self, ikey, ival, iopt={}):
-        # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'parm','v':ival,'io':'both'})
-
-
-class iSqlFree (iBase):
-    """
-    IBM i XMLSERVICE call DB2 free open handles.
-
-    Args:
-      ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      iopt (dict): option - dictionay of options (below)
-        {'error':'on|off|fast'} : optional - XMLSERVICE error choice {'error':'fast'}
-        {'conn':'all|label'}    : optional - XMLSERVICE free connection label
-        {'cstmt':'label'}       : optional - XMLSERVICE free connection label statements
-        {'stmt':'all|label'}    : optional - XMLSERVICE free stmt label
-        {'options':'all|label'} : optional - XMLSERVICE free options label
-
-    Example:
-      see iSqlPrepare
-
-    Returns:
-      iSqlFree (obj)
-
-    Notes:
-      <sql>
-      <free [conn='all|label' 
-        cstmt='label' 
-        stmt='all|label' 
-        options='all|label' 
-        error='on|off|fast']/>
-      </sql>
-    """
-    def __init__(self, ikey, iopt={}):
-        # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'free','v':'', 'error':'fast'})
-          
-class iXml(iBase):
-    """
-    IBM i XMLSERVICE raw xml input.
-
-    Args:
-      ixml  (str): custom XML for XMLSERVICE operation.
-
-    Example:
-      iXml("<cmd>CHGLIBL LIBL(XMLSERVICE)</cmd>")
-      iXml("<sh>ls /tmp</sh>")
-
-    Returns:
-      iXml (obj)
-
-    Notes:
-      Not commonly used, but ok when other classes fall short.
-    """
-    def __init__(self, ixml):
-        iBase.__init__(self)
-        self.xml_body = ixml
-
-    def add(self, obj):
-        """add input not allowed.
-
-        Returns:
-          raise except
-        """
-        raise
+        self._args[name] = {
+            'by': 'ref' if by_ref else 'val',
+            'io': type,
+            'value': obj,
+        }
         
-    def make(self):
-        """Assemble coherent mini dom xml.
-
-        Args:
-          none
-
-        Returns:
-          xml.dom.minidom (obj)
-        """
-        try:
-          dom = xml.dom.minidom.parseString(self.xml_body).firstChild
-        except xml.parsers.expat.ExpatError as e:
-          e.args += (self.xml_body,)
-          raise
-        return dom
-
+    def __value(self):
+        """Callback to return XML value data"""
+        
+        data = ""
+        for argname, arg in self._args:
+            ""
+            data += "<parm io='{}' by='{}'>{}</parm>".format(arg['io'], arg['by'], obj._xml())
+        return data
+    
 class iToolKit:
     """
     Main iToolKit XMLSERVICE collector and output parser. 
 
     Args:
-      iparm (num): include xml node parm output (0-no, 1-yes).
-      iret  (num): include xml node return output (0-no, 1-yes).
-      ids   (num): include xml node ds output (0-no, 1-yes).
-      irow  (num): include xml node row output (0-no, 1-yes).
+      include_param (num): include xml node parm output (0-no, 1-yes).
+      include_return  (num): include xml node return output (0-no, 1-yes).
+      inlude_ds   (num): include xml node ds output (0-no, 1-yes).
+      include_row  (num): include xml node row output (0-no, 1-yes).
     
     Returns:
       iToolKit (obj)
     """
-    def __init__(self, iparm=0, iret=0, ids=1, irow=1):
-        # XMLSERVICE
-        self.data_keys=["cmd","pgm","sh","sql"]
-        self.data_vals=["cmd","sh","data","success","error",
-                        "xmlhint","jobipcskey","jobname","jobuser","jobnbr",
-                        "curuser","ccsid","dftccsid","paseccsid", "joblog",
-                        "jobipc","syslibl","usrlibl","version", "jobcpf"]
-        if iparm:
-          self.data_keys.append("parm")
-          self.data_vals.append("parm")
-        if iret:
-          self.data_keys.append("return")
-        if irow:
-          self.data_keys.append("row")
-          self.data_vals.append("row")
-        if ids:
-          self.data_keys.append("ds")
+    def __init__(self, include_param=None, include_return=None, inlude_ds=1, include_row=1, transport=None):
+        ## XMLSERVICE
+        #self.data_keys=["cmd","pgm","sh","sql"]
+        #self.data_vals=["cmd","sh","data","success","error",
+                        #"xmlhint","jobipcskey","jobname","jobuser","jobnbr",
+                        #"curuser","ccsid","dftccsid","paseccsid", "joblog",
+                        #"jobipc","syslibl","usrlibl","version", "jobcpf"]
+        #if include_param:
+          #self.data_keys.append("parm")
+          #self.data_vals.append("parm")
+        #if include_return:
+          #self.data_keys.append("return")
+        #if include_row:
+          #self.data_keys.append("row")
+          #self.data_vals.append("row")
+        #if inlude_ds:
+          #self.data_keys.append("ds")
 
-        self.input=[]
-        self.domo = ""
-        self.trace_fd = False
+        self.transport = transport
+        
+        self.actions = OrderedDict()
+        self._root = None
+        self._xml = ""
+        self.trace_fd = open(os.devnull, "a+")
+        self.close_fd = True
 
     def clear(self):
         """Clear collecting child objects.
@@ -900,10 +858,48 @@ class iToolKit:
           <xmlservice>
         """
         # XMLSERVICE
-        self.input=[]
-        self.domo =""
+        self.actions.clear()
+        self._root = None
+        self._xml = ""
 
-    def add(self, obj):
+    def __getitem__(self, key):
+        _ensure_key_is_string(key)
+        
+        return self.actions[key]
+    
+    def __setitem__(self, key, value):
+        _ensure_key_is_string(key)
+        if not isinstance(obj, _Base):
+            raise ValueError("Object must be a _Base subclass")
+        
+        self.actions[key] = value
+    
+    def __delitem__(self, key):
+        _ensure_key_is_string(key)
+        
+        del self.actions[key]
+        
+    def __contains__(self, key):
+        _ensure_key_is_string(key)
+        
+        return key in self.actions
+    
+    def __iter__(self):
+        return self.actions.__iter__()
+    
+    def __reversed__(self):
+        return self.actions.__reversed__()
+    
+    def __len__(self):
+        return len(self.actions)
+    
+    def keys(self):
+        return self.actions.keys()
+    
+    def iterkeys(self):
+        return self.action.iterkeys()
+    
+    def append(self, key_or_action, action=None):
         """Add additional child object.
 
         Args:
@@ -916,7 +912,25 @@ class iToolKit:
           <?xml version='1.0'?>
           <xmlservice>
         """
-        self.input.append(obj)
+        
+        # User specfied both a key and an action
+        if _is_string(key_or_action) and isinstance(action, _Base):
+            key = key_or_action
+        # User specified just an (anonymous) action, generate a key
+        elif isinstance(key_or_action, _Base) and action is None:
+            key = uuid4().hex
+            action = key_or_action
+        elif action is None:
+            raise ValueError("key_or_action must be a _Base subclass if action is None")
+        elif _is_string(key_or_action):
+            raise ValueError("action must be a _Base subclass if key_or_action is a string")
+        else:
+            raise ValueError("Unexpected error")
+        
+        if key in self.actions:
+            raise ValueError("Key already exists")
+        
+        self.actions[key] = action
 
     def xml_in(self):
         """return raw xml input.
@@ -927,11 +941,14 @@ class iToolKit:
         Returns:
           xml
         """
-        xmli = "<?xml version='1.0'?>\n<xmlservice>"
-        for v in self.input:
-          xmli += v.xml_in()
-        xmli += "</xmlservice>\n"
-        return xmli
+        xml = "<?xml version='1.0'?>\n<xmlservice>"
+        
+        for key, action in self.actions.items():
+          xml += action.xml_in(key)
+        
+        xml += "</xmlservice>\n"
+        
+        return xml
 
     def xml_out(self):
         """return raw xml output.
@@ -942,129 +959,87 @@ class iToolKit:
         Returns:
           xml
         """
-        domo = self._dom_out()
-        return domo.toxml()
+        return self._xml
 
-    def list_out(self,ikey=-1):
+    def list_out(self):
         """return list output.
 
         Args:
-          ikey  (num): select list from index [[0],[1],,,,].
+          key  (num): select list from index [[0],[1],,,,].
 
         Returns:
           list [value]
         """
-        output = []
-        domo = self._dom_out()
-        self._parseXmlList(domo, output)
-        if ikey > -1:
-          try:
-            return output[ikey]
-          except IndexError:
-            output[ikey] = output
-            return output[ikey]
-        else:
-          return output
+        
+        return self.__parse_xml_as_list(self._root)
 
-    def dict_out(self,ikey=0):
+    def dict_out(self, key=None):
         """return dict output.
 
         Args:
-          ikey  (str): select 'key' from {'key':'value'}.
+          key  (str): select 'key' from {'key':'value'}.
 
         Returns:
           dict {'key':'value'}
         """
-        self.unq = 0
-        output = {}
-        domo = self._dom_out()
-        self._parseXmlDict(domo, output)
-        if isinstance(ikey, str):
-          try:
-            return output[ikey]
-          except KeyError:
-            output[ikey] = {'error':output}
-            return output[ikey]
-        else:
-          return output
+        if key is not None:
+            _ensure_key_is_string(key)
 
-    def hybrid_out(self,ikey=0):
+        if not self._root:
+            return {}
+        
+        output = self.__parse_xml_as_dict(self._root, 0)
+        if key:
+            return output[key]
+        else:
+            return output
+
+    def hybrid_out(self,key=None):
         """return hybrid output.
 
         Args:
-          ikey  (str): select 'key' from {'key':'value'}.
+          key  (str): select 'key' from {'key':'value'}.
 
         Returns:
           hybrid {key:{'data':[list]}}
         """
         self.unq = 0
         output = {}
-        domo = self._dom_out()
-        self._parseXmlHybrid(domo, output)
-        if isinstance(ikey, str):
+        _root = self._dom_out()
+        self.__parse_xml_as_both(_root, output)
+        if isinstance(key, str):
           try:
-            return output[ikey]
+            return output[key]
           except KeyError:
-            output[ikey] = {'error':output}
-            return output[ikey]
+            output[key] = {'error':output}
+            return output[key]
         else:
           return output
 
-    def trace_open(self,iname='*terminal'):
-        """Open trace *terminal or file /tmp/python_toolkit_(iname).log (1.2+)
+    def enable_tracing(self, name=sys.stderr):
+        """Open trace *terminal or file /tmp/python_toolkit_(name).log (1.2+)
 
         Args:
-          iname  (str): trace *terminal or file /tmp/python_toolkit_(iname).log
+          name  (str): trace *terminal or file /tmp/python_toolkit_(name).log
 
         Returns:
           (void)
         """
-        if self.trace_fd:
-          self.trace_close()
-        if '*' in iname:
-          self.trace_fd = iname
+        if self.trace_fd and self.close_fd:
+            self.disable_tracing()
+        
+        path = None
+        if hasattr(name, 'write'):
+            self.close_fd = False
+            self.trace_fd = name
         else:
-          self.trace_fd = open('/tmp/python_toolkit_'+iname+'.log','a+')
+            self.close_fd = True
+            self.trace_fd = tempfile.TemporaryFile('a+', prefix=name, suffix='.log')
+            path = self.trace_fd.name
+        
+        return path
 
-    def trace_write(self,itext):
-        """Write trace text (1.2+)
-
-        Args:
-          itext  (str): trace text
-
-        Returns:
-          (void)
-        """
-        if self.trace_fd:
-          try:
-            if '*' in str(self.trace_fd):
-              print(itext)
-            else:
-              self.trace_fd.write(itext + '\n')
-          except Exception:
-            self.trace_close()
-
-    def trace_hexdump(self,itext):
-        """Write trace hexdump (1.2+)
-        Args:
-          itext  (str): trace text
-        Returns:
-          (void)
-        """
-        if self.trace_fd:
-          result = ''
-          text = ''
-          for c in itext:
-            result += "%02x" % ord(c)
-            text += re.sub(r'[\x00-\x1F]','.',c)
-            if len(result) >= 32:
-              self.trace_write(result + " " + text)
-              result = ''
-              text = ''
-          if len(result):
-            self.trace_write(result+ " " + text)
-
-    def trace_close(self):
+    def disable_tracing(self):
         """End trace (1.2+)
 
         Args:
@@ -1073,107 +1048,124 @@ class iToolKit:
         Returns:
           (void)
         """
-        if self.trace_fd:
-          if not '*' in str(self.trace_fd):
+        if self.close_fd:
             self.trace_fd.close()
-        self.trace_fd = False
-
-    def call(self, itrans):
-        """Call xmlservice with accumulated input XML.
+        
+        self.trace_fd = open(os.devnull, "a+")
+        self.close_fd = True
+    
+    def __trace_write(self, data):
+        """Write trace text (1.2+)
 
         Args:
-          itrans (obj): XMLSERVICE transport (iRestCall, iDB2Call, etc.)
+          data  (str): trace text
+
+        Returns:
+          (void)
+        """
+        
+        try:
+            print(data, file=self.trace_fd)
+        except Exception:
+            self.disable_tracing()
+            
+    def __trace_write_with_time(self, data):
+        self.__trace_write("{}: {}".format(time.strftime("%c"), data))
+
+    def __trace_hexdump(self, data):
+        """Write trace hexdump (1.2+)
+        Args:
+          data  (str): trace text
+        Returns:
+          (void)
+        """
+        
+        bytes_per_line = 32
+        len_max = int(math.ceil(len(data) / bytes_per_line)) * bytes_per_line
+        
+        for i in range(0, len_max, bytes_per_line):
+            output = data[i:i+bytes_per_line]
+            hex_output = binascii.hexlify(output)
+            
+            output = re.sub(br'[\x00-x1F]', b'.', output)
+            
+            self.__trace_write("<{:10}> {}".format(hex_output, output.decode('ascii')))
+
+    def execute(self, transport=None):
+        """execute xmlservice with accumulated input XML.
+
+        Args:
+          transport (obj): XMLSERVICE transport (iRestexecute, iDB2execute, etc.)
 
         Returns:
           none
         """
-        if self.trace_fd:
-          self.trace_write('***********************')
-          self.trace_write('control ' + time.strftime("%c"))
-          self.trace_write(itrans.trace_data())
-          self.trace_write('input ' + time.strftime("%c"))
-          self.trace_write(self.xml_in())
-        # step 1 -- make call
+        transport = transport or self.transport
+        if not transport:
+            raise ValueError("You must pass a transport object")
+        
+        xml = self.xml_in()
+        
+        self.__trace_write('***********************')
+        self.__trace_write_with_time('control')
+        self.__trace_write(transport)
+        self.__trace_write_with_time('input')
+        self.__trace_write(xml)
+        
+        def trace_exit(step):
+            self.__trace_write('parse step: {} (1-OK, 2-*BADPARSE, 3-*NOPARSE)'.format(step))
+            self.__parse_xml()
+        
+        # step 1 -- make execute
         step = 1
-        xml_out = itrans.call(self)
-        if not (xml_out and xml_out.strip()):
-          xml_out = "<?xml version='1.0'?>\n<xmlservice>\n<error>*NODATA</error>\n</xmlservice>"          
-        # step 1 -- parse return
         try:
-          if self.trace_fd:
-            self.trace_write('output ' + time.strftime("%c"))
-            self.trace_write(xml_out)
-          domo = xml.dom.minidom.parseString(xml_out)
+            xml_out = transport.execute(xml)
+        except AttributeError:
+            raise ValueError("Invalid transport specified")
+        
+        # TODO: Move this in to transport base class
+        if not (xml_out and xml_out.strip()):
+            xml_out = "<?xml version='1.0'?>\n<xmlservice>\n<error>*NODATA</error>\n</xmlservice>"
+        
+        self.__trace_write_with_time('output')
+        self.__trace_write(xml_out.decode("utf-8"))
+        
+        self._root = fromstring(xml_out)
+        trace_exit(1)
+        return True
+    
+        try:
+            self._root = fromstring(xml_out)
+            trace_exit(1)
+            return True
         except Exception:
-          step = 2
+            pass
+        
         # step 2 -- bad parse, try modify bad output
-        if step == 2:
-          try:
-            if self.trace_fd:
-              self.trace_write('parse (fail) ' + time.strftime("%c"))
-              self.trace_hexdump(xml_out)
+        try:
+            self.__trace_write_with_time('parse (fail)')
+            self.__trace_hexdump(xml_out)
             clean1 = re.sub(r'[\x00-\x1F\x3C\x3E]', ' ', xml_out)
             clean = re.sub(' +',' ',clean1)
-            xml_out2 = "<?xml version='1.0'?>\n<xmlservice>\n<error>*BADPARSE</error>\n<error><![CDATA["+clean+"]]></error>\n</xmlservice>"
-            domo = xml.dom.minidom.parseString(xml_out2)
-          except Exception:
-            step = 3
-        # step 3 -- horrible parse, give up on output
-        if step == 3:
-          xml_out2 = "<?xml version='1.0'?>\n<xmlservice>\n<error>*NOPARSE</error>\n</xmlservice>"
-          domo = xml.dom.minidom.parseString(xml_out2)
-        if self.trace_fd:
-          self.trace_write('parse step: ' + str(step) + ' (1-ok, 2-*BADPARSE, 3-*NOPARSE)')
-        self.domo = domo
-
-    def _dom_out(self):
-        """return xmlservice dom output.
-
-        Args:
-          none
-
-        Returns:
-          xml.dom
-        """
-        if self.domo == "" or self.domo == None:
-          # something very bad happened
-          xmlblank  = "<?xml version='1.0'?>\n"
-          xmlblank += "<xmlservice>\n"
-          xmlblank += "<error>no output</error>\n"
-          xmlblank += "<xmlhint><![CDATA["
-          for v in self.input:
-            xmlblank += v.xml_in().replace("<"," ").replace(">"," ")
-          xmlblank += "]]></xmlhint>\n"
-          xmlblank += "</xmlservice>"
-          self.domo = xml.dom.minidom.parseString(xmlblank)
-        return self.domo
-
-    def _parseXmlList(self, parent, values):
-        """return dict output.
-
-        Args:
-          parent (obj): parent xml.dom
-          values (obj): accumulate list []
-
-        Returns:
-          list [value]
-        """
-        for child in parent.childNodes:
-          if child.nodeType == child.TEXT_NODE or child.nodeType == child.CDATA_SECTION_NODE:
-            if child.parentNode.tagName in self.data_vals and child.nodeValue != "\n":
-              values.append(child.nodeValue)
-          elif child.nodeType == xml.dom.Node.ELEMENT_NODE:
-            if child.tagName in self.data_keys:
-              child_values = [] # values [v,v,...]
-              values.append(child_values)
-              self._parseXmlList(child, child_values)
-            else:
-              # make sure one empty data value (1.1)
-              if child.tagName in self.data_vals and not(child.childNodes):
-                child.appendChild(self.domo.createTextNode(""))
-              self._parseXmlList(child, values)
-
-    def _parseXmlDict(self, parent, values):
+            xml_out = "<?xml version='1.0'?>\n<xmlservice>\n<error>*BADPARSE</error>\n<error><![CDATA["+clean+"]]></error>\n</xmlservice>"
+            self._root = fromstring(xml_out)
+            trace_exit(2)
+            return False
+        except Exception:
+            pass
+        
+        try:
+            xml_out = "<?xml version='1.0'?>\n<xmlservice>\n<error>*NOPARSE</error>\n</xmlservice>"
+            self._root = fromstring(xml_out)
+            trace_exit(3)
+            return False
+        except Exception:
+            trace_exit(4)
+            self._root = None
+            return False
+        
+        
+    def __parse_xml(self):
         """return dict output.
 
         Args:
@@ -1183,86 +1175,150 @@ class iToolKit:
         Returns:
           dict {'key':'value'}
         """
-        for child in parent.childNodes:
-          if child.nodeType == child.TEXT_NODE or child.nodeType == child.CDATA_SECTION_NODE:
-            if child.parentNode.tagName in self.data_vals and child.nodeValue != "\n":
-              var = child.parentNode.getAttribute('var')
-              if var == "":
-                var = child.parentNode.getAttribute('desc')
-              if var == "":
-                var = child.parentNode.tagName
-              # special for sql parms
-              if child.parentNode.tagName in 'parm':
-                var = "data"
-              myvar = var
-              while var in values:
-                self.unq += 1
-                var = myvar + str(self.unq)
-              values[var] = child.nodeValue
-          elif child.nodeType == xml.dom.Node.ELEMENT_NODE:
-            if child.tagName in self.data_keys:
-              var = child.getAttribute('var')
-              if var == "":
-                var = child.tagName
-              # key was already in values
-              # becomes list of same name
-              child_values = {}
-              if var in values:
-                old = values[var]
-                if isinstance(old,list):
-                  old.append(child_values)
-                else:
-                  values[var] = []
-                  values[var].append(old)
-                  values[var].append(child_values)
-              else:
-                values[var] = child_values
-              self._parseXmlDict(child, child_values)
-            else:
-              # make sure one empty data value (1.1)
-              if child.tagName in self.data_vals and not(child.childNodes):
-                child.appendChild(self.domo.createTextNode(""))
-              self._parseXmlDict(child, values)
+        
+        assert len(self._root) == 1
+        assert self._root.tag == 'xmlservice'
+        
+        
+        for child in self._root:
+            key = child.attrib['var']
+            self.actions[key]._parse(child)
+        
+        
+        xml_f = BytesIO()
+        ElementTree(self._root).write(xml_f, "utf-8", xml_declaration=True)
+        
+        self._xml = xml_f.getvalue().decode("utf-8")
 
-    def _parseXmlHybrid(self, parent, values):
-        """return dict output.
+    #def __include_node(self, node):
+        #return node.parentNode.tag in self.data_vals and node.text != "\n"
+            
+    #def __parse_xml_as_list(self, parent):
+        #"""return dict output.
 
-        Args:
-          parent (obj): parent xml.dom
-          values (obj): accumulate hybrid{}
+        #Args:
+          #parent (obj): parent xml.dom
 
-        Returns:
-          hybrid {key:{'data':[list]}}
-        """
-        for child in parent.childNodes:
-          if child.nodeType == child.TEXT_NODE or child.nodeType == child.CDATA_SECTION_NODE:
-            if child.parentNode.tagName in self.data_vals and child.nodeValue != "\n":
-              if not 'data' in values:
-                values['data'] = []
-              values['data'].append(child.nodeValue)
-          elif child.nodeType == xml.dom.Node.ELEMENT_NODE:
-            if child.tagName in self.data_keys:
-              var = child.getAttribute('var')
-              if var == "":
-                var = child.tagName
-              # key was already in values
-              # becomes list of same name
-              child_values = {}
-              if var in values:
-                old = values[var]
-                if isinstance(old,list):
-                  old.append(child_values)
-                else:
-                  values[var] = []
-                  values[var].append(old)
-                  values[var].append(child_values)
-              else:
-                values[var] = child_values
-              self._parseXmlHybrid(child, child_values)
-            else:
-              # make sure one empty data value (1.1)
-              if child.tagName in self.data_vals and not(child.childNodes):
-                child.appendChild(self.domo.createTextNode(""))
-              self._parseXmlHybrid(child, values)
+        #Returns:
+          #list [value]
+        #"""
+        #if not parent:
+            #return ()
+        
+        #values = []
+        #for child in parent.childNodes:
+            #if child.nodeType == Node.TEXT_NODE or child.nodeType == Node.CDATA_SECTION_NODE:
+                #if __include_node(child):
+                    #values.append(child.text)
+            #elif child.nodeType == Node.ELEMENT_NODE:
+                #if child.tag in self.data_keys:
+                    #values.append(self.__parse_xml_as_list(child))
+                #else:
+                    ## make sure one empty data value (1.1)
+                    #if child.tag in self.data_vals and not child.childNodes:
+                        #child.appendChild(self._root.createTextNode(""))
+                    
+                    #values.append(self.__parse_xml_as_list(child))
+        
+        #return tuple(values)
+
+    #def __parse_xml_as_dict(self, parent):
+        #"""return dict output.
+
+        #Args:
+          #parent (obj): parent xml.dom
+          #values (obj): accumulate dict{}
+
+        #Returns:
+          #dict {'key':'value'}
+        #"""
+        #values = {}
+        
+        #if not parent:
+            #return values
+        
+        #for child in parent.childNodes:
+            #if child.nodeType == Node.TEXT_NODE or child.nodeType == Node.CDATA_SECTION_NODE:
+                #if __include_node(child):
+                    #var = child.parentNode.getAttribute('var')
+                    #if var == "":
+                        #var = child.parentNode.getAttribute('desc')
+                    #if var == "":
+                        #var = child.parentNode.tag
+                    ## special for sql parms
+                    #if child.parentNode.tag in 'parm':
+                        #var = "data"
+                    #myvar = var
+                    #while var in values:
+                        #self.unq += 1
+                        #var = myvar + str(self.unq)
+                    #values[var] = child.text
+                    
+            #elif child.nodeType == Node.ELEMENT_NODE:
+                #if child.tag in self.data_keys:
+                    #var = child.getAttribute('var')
+                    #if var == "":
+                        #var = child.tag
+                    ## key was already in values
+                    ## becomes list of same name
+                    #child_values = {}
+                    #if var in values:
+                        #old = values[var]
+                        #if isinstance(old,list):
+                            #old.append(child_values)
+                        #else:
+                            #values[var] = []
+                            #values[var].append(old)
+                            #values[var].append(child_values)
+                    #else:
+                        #values[var] = child_values
+                        
+                    #self.__parse_xml_as_dict(child, child_values)
+                #else:
+                    ## make sure one empty data value (1.1)
+                    #if child.tag in self.data_vals and not(child.childNodes):
+                        #child.appendChild(self._root.createTextNode(""))
+                    #self.__parse_xml_as_dict(child, values)
+
+    #def __parse_xml_as_both(self, parent, values):
+        #"""return dict output.
+
+        #Args:
+          #parent (obj): parent xml.dom
+          #values (obj): accumulate hybrid{}
+
+        #Returns:
+          #hybrid {key:{'data':[list]}}
+        #"""
+        #for child in parent.childNodes:
+          #if child.nodeType == Node.TEXT_NODE or child.nodeType == Node.CDATA_SECTION_NODE:
+            #if __include_node(child):
+              #if not 'data' in values:
+                #values['data'] = []
+              #values['data'].append(child.text)
+          #elif child.nodeType == Node.ELEMENT_NODE:
+            #if child.tag in self.data_keys:
+              #var = child.getAttribute('var')
+              #if var == "":
+                #var = child.tag
+              ## key was already in values
+              ## becomes list of same name
+              #child_values = {}
+              #if var in values:
+                #old = values[var]
+                #if isinstance(old,list):
+                  #old.append(child_values)
+                #else:
+                  #values[var] = []
+                  #values[var].append(old)
+                  #values[var].append(child_values)
+              #else:
+                #values[var] = child_values
+              #self.__parse_xml_as_both(child, child_values)
+            #else:
+              ## make sure one empty data value (1.1)
+              #if child.tag in self.data_vals and not(child.childNodes):
+                #child.appendChild(self._root.createTextNode(""))
+              #self.__parse_xml_as_both(child, values)
 
 

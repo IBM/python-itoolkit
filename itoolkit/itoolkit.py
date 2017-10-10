@@ -2,13 +2,13 @@
 """
 IBM i python toolkit. 
 
-The toolkit runs both local and remote to IBM i using iDB2execute or iRestexecute. 
-However, class iLibexecute process local executes will only work on IBM i (similar to IBM i CL).
+The toolkit runs both local and remote to IBM i using iDB2Call or iRestCall. 
+However, class iLibCall process local executes will only work on IBM i (similar to IBM i CL).
 
 Transport classes:
-  class iLibexecute:             Transport XMLSERVICE direct job execute (within job/process executes).
-  class iDB2execute:             Transport XMLSERVICE executes over DB2 connection.
-  class iRestexecute:            Transport XMLSERVICE executes over standard HTTP rest.
+  class iLibCall:             Transport XMLSERVICE direct job execute (within job/process executes).
+  class iDB2Call:             Transport XMLSERVICE executes over DB2 connection.
+  class iRestCall:            Transport XMLSERVICE executes over standard HTTP rest.
 
 XMLSERVICE classes:
   Base:
@@ -46,21 +46,21 @@ XMLSERVICE classes:
 Import:
   1) XMLSERVICE direct execute (current job) - local only
   from itoolkit import *
-  from itoolkit.lib.ilibexecute import *
-  transportport = iLibexecute()
+  from itoolkit.lib.ilibcall import *
+  transportport = iLibCall()
 
   2) XMLSERVICE db2 execute (QSQSRVR job) - local/remote
   from itoolkit import *
-  from itoolkit.db2.idb2execute import *
-  transportport = iDB2execute(user,password)
+  from itoolkit.db2.idb2call import *
+  transportport = iDB2Call(user,password)
   -- or -
   conn = ibm_db.connect(database, user, password)
-  transportport = iDB2execute(conn)
+  transportport = iDB2Call(conn)
 
   3) XMLSERVICE http/rest/web execute (Apache job) - local/remote
   from itoolkit import *
-  from itoolkit.rest.irestexecute import *
-  transportport = iRestexecute(url,user,password)
+  from itoolkit.rest.irestcall import *
+  transportport = iRestCall(url,user,password)
 
 Samples (itoolkit/sample):
   > cd /QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/site-packages/itoolkit/sample
@@ -157,7 +157,7 @@ class _Base:
         idft (dict): default options (see descendents)
 
       Example:
-        transportport = iLibexecute()
+        transportport = iLibCall()
         itool = iToolKit()
         itool.add(iCmd('chglibl', 'CHGLIBL LIBL(XMLSERVICE)'))
         itool.add(iSh('ps', 'ps -ef'))
@@ -1095,7 +1095,7 @@ class iToolKit:
         """execute xmlservice with accumulated input XML.
 
         Args:
-          transport (obj): XMLSERVICE transport (iRestexecute, iDB2execute, etc.)
+          transport (obj): XMLSERVICE transport (iRestCall, iDB2Call, etc.)
 
         Returns:
           none

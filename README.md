@@ -6,7 +6,8 @@ This python .whl/.egg is now jointly maintained by IBM and the KrengelTech Litmi
 All future work will be done in this repo.
 
 ###Documentation###
-* http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python
+* [doc](https://bitbucket.org/litmis/python-itoolkit/src/master/itoolkit/doc) directory in this repo
+* [http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python](YiPs documentation)
 
 ###New whl/egg (laptop, etc.)###
 * http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python

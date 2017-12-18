@@ -4,7 +4,7 @@ from distutils.core import Extension
 
 setup(
   name='itoolkit-lite',
-  version='1.2',
+  version='1.3',
   description='IBM i toolkit lite',
   long_description='IBM i toolkit lite',
   # url='https://github.com/pypa/sampleproject',

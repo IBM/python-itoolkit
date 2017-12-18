@@ -49,6 +49,30 @@ easy_install dist/itoolkit-lite*2.7.egg
 
 ```
 
+###python3 UnicodeDecodeError: ascii codec ###
+
+python3 only. Please use test fix  python3-itoolkit-1.3.zip at Yips.
+
+* [http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python](yips python3-itoolkit-1.3.zip) - Download .whl (test only).
+
+```
+pip3 install dist/*cp34m*.whl
+```
+
+Example issue:
+
+```
+Traceback (most recent call last):
+  File "italy.py", line 16, in <module>
+  File "/QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/site-packages/itoolkit/itoolkit.py", line 1099, in call
+    itrans.call(self)
+  File "/QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/site-packages/itoolkit/lib/ilibcall.py", line 88, in call
+    return itoolkit.itoollib.xmlservice(itool.xml_in(),self.ctl,self.ipc,self.ebcdic_ccsid,self.pase_ccsid)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 44: ordinal not in range(128)
+```
+
+
+
 ###Builder Notes:###
 ```
 =======

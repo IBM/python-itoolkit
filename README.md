@@ -7,7 +7,7 @@ All future work will be done in this repo.
 
 ###Documentation###
 * [doc](https://bitbucket.org/litmis/python-itoolkit/src/master/itoolkit/doc) directory in this repo
-* [http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python](YiPs documentation)
+* [YiPs documentation](http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python)
 
 ###New whl/egg (laptop, etc.)###
 * http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python
@@ -53,7 +53,7 @@ easy_install dist/itoolkit-lite*2.7.egg
 
 python3 only. Please use test fix  python3-itoolkit-1.3.zip at Yips.
 
-* [http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python](yips python3-itoolkit-1.3.zip) - Download .whl (test only).
+* [YIPs python3-itoolkit-1.3.zip]( http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python) - Download .whl (test only).
 
 ```
 pip3 install dist/*cp34m*.whl

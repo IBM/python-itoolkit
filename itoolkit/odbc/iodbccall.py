@@ -38,7 +38,7 @@ import xml.dom.minidom
 # import inspect
 import pyodbc
 
-class iODBCCall:
+class iODBCCall(object):
     """
     Transport XMLSERVICE calls over ODBC connection.
 

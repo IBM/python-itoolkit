@@ -88,13 +88,9 @@ examples:
 make doc:
 > python make_doc.py
 
-remember versions change:
-> setup.py
-version='x.x' to 'n.n'
-> setup-lite.py
-version='x.x' to 'n.n'
-> itoolkit/__init__.py
-__version__ = "x.x" to "n.n"
+Update version:
+
+> [bumpversion](https://pypi.python.org/pypi/bumpversion) minor
 
 Can be problem for egg builds.
 

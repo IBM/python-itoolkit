@@ -32,8 +32,10 @@ if sys.version_info >= (3,0):
   import urllib.parse
 import xml.dom.minidom
 # import inspect
-import itoolkit.itoollib
-
+try:
+    import itoolkit.itoollib
+except ImportError:
+    pass
 
 class iLibCall:
     """

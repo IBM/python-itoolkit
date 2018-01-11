@@ -36,7 +36,10 @@ if sys.version_info >= (3,0):
   import urllib.parse
 import xml.dom.minidom
 # import inspect
-import ibm_db
+try:
+    import ibm_db
+except ImportError:
+    pass
 
 class iDB2Call:
     """

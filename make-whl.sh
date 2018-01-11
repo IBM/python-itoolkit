@@ -8,15 +8,15 @@ for arg in "$@"
   case "$arg" in
     34-lite)
       opr="ok"
-      python3 setup-lite.py bdist_wheel
+      python3 setup.py build_ext --disable-libcall bdist_wheel
     ;;
     27-lite)
       opr="ok"
-      python2 setup-lite.py bdist_wheel
+      python2 setup.py build_ext --disable-libcall bdist_wheel
     ;;
     26-lite)
       opr="ok"
-      python setup-lite.py bdist_wheel
+      python setup.py build_ext --disable-libcall bdist_wheel
     ;;
     34)
       opr="ok"

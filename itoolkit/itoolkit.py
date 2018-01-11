@@ -133,7 +133,7 @@ if sys.version_info >= (3,0):
 import xml.dom.minidom
 # import inspect
 
-class iBase:
+class iBase(object):
     """
     IBM i XMLSERVICE call addable operation(s).
 
@@ -163,10 +163,9 @@ class iBase:
     """
     def __init__(self, iopt={}, idft={}):
         # xml defaults
-        self.opt = idft
-        # xml options
-        for k,v in iopt.items():
-          self.opt[k] = v
+        self.opt = idft.copy()
+        self.opt.update(iopt)
+
         # my children objects
         self.opt['c'] = []
 
@@ -267,7 +266,7 @@ class iCmd(iBase):
            myexec = 'rexx'
         else:
            myexec = 'cmd'
-        iBase.__init__(self, iopt, {'i':ikey,'k':'cmd','v':icmd, 'exec':myexec, 'error':'fast'})
+        super(iCmd, self).__init__(iopt, {'i':ikey,'k':'cmd','v':icmd, 'exec':myexec, 'error':'fast'})
 
 
 class iSh(iBase):
@@ -303,7 +302,7 @@ class iSh(iBase):
     """
     def __init__(self, ikey, icmd, iopt={}):
         # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'sh','v':icmd, 'error':'fast'})
+        super(iSh, self).__init__(iopt, {'i':ikey,'k':'sh','v':icmd, 'error':'fast'})
 
 
 class iCmd5250(iSh):
@@ -340,7 +339,7 @@ class iCmd5250(iSh):
     """
     def __init__(self, ikey, icmd, iopt={}):
         # parent class
-        iSh.__init__(self,ikey, "/QOpenSys/usr/bin/system " + icmd)
+        super(iCmd5250, self).__init__(ikey, "/QOpenSys/usr/bin/system " + icmd)
 
 
 class iPgm (iBase):
@@ -384,7 +383,7 @@ class iPgm (iBase):
     """
     def __init__(self, ikey, iname, iopt={}):
         # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'k':'pgm','v':'','name':iname,'error':'fast'})
+        super(iPgm, self).__init__(iopt, {'i':ikey,'k':'pgm','v':'','name':iname,'error':'fast'})
         self.pcnt = 0;
 
     def addParm(self, obj):
@@ -434,7 +433,7 @@ class iSrvPgm (iPgm):
         iopt = iopt.copy()
         iopt['func'] = ifunc
         # parent class
-        iPgm.__init__(self, ikey, iname, iopt)
+        super(iSrvPgm, self).__init__(ikey, iname, iopt)
 
     def addRet(self, obj):
         """Add a return structure child node.
@@ -480,7 +479,7 @@ class iParm (iBase):
     """
     def __init__(self, ikey, iopt={}):
         # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'parm','v':'','io':'both'})
+        super(iParm, self).__init__(iopt, {'i':ikey,'k':'parm','v':'','io':'both'})
 
 class iRet (iBase):
     """
@@ -505,8 +504,7 @@ class iRet (iBase):
     """
     def __init__(self, ikey):
         # parent class
-        iopt={}
-        iBase.__init__(self,iopt, {'i':ikey,'k':'return','v':''})
+        super(iRet, self).__init__({}, {'i':ikey,'k':'return','v':''})
 
 class iDS (iBase):
     """
@@ -535,7 +533,7 @@ class iDS (iBase):
     """
     def __init__(self, ikey, iopt={}):
         # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'ds','v':''})
+        super(iDS, self).__init__(iopt, {'i':ikey,'k':'ds','v':''})
 
     def addData(self, obj):
         """Add a iData or iDS child node.
@@ -613,7 +611,7 @@ class iData (iBase):
     """
     def __init__(self, ikey, itype, ival, iopt={}):
         # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'k':'data','v':ival,'type':itype})
+        super(iData, self).__init__(iopt, {'i':ikey,'k':'data','v':ival,'type':itype})
 
 
 class iSqlQuery (iBase):
@@ -641,7 +639,7 @@ class iSqlQuery (iBase):
     """
     def __init__(self, ikey, isql, iopt={}):
         # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'query','v':isql, 'error':'fast'})
+        super(iSqlQuery, self).__init__(iopt, {'i':ikey,'j':'sql','k':'query','v':isql, 'error':'fast'})
 
 
 class iSqlPrepare (iBase):
@@ -674,7 +672,7 @@ class iSqlPrepare (iBase):
     """
     def __init__(self, ikey, isql, iopt={}):
         # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'prepare','v':isql, 'error':'fast'})
+        super(iSqlPrepare, self).__init__(iopt, {'i':ikey,'j':'sql','k':'prepare','v':isql, 'error':'fast'})
 
 
 class iSqlExecute (iBase):
@@ -700,7 +698,7 @@ class iSqlExecute (iBase):
     """
     def __init__(self, ikey, iopt={}):
         # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'execute','v':'', 'error':'fast'})
+        super(iSqlExecute, self).__init__(iopt, {'i':ikey,'j':'sql','k':'execute','v':'', 'error':'fast'})
         self.pcnt = 0;
 
     def addParm(self, obj):
@@ -743,7 +741,7 @@ class iSqlFetch (iBase):
     """
     def __init__(self, ikey, iopt={}):
         # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'fetch','v':'','block':'all', 'error':'fast'})
+        super(iSqlFetch, self).__init__(iopt, {'i':ikey,'j':'sql','k':'fetch','v':'','block':'all', 'error':'fast'})
 
 
 class iSqlParm (iBase):
@@ -773,7 +771,7 @@ class iSqlParm (iBase):
     """
     def __init__(self, ikey, ival, iopt={}):
         # parent class
-        iBase.__init__(self,iopt, {'i':ikey,'k':'parm','v':ival,'io':'both'})
+        super(iSqlParm, self).__init__(iopt, {'i':ikey,'k':'parm','v':ival,'io':'both'})
 
 
 class iSqlFree (iBase):
@@ -806,7 +804,7 @@ class iSqlFree (iBase):
     """
     def __init__(self, ikey, iopt={}):
         # parent class
-        iBase.__init__(self, iopt, {'i':ikey,'j':'sql','k':'free','v':'', 'error':'fast'})
+        super(iSqlFree, self).__init__(iopt, {'i':ikey,'j':'sql','k':'free','v':'', 'error':'fast'})
           
 class iXml(iBase):
     """
@@ -826,7 +824,7 @@ class iXml(iBase):
       Not commonly used, but ok when other classes fall short.
     """
     def __init__(self, ixml):
-        iBase.__init__(self)
+        super(iXml, self).__init__()
         self.xml_body = ixml
 
     def add(self, obj):

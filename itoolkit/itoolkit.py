@@ -431,8 +431,10 @@ class iSrvPgm (iPgm):
            ]> ... </pgm>
     """
     def __init__(self, ikey, iname, ifunc, iopt={}):
+        iopt = iopt.copy()
+        iopt['func'] = ifunc
         # parent class
-        iPgm.__init__(self, ikey, iname, {'func':ifunc})
+        iPgm.__init__(self, ikey, iname, iopt)
 
     def addRet(self, obj):
         """Add a return structure child node.

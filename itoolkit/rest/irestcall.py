@@ -27,7 +27,7 @@ if sys.version_info >= (3,0):
 import xml.dom.minidom
 # import inspect
 
-class iRestCall:
+class iRestCall(object):
     """
     Transport XMLSERVICE calls over standard HTTP rest.
 

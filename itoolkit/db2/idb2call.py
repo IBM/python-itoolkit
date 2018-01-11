@@ -41,7 +41,7 @@ try:
 except ImportError:
     pass
 
-class iDB2Call:
+class iDB2Call(object):
     """
     Transport XMLSERVICE calls over DB2 connection.
 

@@ -37,7 +37,7 @@ try:
 except ImportError:
     pass
 
-class iLibCall:
+class iLibCall(object):
     """
     Transport XMLSERVICE direct job call (within job/process calls).
 

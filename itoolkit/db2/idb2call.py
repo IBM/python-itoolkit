@@ -110,6 +110,5 @@ class iDB2Call(object):
         for row in cursor:
             xml_out += row[0]
         
-        print(xml_out)
         return xml_out.rstrip('\0')
     

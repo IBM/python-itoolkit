@@ -34,7 +34,7 @@ class itoolkit_build_py(build_py):
           
 setup(
   name='itoolkit',
-  version='1.5.0',
+  version='1.5.1',
   description='IBM i toolkit',
   long_description='IBM i toolkit',
   # url='https://github.com/pypa/sampleproject',

@@ -108,12 +108,12 @@ class iODBCCall(object):
         # create cursor  
         csr = conn.cursor()  
         # call xmlservice
-        csr.execute("call " + self.lib + ".iPLUGR512K(?,?,?)", ipc, clt, itool.xml_in())
+        csr.execute("call " + self.lib + ".iPLUGR512K(?,?,?)", self.ipc, self.ctl, itool.xml_in())
         # fetch all rows (xml document)
         xml_out = ""
         rows = csr.fetchall()
         for row in rows:
-          xml_out += row
+          xml_out += row[0].rstrip('\x00')
         # close
         csr.close()
         del csr

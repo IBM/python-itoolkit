@@ -19,22 +19,13 @@ Note:
   3) XMLSERVICE -- download library (crtxml)
 """
 import sys
-import os
-import re
-import urllib
-if sys.version_info >= (3,0):
-  """
-  urllib has been split up in Python 3. 
-  The urllib.urlencode() function is now urllib.parse.urlencode(), 
-  and the urllib.urlopen() function is now urllib.request.urlopen().
-  """
-  import urllib.request
-  import urllib.parse
-import xml.dom.minidom
-# import inspect
+
+
 try:
-    import itoolkit.itoollib
+    from itoolkit.itoollib import _xmlservice
+    available = True
 except ImportError:
+    available = False
     pass
 
 class iLibCall(object):
@@ -50,17 +41,15 @@ class iLibCall(object):
     Returns:
       none
     """
-    def __init__(self, ictl=0, ipc=0, iccsid=0, pccsid=0):
-        if ictl == 0:
-          self.ctl = '*here *cdata'
-        else:
-          self.ctl = ictl
-        if ipc == 0:
-          self.ipc = '*na'
-        else:
-          self.ipc = ipc
-        self.ebcdic_ccsid = iccsid
-        self.pase_ccsid = pccsid
+    def __init__(self, ictl=None, ipc=None, iccsid=0, pccsid=1208):
+        self.ctl = ictl or '*here *cdata'
+        self.ipc = ipc or '*na'
+        
+        if iccsid != 0:
+            raise ValueError("iccsid must be 0 (job ccsid)")
+        
+        if pccsid != 1208:
+            raise ValueError("pccsid must be 1208 (UTF-8)")
 
     def trace_data(self):
         """Return trace driver data.
@@ -71,12 +60,7 @@ class iLibCall(object):
         Returns:
           initialization data
         """
-        data = ""
-        data += " ctl (" + str(self.ctl) + ")"
-        data += " ipc (" + str(self.ipc) + ")"
-        data += " ebcdic_ccsid (" + str(self.ebcdic_ccsid) + ")"
-        data += " pase_ccsid (" + str(self.pase_ccsid) + ")"
-        return data
+        return "ctl ({}) ipc ({})".format(self.ctl, self.ipc)
 
     def call(self, itool):
         """Call xmlservice with accumulated input XML.
@@ -87,5 +71,13 @@ class iLibCall(object):
         Returns:
           xml
         """
-        return itoolkit.itoollib.xmlservice(itool.xml_in(),self.ctl,self.ipc,self.ebcdic_ccsid,self.pase_ccsid)
+        if not available:
+            raise RuntimeError("Not supported on this platform")
+            
+        return _xmlservice(itool.xml_in(), self.ctl, self.ipc)
+        
+        if sys.version_info >= (3,0):
+            return data.decode('utf-8')
+        else:
+            return data
 

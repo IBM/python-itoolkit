@@ -1,1 +1,9 @@
-Tony Cairns
+This file contains the names of those who have committed to this
+project (or at least those who've added their name here to be
+recognized). If you make a change, please add your name here.
+
+Original Author and Author of XMLSERVICE:
+    Tony Cairns
+  
+Additional Changes and Improvements
+    Kevin Adler

@@ -1,106 +1,53 @@
-# README #
+Python XMLSERVICE Toolkit
+=========================
 
-### Python Toolkit ###
-The Python is a Python wrapper over the XMLSERVICE open source project from IBM. 
-This python .whl/.egg is now jointly maintained by IBM and the KrengelTech Litmis team. 
-All future work will be done in this repo.
+itoolkit is a Python interface to the [XMLSERVICE](https://bitbucket.org/inext/xmlservice-rpg) toolkit for the [IBM i](https://en.wikipedia.org/wiki/IBM_i) platform.
 
-###Documentation###
-* [doc](http://python-itoolkit.readthedocs.io/en/latest)
-* [YiPs documentation](http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python)
+```python
+from itoolkit import *
+from itoolkit.db2.idb2call import *
 
-###New whl/egg (laptop, etc.)###
-* http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python
+itransport = iDB2Call()
+itool = iToolKit()
 
+itool.add(iCmd5250('wrkactjob', 'WRKACTJOB'))
+itool.call(itransport)
+wrkactjob = itool.dict_out('wrkactjob')
 
-###Installation###
-
-```
-=====
-IBM pythons (PTF)
-=====
-examples:
-pip3 uninstall itoolkit
-pip3 install dist/itoolkit*34m-os400*.whl
-
-pip2 uninstall itoolkit
-pip2 install dist/itoolkit*27m-os400*.whl
-
-
-======
-perzl pythons
-======
-examples:
-rm  -R /opt/freeware/lib/python2.6/site-packages/itoolkit*
-easy_install dist/itoolkit*2.6-os400*.egg
-
-rm  -R /opt/freeware/lib/python2.7/site-packages/itoolkit*
-easy_install-2.7 dist/itoolkit*2.7-os400*.egg
-
-
-======
-laptop/remote pythons
-======
-examples:
-pip uninstall itoolkit
-pip install dist/itoolkit-lite*py2-none*.whl
--- or --
-easy_install dist/itoolkit-lite*2.7.egg
-
+print(wrkactjob)
 ```
 
-###python3 UnicodeDecodeError: ascii codec ###
+For more, check out the [samples](samples/icmd_rtvjoba.py).
 
-python3 only. Please use test fix  python3-itoolkit-1.3.zip at Yips.
+Feature Support
+---------------
 
-* [YIPs python3-itoolkit-1.3.zip]( http://yips.idevcloud.com/wiki/index.php/XMLSERVICE/Python) - Download .whl (test only).
+- Call ILE srograms & service programs
+- Call CL Commands
+- Call PASE shell commands
 
-```
-pip3 install dist/*cp34m*.whl
-```
+iLibCall and 64-bit Support
+---------------------------
 
-Example issue:
+:rotating_light: WARNING WARNING WARNING :rotating_light:
 
-```
-Traceback (most recent call last):
-  File "italy.py", line 16, in <module>
-  File "/QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/site-packages/itoolkit/itoolkit.py", line 1099, in call
-    itrans.call(self)
-  File "/QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/site-packages/itoolkit/lib/ilibcall.py", line 88, in call
-    return itoolkit.itoollib.xmlservice(itool.xml_in(),self.ctl,self.ipc,self.ebcdic_ccsid,self.pase_ccsid)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 44: ordinal not in range(128)
-```
+Due to limitations in XMLSERVICE, using iLibCall in a 64-bit process results in failure. See [this bug](https://bitbucket.org/litmis/python-itoolkit/issues/17/ilibcall-fails-on-64-bt-python-versions) for more info.
 
+Documentation
+-------------
 
+The docs can be found at <http://python-itoolkit.readthedocs.io/en/latest>
 
-###Builder Notes:###
-```
-=======
-Builder:
-=======
-./make-whl.sh [34|27|26|34-lite|27-lite|26-lite]
-./make-egg.sh [34|27|26|34-lite|27-lite|26-lite]
+Installation
+------------
 
-examples:
-./make-whl.sh 34 27 34-lite 27-lite
-./make-egg.sh 34 27 34-lite 27-lite
+You can install itoolkit simply using `pip`:
 
-make doc:
-> python make_doc.py
-
-Update version:
-
-> [bumpversion](https://pypi.python.org/pypi/bumpversion) minor
-
-Can be problem for egg builds.
-
-unable to execute '/QOpenSys/python/lib/python3.4/config/ld_so_aix': No such file or directory
-error: command '/QOpenSys/python/lib/python3.4/config/ld_so_aix' failed with exit status 1
-ln -s /QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/config-3.4m /QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/config
-
-/QOpenSys/ranger/home/RANGER/python
-/QOpenSys/ranger2/home/ranger2/python
+```bash
+python3 -m pip install itoolkit
 ```
 
-#License
-MIT.  View [`LICENSE`](https://bitbucket.org/litmis/python-itoolkit/src) file.
+License
+-------
+
+MIT - See [LICENSE](LICENSE)

@@ -4,12 +4,11 @@ from distutils.core import Extension
 setup(
     name='itoolkit',
     version='1.5.1',
-    description='IBM i toolkit',
-    long_description='IBM i toolkit',
-    # url='https://github.com/pypa/sampleproject',
-    author="Tony 'Ranger' Cairns",
-    author_email='adc@us.ibm.com',
-    license='BSD',
+    description='IBM i XMLSERVICE toolkit for Python',
+    long_description='IBM i XMLSERVICE toolkit for Python',
+    url='https://bitbucket.org/litmis/python-itoolkit',
+    author="IBM",
+    license='MIT',
     zip_safe=False,
     packages=find_packages(),
     data_files = [

@@ -19,14 +19,9 @@ Note:
   3) XMLSERVICE -- download library (crtxml)
 """
 import sys
+from . import _ilibcall
 
-
-try:
-    from itoolkit.itoollib import _xmlservice
-    available = True
-except ImportError:
-    available = False
-    pass
+_available = hasattr(_ilibcall, '_xmlservice')
 
 class iLibCall(object):
     """
@@ -71,10 +66,10 @@ class iLibCall(object):
         Returns:
           xml
         """
-        if not available:
+        if not _available:
             raise RuntimeError("Not supported on this platform")
             
-        return _xmlservice(itool.xml_in(), self.ctl, self.ipc)
+        return _ilibcall._xmlservice(itool.xml_in(), self.ctl, self.ipc)
         
         if sys.version_info >= (3,0):
             return data.decode('utf-8')

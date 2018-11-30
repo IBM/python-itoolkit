@@ -13,7 +13,7 @@ setup(
     zip_safe=False,
     packages=find_packages(),
     ext_modules=[
-        Extension('itoolkit/itoollib', ['itoolkit/lib/itoollib.c'])
+        Extension('itoolkit/lib/_ilibcall', ['itoolkit/lib/ilibcall.c'])
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

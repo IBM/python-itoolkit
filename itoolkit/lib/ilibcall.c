@@ -164,14 +164,14 @@ static PyMethodDef methods[] = {
 #define docstring "Internal _ILECALL wrapper for XMLSERVICE"
 
 #if PY_MAJOR_VERSION < 3
-void inititoollib(void) {
-    Py_InitModule3("itoollib", methods, docstring);
+void init_ilibcall(void) {
+    Py_InitModule3("_ilibcall", methods, docstring);
 }
 #else
-PyMODINIT_FUNC PyInit_itoollib(void) {
+PyMODINIT_FUNC PyInit__ilibcall(void) {
     static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
-        "itoollib",
+        "_ilibcall",
         docstring,
         -1,
         methods,

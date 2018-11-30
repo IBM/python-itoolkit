@@ -1,5 +1,4 @@
-from setuptools import setup, find_packages
-from distutils.core import Extension
+from setuptools import setup, find_packages, Extension
 
 setup(
     name='itoolkit',

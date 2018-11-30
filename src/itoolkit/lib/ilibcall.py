@@ -18,12 +18,16 @@ Note:
   2) QXMLSERV -- IBM PTF library (DG1 PTFs)
   3) XMLSERVICE -- download library (crtxml)
 """
-import sys
-from . import _ilibcall
+import warnings
+from ..transport.direct import DirectTransport
 
-_available = hasattr(_ilibcall, '_xmlservice')
+warnings.simplefilter('always', DeprecationWarning)
+warnings.warn("This module is deprecated, use itoolkit.transport.DirectTransport instead",
+                category=DeprecationWarning,
+                stacklevel=2)
+warnings.simplefilter('default', DeprecationWarning)
 
-class iLibCall(object):
+class iLibCall(DirectTransport):
     """
     Transport XMLSERVICE direct job call (within job/process calls).
 
@@ -36,43 +40,4 @@ class iLibCall(object):
     Returns:
       none
     """
-    def __init__(self, ictl=None, ipc=None, iccsid=0, pccsid=1208):
-        self.ctl = ictl or '*here *cdata'
-        self.ipc = ipc or '*na'
-        
-        if iccsid != 0:
-            raise ValueError("iccsid must be 0 (job ccsid)")
-        
-        if pccsid != 1208:
-            raise ValueError("pccsid must be 1208 (UTF-8)")
-
-    def trace_data(self):
-        """Return trace driver data.
-
-        Args:
-          none
-
-        Returns:
-          initialization data
-        """
-        return "ctl ({}) ipc ({})".format(self.ctl, self.ipc)
-
-    def call(self, itool):
-        """Call xmlservice with accumulated input XML.
-
-        Args:
-          itool  - iToolkit object
-
-        Returns:
-          xml
-        """
-        if not _available:
-            raise RuntimeError("Not supported on this platform")
-            
-        return _ilibcall._xmlservice(itool.xml_in(), self.ctl, self.ipc)
-        
-        if sys.version_info >= (3,0):
-            return data.decode('utf-8')
-        else:
-            return data
-
+    pass

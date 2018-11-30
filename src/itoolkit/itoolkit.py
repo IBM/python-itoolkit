@@ -2,13 +2,13 @@
 """
 IBM i python toolkit. 
 
-The toolkit runs both local and remote to IBM i using iDB2Call or iRestCall. 
-However, class iLibCall process local calls will only work on IBM i (similar to IBM i CL).
+The toolkit runs both local and remote to IBM i using DatabaseTransport or HttpTransport.
+However, class DirectTransport process local calls will only work on IBM i (similar to IBM i CL).
 
 Transport classes:
-  class iLibCall:             Transport XMLSERVICE direct job call (within job/process calls).
-  class iDB2Call:             Transport XMLSERVICE calls over DB2 connection.
-  class iRestCall:            Transport XMLSERVICE calls over standard HTTP rest.
+  class DirectTransport:      Transport XMLSERVICE direct job call (within job/process calls).
+  class DatabaseTransport:    Transport XMLSERVICE calls over DB2 connection.
+  class HttpTransport:        Transport XMLSERVICE calls over standard HTTP rest.
 
 XMLSERVICE classes:
   Base:
@@ -46,21 +46,21 @@ XMLSERVICE classes:
 Import:
   1) XMLSERVICE direct call (current job) - local only
   from itoolkit import *
-  from itoolkit.lib.ilibcall import *
-  itransport = iLibCall()
+  from itoolkit.transport import DirectTransport
+  itransport = DirectTransport()
 
   2) XMLSERVICE db2 call (QSQSRVR job) - local/remote
   from itoolkit import *
-  from itoolkit.db2.idb2call import *
-  itransport = iDB2Call(user,password)
+  from itoolkit.transport import DatabaseTransport
+  itransport = DatabaseTransport()
   -- or -
-  conn = ibm_db.connect(database, user, password)
-  itransport = iDB2Call(conn)
+  conn = ibm_db_dbi.connect()
+  itransport = DatabaseTransport(conn)
 
   3) XMLSERVICE http/rest/web call (Apache job) - local/remote
   from itoolkit import *
-  from itoolkit.rest.irestcall import *
-  itransport = iRestCall(url,user,password)
+  from itoolkit.transport import HttpTransport
+  itransport = HttpTransport(url,user,password)
 
 Samples (itoolkit/sample):
   > cd /QOpenSys/QIBM/ProdData/OPS/Python3.4/lib/python3.4/site-packages/itoolkit/sample
@@ -142,7 +142,7 @@ class iBase(object):
         idft (dict): default options (see descendents)
 
       Example:
-        itransport = iLibCall()
+        itransport = DirectTransport()
         itool = iToolKit()
         itool.add(iCmd('chglibl', 'CHGLIBL LIBL(XMLSERVICE)'))
         itool.add(iSh('ps', 'ps -ef'))
@@ -1082,7 +1082,7 @@ class iToolKit:
         """Call xmlservice with accumulated input XML.
 
         Args:
-          itrans (obj): XMLSERVICE transport (iRestCall, iDB2Call, etc.)
+          itrans (obj): XMLSERVICE transport (HttpTransport, DatabaseTransport, etc.)
 
         Returns:
           none

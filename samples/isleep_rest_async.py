@@ -4,11 +4,11 @@ except ImportError:
   import Queue as queue
 import threading
 import urllib
-from itoolkit.rest.irestcall import *
+from itoolkit.transport import HttpTransport
 from itoolkit import *
 class iShSleep():
   def __init__(self, icmd):
-      self.itran = iRestCall('http://yips.idevcloud.com/cgi-bin/xmlcgi.pgm','*NONE','*NONE')
+      self.itran = HttpTransport('http://yips.idevcloud.com/cgi-bin/xmlcgi.pgm','*NONE','*NONE')
       self.itool = iToolKit()
       self.itool.add(iSh('igo',icmd))
   def go(self):

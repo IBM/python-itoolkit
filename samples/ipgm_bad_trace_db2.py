@@ -1,7 +1,7 @@
 from itoolkit import *
-from itoolkit.db2.idb2call import *
+from itoolkit.transport import DatabaseTransport
 
-itransport = iDB2Call('adc') # export PASSWORD=mypass
+itransport = DatabaseTransport('adc') # export PASSWORD=mypass
 
 itool = iToolKit()
 itool.add(

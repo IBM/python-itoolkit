@@ -26,9 +26,9 @@ Environment variables:
   > export XMLSERVICE=XMLSERVICE
 
 Transport classes:
-  class iLibCall:             Transport XMLSERVICE direct job call (within job/process calls).
-  class iDB2Call:             Transport XMLSERVICE calls over DB2 connection.
-  class iRestCall:            Transport XMLSERVICE calls over standard HTTP rest.
+  class DirectTransport:      Transport XMLSERVICE direct job call (within job/process calls).
+  class DatabaseTransport:    Transport XMLSERVICE calls over database connection.
+  class HttpTransport:        Transport XMLSERVICE calls over standard HTTP rest.
 
 XMLSERVICE classes:
   Base:
@@ -66,8 +66,8 @@ XMLSERVICE classes:
 Import:
   1) XMLSERVICE direct call (current job) - local only
   from itoolkit import *
-  from itoolkit.lib.ilibcall import *
-  itransport = iLibCall()
+  from itoolkit.transport import DirectTransport*
+  itransport = DirectTransport()
   Note:
   XMLSERVICE library search order:
   1) environment variable 'XMLSERVICE' (export XMLSERVICE=QXMLSERV)
@@ -76,21 +76,21 @@ Import:
 
   2) XMLSERVICE db2 call (QSQSRVR job) - local/remote
   from itoolkit import *
-  from itoolkit.db2.idb2call import *
-  itransport = iDB2Call(user,password)
+  from itoolkit.transport import DatabaseTransport
+  itransport = DatabaseTransport(user,password)
   -- or -
   conn = ibm_db.connect(database, user, password)
-  itransport = iDB2Call(conn)
+  itransport = DatabaseTransport(conn)
   Note:
   XMLSERVICE library search order:
-  1) lib parm -- iDB2Call(...,'XMLSERVICE')
+  1) lib parm -- DatabaseTransport(...,'XMLSERVICE')
   1) environment variable 'XMLSERVICE' (export XMLSERVICE=XMLSERVICE)
   2) QXMLSERV -- IBM PTF library (DG1 PTFs)
 
   3) XMLSERVICE http/rest/web call (Apache job) - local/remote
   from itoolkit import *
-  from itoolkit.rest.irestcall import *
-  itransport = iRestCall(url,user,password)
+  from itoolkit.transport import HttpTransport
+  itransport = HttpTransport(url,user,password)
 
 Samples (itoolkit/sample):
   > export PATH=/QOpenSys/python/bin:$PATH
@@ -106,5 +106,5 @@ Tests (itoolkit/test):
 
 Debug (itoolkit/sample):
   # itoolkit/sample/istop_msg_qsysopr_before_pgm_call.py
-  itransport = iLibCall("*here *debug") # i will stop, inquiry message qsysopr
+  itransport = DirectTransport("*here *debug") # i will stop, inquiry message qsysopr
 

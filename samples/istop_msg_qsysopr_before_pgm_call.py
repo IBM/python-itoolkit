@@ -1,11 +1,11 @@
 from itoolkit import *
-from itoolkit.lib.ilibcall import *
+from itoolkit.transport import DirectTransport
 
 print("********************")
 print("********************")
 print("Hey user,")
 print("Using '*debug' transport parameter allows debug halt before run.")
-print ("\n  itransport = iLibCall('*here *debug')\n")
+print ("\n  itransport = DirectTransport('*here *debug')\n")
 print("Expect qsysopr inquire message, you must answer to continue script.")
 print("You may attach a debugger before you answer the inquiry.")
 print("\n  dspmsg qsysopr\n")
@@ -17,7 +17,7 @@ print("Script continues to run after answer (call PGM, etc.)")
 print("********************")
 print("********************")
 
-itransport = iLibCall("*here *debug") # i will stop, inquiry message qsysopr
+itransport = DirectTransport("*here *debug") # i will stop, inquiry message qsysopr
 itool = iToolKit()
 itool.add(iCmd('chglibl', 'CHGLIBL LIBL(XMLSERVICE)'))
 itool.add(

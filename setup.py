@@ -14,8 +14,6 @@ setup(
         ('itoolkit', ['itoolkit/README']),
         ('itoolkit', ['itoolkit/LICENSE']),
         ('itoolkit/doc', ['itoolkit/doc/README']),
-        ('itoolkit/test', ['itoolkit/test/README']),
-        ('itoolkit/sample', ['itoolkit/sample/README']),
     ],
     ext_modules=[
         Extension('itoolkit/itoollib', ['itoolkit/lib/itoollib.c'])

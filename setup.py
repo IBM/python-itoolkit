@@ -10,11 +10,6 @@ setup(
     license='MIT',
     zip_safe=False,
     packages=find_packages(),
-    data_files = [
-        ('itoolkit', ['itoolkit/README']),
-        ('itoolkit', ['itoolkit/LICENSE']),
-        ('itoolkit/doc', ['itoolkit/doc/README']),
-    ],
     ext_modules=[
         Extension('itoolkit/itoollib', ['itoolkit/lib/itoollib.c'])
     ],

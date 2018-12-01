@@ -3,3 +3,5 @@ dist
 __pycache__
 *.egg-info
 docs/_build
+.eggs
+*.so

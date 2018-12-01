@@ -11,9 +11,10 @@ setup(
     author="IBM",
     license='MIT',
     zip_safe=False,
-    packages=find_packages(),
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     ext_modules=[
-        Extension('itoolkit/lib/_ilibcall', ['itoolkit/lib/ilibcall.c'])
+        Extension('itoolkit/lib/_ilibcall', ['src/itoolkit/lib/ilibcall.c'])
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

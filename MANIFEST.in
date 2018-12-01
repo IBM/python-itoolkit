@@ -1,2 +1,2 @@
 recursive-include samples *.py README
-recursive-include test *.py README
+recursive-include tests *.py

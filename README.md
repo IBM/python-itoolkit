@@ -44,7 +44,22 @@ Installation
 You can install itoolkit simply using `pip`:
 
 ```bash
-python3 -m pip install itoolkit
+python -m pip install itoolkit
+```
+
+Tests
+-----
+
+To test the installed itoolkit
+
+```bash
+python -m pytest tests
+```
+
+To test the local code:
+
+```bash
+PYTHONPATH=src python -m pytest tests
 ```
 
 License

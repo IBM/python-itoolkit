@@ -1,7 +1,0 @@
-configuration tests:
-> edit config.py
-run tests:
-> python tests.py
-single test:
-> python -m unittest -v test_0010_chglibl_ilibcall.py 
-

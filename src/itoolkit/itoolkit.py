@@ -339,7 +339,7 @@ class iCmd5250(iSh):
     """
     def __init__(self, ikey, icmd, iopt={}):
         # parent class
-        super(iCmd5250, self).__init__(ikey, "/QOpenSys/usr/bin/system " + icmd)
+        super(iCmd5250, self).__init__(ikey, "/QOpenSys/usr/bin/system " + icmd, iopt)
 
 
 class iPgm (iBase):

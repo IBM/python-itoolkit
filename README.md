@@ -3,6 +3,7 @@ Python XMLSERVICE Toolkit
 [![Build Status](https://travis-ci.com/IBM/python-itoolkit.svg?branch=master)](https://travis-ci.com/IBM/python-itoolkit)
 [![Latest version released on PyPi](https://img.shields.io/pypi/v/itoolkit.svg)](https://pypi.python.org/pypi/itoolkit)
 [![](https://img.shields.io/pypi/pyversions/itoolkit.svg)](https://pypi.org/project/itoolkit/)
+[![Documentation Status](https://readthedocs.org/projects/python-itoolkit/badge/?version=latest)](https://python-itoolkit.readthedocs.io/en/latest/?badge=latest)
 
 itoolkit is a Python interface to the [XMLSERVICE](https://bitbucket.org/inext/xmlservice-rpg) toolkit for the [IBM i](https://en.wikipedia.org/wiki/IBM_i) platform.
 

@@ -1,5 +1,6 @@
 Python XMLSERVICE Toolkit
 =========================
+
 [![Build Status](https://travis-ci.com/IBM/python-itoolkit.svg?branch=master)](https://travis-ci.com/IBM/python-itoolkit)
 [![Latest version released on PyPi](https://img.shields.io/pypi/v/itoolkit.svg)](https://pypi.python.org/pypi/itoolkit)
 [![](https://img.shields.io/pypi/pyversions/itoolkit.svg)](https://pypi.org/project/itoolkit/)
@@ -9,9 +10,9 @@ itoolkit is a Python interface to the [XMLSERVICE](https://bitbucket.org/inext/x
 
 ```python
 from itoolkit import *
-from itoolkit.db2.idb2call import *
+from itoolkit.transport import DatabaseTransport
 
-itransport = iDB2Call()
+itransport = DatabaseTransport()
 itool = iToolKit()
 
 itool.add(iCmd5250('wrkactjob', 'WRKACTJOB'))

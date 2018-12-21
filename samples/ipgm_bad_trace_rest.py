@@ -1,7 +1,7 @@
-from itoolkit.rest.irestcall import *
+from itoolkit.transport import HttpTransport
 from itoolkit import *
 
-itransport = iRestCall('http://yips.idevcloud.com/cgi-bin/xmlcgi.pgm','*NONE','*NONE')
+itransport = HttpTransport('http://yips.idevcloud.com/cgi-bin/xmlcgi.pgm','*NONE','*NONE')
 
 itool = iToolKit()
 itool.add(

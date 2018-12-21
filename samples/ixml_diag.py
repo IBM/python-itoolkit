@@ -1,8 +1,8 @@
 import config
 from itoolkit import *
 
-# from itoolkit.lib.ilibcall import *
-# itransport = iLibCall("*here *debug") # i will stop, inquiry message qsysopr
+# from itoolkit.transport import DirectTransport
+# itransport = DirectTransport("*here *debug") # i will stop, inquiry message qsysopr
 
 itool = iToolKit()
 itool.add(iCmd('chglibl2', 'CHGLIBL LIBL(QTEMP XMLSERVICE)'))

@@ -50,24 +50,22 @@ Toolkit Operations
    :inherited-members:
 
 
+
 Transports
 ----------
+.. module:: itoolkit.transport
 
 HTTP Transport
 ~~~~~~~~~~~~~~
 
-.. module:: itoolkit.rest.irestcall
-
-.. autoclass:: iRestCall
+.. autoclass:: HttpTransport
    :members:
    :inherited-members:
 
 Database Transport
 ~~~~~~~~~~~~~~~~~~
 
-.. module:: itoolkit.db2.idb2call
-
-.. autoclass:: iDB2Call
+.. autoclass:: DatabaseTransport
    :members:
    :inherited-members:
 
@@ -75,11 +73,32 @@ Database Transport
 Direct Memory Transport
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. module:: itoolkit.lib.ilibcall
-
-.. autoclass:: iLibCall
+.. autoclass:: DirectTransport
    :members:
    :inherited-members:
+.. note::
+   This transport will only work when run on an IBM i system. On other operating
+   systems, calling it will fail with a :class:`RuntimeError`.
+.. warning::
+   This transport does not currently work on 64-bit versions of Python due to
+   `this bug`_.
+.. _this bug: https://github.com/IBM/python-itoolkit/issues/17
+   
 
+Deprecated Transports
+---------------------
 
+.. module:: itoolkit.rest.irestcall
+.. py:class:: iRestCall
+.. deprecated:: 1.6.0
+   Use :class:`itoolkit.transport.HttpTransport` instead.
 
+.. module:: itoolkit.db2.idb2call
+.. py:class:: iDB2Call
+.. deprecated:: 1.6.0
+   Use :class:`itoolkit.transport.DatabaseTransport` instead.
+
+.. module:: itoolkit.lib.ilibcall
+.. py:class:: iLibCall
+.. deprecated:: 1.6.0
+   Use :class:`itoolkit.transport.DirectTransport` instead.

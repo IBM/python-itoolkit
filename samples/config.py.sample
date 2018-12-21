@@ -1,0 +1,25 @@
+"""
+Configure:
+  Requires XMSLERVICE library installed, see following link installation 
+  http://yips.idevcloud.com/wiki/index.php/XMLService/XMLSERVICE
+
+Transports:
+  1) XMLSERVICE direct call (current job)
+  from itoolkit.transport import DirectTransport
+  itransport = DirectTransport()
+
+  2) XMLSERVICE db2 call (QSQSRVR job)
+  from itoolkit.transport import DatabaseTransport
+  itransport = DatabaseTransport(config.user,config.password)
+  -- or --
+  conn = ibm_db.connect(database, user, password)
+  itransport = DatabaseTransport(conn)
+
+  3) XMLSERVICE http/rest/web call (Apache job)
+  from itoolkit.transport import HttpTransport
+  itransport = HttpTransport(url, user, password)
+"""
+from itoolkit.transport import DirectTransport
+itransport = DirectTransport()
+# itransport = DirectTransport("*here *cdata *debug") # i will stop, inquiry message qsysopr
+

@@ -14,7 +14,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     ext_modules=[
-        Extension('itoolkit/lib/_ilibcall', ['src/itoolkit/lib/ilibcall.c'])
+        Extension('itoolkit/transport/_direct', ['src/itoolkit/transport/direct.c'])
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",

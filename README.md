@@ -67,6 +67,11 @@ To test the local code:
 PYTHONPATH=src python -m pytest tests
 ```
 
+Contributing
+------------
+
+Please read the [contribution guidelines](CONTRIBUTING.md).
+
 License
 -------
 

@@ -15,6 +15,10 @@ matrix:
         - python: pypy3.5
           dist: xenial
 
+install:
+  - python -m pip install pipenv
+  - python -m pipenv install
+
 script:
   - python setup.py build
   - python setup.py install

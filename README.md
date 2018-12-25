@@ -27,7 +27,7 @@ For more, check out the [samples](samples/icmd_rtvjoba.py).
 Feature Support
 ---------------
 
-- Call ILE srograms & service programs
+- Call ILE programs & service programs
 - Call CL Commands
 - Call PASE shell commands
 

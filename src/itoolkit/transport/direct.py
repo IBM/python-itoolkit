@@ -77,7 +77,7 @@ class DirectTransport(object):
         if not _available:
             raise RuntimeError("Not supported on this platform")
             
-        return _direct._xmlservice(itool.xml_in(), self.ctl, self.ipc)
+        data = _direct._xmlservice(itool.xml_in(), self.ctl, self.ipc)
         
         if sys.version_info >= (3,0):
             return data.decode('utf-8')

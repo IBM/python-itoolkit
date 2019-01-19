@@ -15,7 +15,11 @@ matrix:
         - python: pypy3.5
           dist: xenial
 
+install:
+  - pip install -r requirements.txt
+
 script:
   - python setup.py build
   - python setup.py install
   - python -m pytest tests
+  - flake8 src

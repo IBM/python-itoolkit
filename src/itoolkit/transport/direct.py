@@ -2,7 +2,7 @@
 """
 XMLSERVICE direct call (current job)
 
-License: 
+License:
   BSD (LICENSE)
   -- or --
   http://yips.idevcloud.com/wiki/index.php/XMLService/LicenseXMLService
@@ -36,21 +36,22 @@ class DirectTransport(object):
     Transport XMLSERVICE direct job call (within job/process calls).
 
     Args:
-      ictl   (str): optional - XMLSERVICE control ['*here','*sbmjob'] 
-      ipc    (str): optional - XMLSERVICE xToolkit job route for *sbmjob ['/tmp/myunique42'] 
-      iccsid (int): optional - XMLSERVICE EBCDIC CCSID [0,37,...] 0 = default jobccsid (1.2+)
-      pccsid (int): optional - XMLSERVICE ASCII CCSID [0,1208, ...] 0 = default 1208 (1.2+)
+      ictl   (str): optional - XMLSERVICE control ['*here','*sbmjob']
+      ipc    (str): optional - XMLSERVICE route for *sbmjob '/tmp/myunique'
+      iccsid (int): optional - XMLSERVICE EBCDIC CCSID
+      pccsid (int): optional - XMLSERVICE ASCII CCSID
 
     Returns:
       none
     """
+
     def __init__(self, ictl=None, ipc=None, iccsid=0, pccsid=1208):
         self.ctl = ictl or '*here *cdata'
         self.ipc = ipc or '*na'
-        
+
         if iccsid != 0:
             raise ValueError("iccsid must be 0 (job ccsid)")
-        
+
         if pccsid != 1208:
             raise ValueError("pccsid must be 1208 (UTF-8)")
 
@@ -76,11 +77,10 @@ class DirectTransport(object):
         """
         if not _available:
             raise RuntimeError("Not supported on this platform")
-            
+
         data = _direct._xmlservice(itool.xml_in(), self.ctl, self.ipc)
-        
-        if sys.version_info >= (3,0):
+
+        if sys.version_info >= (3, 0):
             return data.decode('utf-8')
         else:
             return data
-

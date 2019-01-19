@@ -2,7 +2,7 @@
 """
 XMLSERVICE db2 call (QSQSRVR job)
 
-License: 
+License:
   BSD (LICENSE)
   -- or --
   http://yips.idevcloud.com/wiki/index.php/XMLService/LicenseXMLService
@@ -26,12 +26,15 @@ import warnings
 from ..transport.database import DatabaseTransport
 
 warnings.simplefilter('always', DeprecationWarning)
-warnings.warn("This module is deprecated, use itoolkit.transport.DatabaseTransport instead",
-                category=DeprecationWarning,
-                stacklevel=2)
+warnings.warn(
+    "This module is deprecated,"
+    " use itoolkit.transport.DatabaseTransport instead",
+    category=DeprecationWarning,
+    stacklevel=2)
 warnings.simplefilter('default', DeprecationWarning)
 
-class iDB2Call(DatabaseTransport):
+
+class iDB2Call(DatabaseTransport): # noqa N801
     """
     Transport XMLSERVICE calls over DB2 connection.
 
@@ -39,11 +42,11 @@ class iDB2Call(DatabaseTransport):
       iuid   (str): Database user profile name or database connection
       ipwd   (str): optional - Database user profile password
                                -- or --
-                               env var PASSWORD (export PASSWORD=mypass) 
+                               env var PASSWORD (export PASSWORD=mypass)
       idb2   (str): optional - Database (WRKRDBDIRE *LOCAL)
-      ictl   (str): optional - XMLSERVICE control ['*here','*sbmjob'] 
-      ipc    (str): optional - XMLSERVICE xToolkit job route for *sbmjob ['/tmp/myunique42'] 
-      isiz   (int): optional - XMLSERVICE expected max XML output size, required for DB2 
+      ictl   (str): optional - XMLSERVICE control ['*here','*sbmjob']
+      ipc    (str): optional - XMLSERVICE route for *sbmjob '/tmp/myunique'
+      isiz   (int): optional - XMLSERVICE expected max XML output size
       ilib   (str): optional - XMLSERVICE library compiled (default QXMLSERV)
 
     Example:

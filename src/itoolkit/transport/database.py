@@ -24,6 +24,7 @@ Note:
 """
 import os
 
+from .base import XmlServiceTransport
 try:
     import ibm_db
     import ibm_db_dbi
@@ -35,7 +36,7 @@ __all__ = [
 ]
 
 
-class DatabaseTransport(object):
+class DatabaseTransport(XmlServiceTransport):
     """
     Transport XMLSERVICE calls over DB2 connection.
 
@@ -70,6 +71,7 @@ class DatabaseTransport(object):
             ipc='*na',
             isiz=512000,
             ilib=None):
+        super(XmlServiceTransport, self).__init__(ictl, ipc)
         if hasattr(iuid, 'cursor'):
             # iuid is a PEP-249 connection object, just store it
             self.conn = iuid
@@ -88,21 +90,10 @@ class DatabaseTransport(object):
         self.siz = isiz
         self.lib = ilib if ilib else os.getenv('XMLSERVICE', 'QXMLSERV')
 
-    def trace_data(self):
-        """Return trace driver data.
-
-        Args:
-          none
-
-        Returns:
-          initialization data
-        """
-        data = ""
-        data += " ctl (" + str(self.ctl) + ")"
-        data += " ipc (" + str(self.ipc) + ")"
-        data += " siz (" + str(self.siz) + ") (unused)"
-        data += " lib (" + str(self.lib) + ")"
-        return data
+        self.trace_attrs.extend([
+            'siz',
+            'lib'
+        ])
 
     def call(self, itool):
         """Call xmlservice with accumulated input XML.

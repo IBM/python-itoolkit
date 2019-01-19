@@ -55,6 +55,10 @@ Transports
 ----------
 .. module:: itoolkit.transport
 
+.. autoclass:: XmlServiceTransport
+   :members:
+   :inherited-members:
+
 HTTP Transport
 ~~~~~~~~~~~~~~
 

@@ -19,6 +19,7 @@ Note:
   3) XMLSERVICE -- download library (crtxml)
 """
 import sys
+from .base import XmlServiceTransport
 try:
     from . import _direct
     _available = hasattr(_direct, '_xmlservice')
@@ -31,7 +32,7 @@ __all__ = [
 ]
 
 
-class DirectTransport(object):
+class DirectTransport(XmlServiceTransport):
     """
     Transport XMLSERVICE direct job call (within job/process calls).
 
@@ -46,25 +47,16 @@ class DirectTransport(object):
     """
 
     def __init__(self, ictl=None, ipc=None, iccsid=0, pccsid=1208):
-        self.ctl = ictl or '*here *cdata'
-        self.ipc = ipc or '*na'
-
         if iccsid != 0:
             raise ValueError("iccsid must be 0 (job ccsid)")
 
         if pccsid != 1208:
             raise ValueError("pccsid must be 1208 (UTF-8)")
 
-    def trace_data(self):
-        """Return trace driver data.
+        ictl = ictl or '*here *cdata'
+        ipc = ipc or '*na'
 
-        Args:
-          none
-
-        Returns:
-          initialization data
-        """
-        return "ctl ({}) ipc ({})".format(self.ctl, self.ipc)
+        super(XmlServiceTransport, self).__init__(ictl, ipc)
 
     def call(self, itool):
         """Call xmlservice with accumulated input XML.

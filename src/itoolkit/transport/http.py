@@ -12,6 +12,7 @@ Import:
   from itoolkit.transport import HttpTransport
   itransport = HttpTransport(url, user, password)
 """
+from .base import XmlServiceTransport
 import sys
 import os
 import urllib
@@ -24,14 +25,13 @@ if sys.version_info >= (3, 0):
     """
     import urllib.request
     import urllib.parse
-# import inspect
 
 __all__ = [
     'HttpTransport'
 ]
 
 
-class HttpTransport(object):
+class HttpTransport(XmlServiceTransport):
     """
     Transport XMLSERVICE calls over standard HTTP rest.
 
@@ -54,7 +54,21 @@ class HttpTransport(object):
       none
     """
 
-    def __init__(self, iurl, iuid, ipwd=0, idb2=0, ictl=0, ipc=0, isiz=0):
+    def __init__(self, iurl, iuid, ipwd=None, idb2=0, ictl=0, ipc=0, isiz=0):
+        if ictl == 0:
+            ictl = '*here *cdata'
+
+        if ipc == 0:
+            ipc = '*na'
+
+        super(HttpTransport, self).__init__(ictl, ipc)
+        self.trace_attrs.extend([
+            'uid',
+            'db2',
+            'siz',
+            'url'
+        ])
+
         # manditory
         self.url = iurl
         self.uid = iuid
@@ -67,36 +81,10 @@ class HttpTransport(object):
             self.db2 = '*LOCAL'
         else:
             self.db2 = idb2
-        if ictl == 0:
-            self.ctl = '*here *cdata'
-        else:
-            self.ctl = ictl
-        if ipc == 0:
-            self.ipc = '*na'
-        else:
-            self.ipc = ipc
         if isiz == 0:
             self.siz = 512000
         else:
             self.siz = isiz
-
-    def trace_data(self):
-        """Return trace driver data.
-
-        Args:
-          none
-
-        Returns:
-          initialization data
-        """
-        data = ""
-        data += " ctl (" + str(self.ctl) + ")"
-        data += " ipc (" + str(self.ipc) + ")"
-        data += " uid (" + str(self.uid) + ")"
-        data += " db2 (" + str(self.db2) + ")"
-        data += " siz (" + str(self.siz) + ")"
-        data += " url (" + str(self.url) + ")"
-        return data
 
     def call(self, itool):
         """Call xmlservice with accumulated input XML.

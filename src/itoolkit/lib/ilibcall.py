@@ -1,23 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-XMLSERVICE direct call (current job)
-
-License:
-  BSD (LICENSE)
-  -- or --
-  http://yips.idevcloud.com/wiki/index.php/XMLService/LicenseXMLService
-
-Import:
-  from itoolkit import *
-  from itoolkit.lib.ilibcall import *
-  itransport = iLibCall()
-
-Note:
-  XMLSERVICE library search order:
-  1) environment variable 'XMLSERVICE' (export XMLSERVICE=QXMLSERV)
-  2) QXMLSERV -- IBM PTF library (DG1 PTFs)
-  3) XMLSERVICE -- download library (crtxml)
-"""
 import warnings
 from ..transport.direct import DirectTransport
 
@@ -42,4 +23,22 @@ class iLibCall(DirectTransport): # noqa N801 gotta live with history
     Returns:
       none
     """
-    pass
+    def __init__(self, ictl='*here *cdata', ipc='*na', iccsid=0, pccsid=1208):
+        if iccsid != 0:
+            raise ValueError("iccsid must be 0 (job ccsid)")
+
+        if pccsid != 1208:
+            raise ValueError("pccsid must be 1208 (UTF-8)")
+
+        super(iLibCall, self).__init__(ctl=ictl, ipc=ipc)
+
+    def call(self, itool):
+        """Call XMLSERVICE with accumulated actions.
+
+        Args:
+          itool: An iToolkit object
+
+        Returns:
+          The XML returned from XMLSERVICE
+        """
+        super(iLibCall, self).call(itool)

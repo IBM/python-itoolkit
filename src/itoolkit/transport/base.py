@@ -25,3 +25,14 @@ class XmlServiceTransport(object):
             output += " {}({})".format(trace, getattr(self, attr))
 
         return output
+
+    def call(self, tk):
+        """Call XMLSERVICE with accumulated actions
+
+        Args:
+          tk (iToolKit): An iToolkit object
+
+        Returns:
+          str: The XML returned from XMLSERVICE
+        """
+        raise NotImplementedError

@@ -1,18 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-XMLSERVICE http/rest/web call (Apache job)
-
-License:
-  BSD (LICENSE)
-  -- or --
-  http://yips.idevcloud.com/wiki/index.php/XMLService/LicenseXMLService
-
-Import:
-  from itoolkit import *
-  from itoolkit.rest.irestcall import *
-  itransport = iRestCall(url,user,password)
-"""
 import warnings
+import os
 from ..transport.http import HttpTransport
 
 warnings.simplefilter('always', DeprecationWarning)
@@ -45,4 +33,29 @@ class iRestCall(HttpTransport): # noqa N801
     Returns:
       none
     """
-    pass
+    def __init__(self, iurl, iuid, ipwd=None, idb2=0, ictl=0, ipc=0, isiz=0):
+        if not ictl:
+            ictl = '*here *cdata'
+
+        if not ipc:
+            ipc = '*na'
+
+        if not ipwd:
+            ipwd = os.environ['PASSWORD']
+
+        if not idb2:
+            idb2 = '*LOCAL'
+
+        super(iRestCall, self).__init__(url=iurl, user=iuid, password=ipwd,
+                                        database=idb2, ctl=ictl, ipc=ipc)
+
+    def call(self, itool):
+        """Call XMLSERVICE with accumulated actions.
+
+        Args:
+          itool: An iToolkit object
+
+        Returns:
+          The XML returned from XMLSERVICE
+        """
+        super(iRestCall, self).call(itool)

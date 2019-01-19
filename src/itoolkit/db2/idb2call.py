@@ -1,28 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-XMLSERVICE db2 call (QSQSRVR job)
-
-License:
-  BSD (LICENSE)
-  -- or --
-  http://yips.idevcloud.com/wiki/index.php/XMLService/LicenseXMLService
-
-Import:
-  from itoolkit import *
-  from itoolkit.db2.idb2call import *
-  itransport = iDB2Call(user,password)
-  -- or --
-  conn = ibm_db.connect(database, user, password)
-  itransport = iDB2Call(conn)
-
-Note:
-  XMLSERVICE library search order:
-  1) lib parm -- iDB2Call(...,'XMLSERVICE')
-  2) environment variable 'XMLSERVICE' (export XMLSERVICE=XMLSERVICE)
-  3) QXMLSERV -- IBM PTF library (DG1 PTFs)
-
-"""
 import warnings
+import os
+try:
+    import ibm_db
+    from ibm_db_dbi import connect, Connection
+except ImportError:
+    pass
 from ..transport.database import DatabaseTransport
 
 warnings.simplefilter('always', DeprecationWarning)
@@ -59,4 +42,33 @@ class iDB2Call(DatabaseTransport): # noqa N801
     Returns:
        (obj)
     """
-    pass
+    def __init__(self, iuid=None, ipwd=None, idb2='*LOCAL', ictl='*here *cdata',
+                 ipc='*na', isiz=512000, ilib=None):
+        if hasattr(iuid, 'cursor'):
+            # iuid is a PEP-249 connection object, just store it
+            conn = iuid
+        elif isinstance(iuid, ibm_db.IBM_DBConnection):
+            # iuid is a ibm_db connection object, wrap it in an
+            # ibm_db_dbi connection object
+            conn = Connection(iuid)
+        else:
+            # user id and password passed, connect using ibm_db_dbi
+            ipwd = ipwd if ipwd else os.getenv('PASSWORD', None)
+            self.conn = connect(database=idb2, user=iuid, password=ipwd)
+
+        if ilib is None:
+            ilib = os.getenv('XMLSERVICE', 'QXMLSERV')
+
+        super(iDB2Call, self).__init__(conn=conn, ctl=ictl, ipc=ipc,
+                                       schema=ilib)
+
+    def call(self, itool):
+        """Call XMLSERVICE with accumulated actions.
+
+        Args:
+          itool: An iToolkit object
+
+        Returns:
+          The XML returned from XMLSERVICE
+        """
+        super(iDB2Call, self).call(itool)

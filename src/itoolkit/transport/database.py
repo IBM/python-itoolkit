@@ -1,35 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-XMLSERVICE db2 call (QSQSRVR job)
-
-License:
-  BSD (LICENSE)
-  -- or --
-  http://yips.idevcloud.com/wiki/index.php/XMLService/LicenseXMLService
-
-Import:
-  from itoolkit import *
-  from itoolkit.transport import DatabaseTransport
-  itransport = DatabaseTransport(user,password)
-  -- or --
-  conn = ibm_db_dbi.connect(database, user, password)
-  itransport = DatabaseTransport(conn)
-
-Note:
-  XMLSERVICE library search order:
-  1) lib parm -- DatabaseTransport(...,'XMLSERVICE')
-  2) environment variable 'XMLSERVICE' (export XMLSERVICE=XMLSERVICE)
-  3) QXMLSERV -- IBM PTF library (DG1 PTFs)
-
-"""
-import os
-
 from .base import XmlServiceTransport
-try:
-    import ibm_db
-    import ibm_db_dbi
-except ImportError:
-    pass
 
 __all__ = [
     'DatabaseTransport'
@@ -37,84 +7,60 @@ __all__ = [
 
 
 class DatabaseTransport(XmlServiceTransport):
-    """
-    Transport XMLSERVICE calls over DB2 connection.
+    """Call XMLSERVICE using a database connection
 
     Args:
-      iuid   (str): Database user profile name or database connection
-      ipwd   (str): optional - Database user profile password
-                               -- or --
-                               env var PASSWORD (export PASSWORD=mypass)
-      idb2   (str): optional - Database (WRKRDBDIRE *LOCAL)
-      ictl   (str): optional - XMLSERVICE control ['*here','*sbmjob']
-      ipc    (str): optional - XMLSERVICE route for *sbmjob '/tmp/myunique'
-      isiz   (int): optional - XMLSERVICE expected max XML output size
-      ilib   (str): optional - XMLSERVICE library compiled (default QXMLSERV)
-
-    Example:
-      from itoolkit.transport import DatabaseTransport
-      itransport = DatabaseTransport(user, password)
-      -- or --
-      conn = ibm_db_dbi.connect(database, user, password)
-      itransport = DatabaseTransport(conn)
-
-    Returns:
-       (obj)
+      conn: An active database connection object (PEP-249)
+      schema (str, optional): The XMLSERVICE stored procedure schema
+        to use
+      **kwargs: Base transport options. See `XmlServiceTransport`.
     """
+    def __init__(self, conn, *args, schema='QXMLSERV', **kwargs):
+        # TODO: When we drop Python 2 support, change *args to * and
+        # remove this block of code. *args is used to make schema
+        # a keyword-only argument
+        if len(args):
+            raise TypeError(
+                "__init__() takes 1 positional argument, but {} were given"
+                .format(len(args)+1)
+            )
 
-    def __init__(
-            self,
-            iuid=None,
-            ipwd=None,
-            idb2='*LOCAL',
-            ictl='*here *cdata',
-            ipc='*na',
-            isiz=512000,
-            ilib=None):
-        super(XmlServiceTransport, self).__init__(ictl, ipc)
-        if hasattr(iuid, 'cursor'):
-            # iuid is a PEP-249 connection object, just store it
-            self.conn = iuid
-        elif isinstance(iuid, ibm_db.IBM_DBConnection):
-            # iuid is a ibm_db connection object, wrap it in a ibm_db_dbi
-            # connection object
-            self.conn = ibm_db_dbi.Connection(iuid)
+        if not hasattr(conn, 'cursor'):
+            raise ValueError(
+                "conn must be a PEP-249 compliant connection object")
+
+        if not isinstance(schema, str) and schema is not None:
+            raise ValueError("schema must be a string or None")
+
+        super(DatabaseTransport, self).__init__(**kwargs)
+
+        self.conn = conn
+
+        if schema:
+            self.procedure = schema + "."
+        self.procedure += "iPLUGR512K"
+
+        # We could simplify to just using execute, since we don't care
+        # about output parameters, but ibm_db throws weird errors when
+        # calling procedures with `execute` :shrug:
+        if hasattr(self.conn.cursor(), 'callproc'):
+            self.query = self.procedure
+            self.func = 'callproc'
         else:
-            # user id and password passed, connect using ibm_db_dbi
-            ipwd = ipwd if ipwd else os.getenv('PASSWORD', None)
-            self.conn = ibm_db_dbi.connect(
-                database=idb2, user=iuid, password=ipwd)
-
-        self.ctl = ictl
-        self.ipc = ipc
-        self.siz = isiz
-        self.lib = ilib if ilib else os.getenv('XMLSERVICE', 'QXMLSERV')
+            self.query = "call {}(?,?,?)".format(self.procedure)
+            self.func = 'execute'
 
         self.trace_attrs.extend([
-            'siz',
-            'lib'
+            ('proc', 'procedure')
         ])
 
-    def call(self, itool):
-        """Call xmlservice with accumulated input XML.
-
-        Args:
-          itool  - iToolkit object
-
-        Returns:
-          xml
-        """
+    def call(self, tk):
         cursor = self.conn.cursor()
 
-        parms = (self.ipc, self.ctl, itool.xml_in())
+        parms = (self.ipc, self.ctl, tk.xml_in())
 
-        if hasattr(cursor, 'callproc'):
-            cursor.callproc(self.lib + ".iPLUGR512K", parms)
-        else:
-            cursor.execute("call {}.iPLUGR512K(?,?,?)".format(self.lib), parms)
+        # call the procedure using the correct method for this
+        # cursor type, which we ascertained in the constructor
+        getattr(cursor, self.func)(cursor, self.query, parms)
 
-        xml_out = ""
-        for row in cursor:
-            xml_out += row[0]
-
-        return xml_out.rstrip('\0')
+        return "".join(row[0] for row in cursor).rstrip('\0')

@@ -1,11 +1,14 @@
-from itoolkit import *
+from itoolkit import iToolKit, iSrvPgm, iData, iDS
+
 
 def test_srvpgm(transport):
-    """Test calling ZZARRAY in ZZSSRV (https://bitbucket.org/inext/xmlservice-rpg/src/master/test.rpg/zzsrv.rpgle)"""
-    
+    """Test calling ZZARRAY in ZZSSRV
+    https://bitbucket.org/inext/xmlservice-rpg/src/master/test.rpg/zzsrv.rpgle
+    """
+
     max_return = 4
     name = 'Ranger'
-    
+
     transport.set_out("""<?xml version="1.0" ?>
 <xmlservice>
 <pgm error="fast" func="ZZARRAY" name="ZZSRV" lib="XMLSERVICE" var="zzarray">
@@ -47,33 +50,32 @@ def test_srvpgm(transport):
     <success>+++ success XMLSERVICE ZZSRV ZZARRAY</success>
 </pgm>
 </xmlservice>""".format(name, max_return))
-    
+
     tk = iToolKit()
     tk.add(iSrvPgm('zzarray', 'ZZSRV', 'ZZARRAY', {'lib': 'XMLSERVICE'})
-        .addParm(iData('myName', '10a', name))
-        .addParm(iData('myMax', '10i0', max_return))
-        .addParm(iData('myCount', '10i0', '', {'enddo':'mycnt'}))
-        .addRet(iDS('dcRec_t', {'dim':'999', 'dou':'mycnt'})
-            .addData(iData('dcMyName', '10a', ''))
-            .addData(iData('dcMyJob', '4096a', ''))
-            .addData(iData('dcMyRank', '10i0', ''))
-            .addData(iData('dcMyPay', '12p2', ''))
-        )
-    )
+           .addParm(iData('myName', '10a', name))
+           .addParm(iData('myMax', '10i0', max_return))
+           .addParm(iData('myCount', '10i0', '', {'enddo': 'mycnt'}))
+           .addRet(iDS('dcRec_t', {'dim': '999', 'dou': 'mycnt'})
+                   .addData(iData('dcMyName', '10a', ''))
+                   .addData(iData('dcMyJob', '4096a', ''))
+                   .addData(iData('dcMyRank', '10i0', ''))
+                   .addData(iData('dcMyPay', '12p2', ''))
+                   )
+           )
     tk.call(transport)
-    
+
     zzarray = tk.dict_out('zzarray')
     assert('success' in zzarray)
-    
+
     assert(zzarray['myName'] == name)
     assert(zzarray['myMax'] == str(max_return))
     assert(zzarray['myCount'] == str(max_return))
-    
-    
+
     for i, rec in enumerate(zzarray['dcRec_t'], start=1):
         assert(i <= max_return)
-        
-        assert(rec['dcMyName'] == name+str(i))
-        assert(rec['dcMyJob'] == "Test 10"+str(i))
-        assert(int(rec['dcMyRank']) ==  10 + i)
+
+        assert(rec['dcMyName'] == name + str(i))
+        assert(rec['dcMyJob'] == "Test 10" + str(i))
+        assert(int(rec['dcMyRank']) == 10 + i)
         assert(float(rec['dcMyPay']) == 13.42 * i)

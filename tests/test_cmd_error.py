@@ -1,9 +1,11 @@
-from itoolkit import *
+from itoolkit import iToolKit, iCmd
+
 
 def test_cmd_error(transport):
-    """Test calling a CL command with an invalid command parameter returns an error"""
-    
-    transport.set_out("""<?xml version="1.0" ?><xmlservice><cmd error="fast" exec="cmd" var="cmderror"><error>*** error CHGLIBL LIBL(FROGLEGLONG)</error>
+    """Test calling a CL command with an invalid parameter returns an error"""
+
+    transport.set_out(
+        """<?xml version="1.0" ?><xmlservice><cmd error="fast" exec="cmd" var="cmderror"><error>*** error CHGLIBL LIBL(FROGLEGLONG)</error>
 <error>202</error>
 <version>XML Toolkit 1.9.9</version>
 <error>
@@ -39,22 +41,22 @@ def test_cmd_error(transport):
 <jobcpffind>see log scan, not error list</jobcpffind>
 </jobinfo>
 </cmd>
-</xmlservice>""")
-    
+</xmlservice>""") # noqa E501
+
     tk = iToolKit()
-    
+
     tk.add(iCmd('cmderror', 'CHGLIBL LIBL(FROGLEGLONG)'))
-    
+
     tk.call(transport)
-    
+
     cmderror = tk.dict_out('cmderror')
-    
-    for k,v in cmderror.items():
+
+    for k, v in cmderror.items():
         if not k.startswith('error'):
             continue
-        
+
         item = cmderror[k]
         if 'errnoxml' not in item:
             continue
-        
+
         assert(item['errnoxml'] == '1100012')

@@ -1,8 +1,9 @@
-from itoolkit import *
+from itoolkit import iToolKit, iPgm
+
 
 def test_pgm_error(transport):
     """Test calling program which doesn't exist returns an error"""
-    
+
     transport.set_out("""<?xml version="1.0" ?>
 <xmlservice>
 <pgm error="fast" name="ZZCALLNOT" var="zzcall">
@@ -45,21 +46,20 @@ def test_pgm_error(transport):
     </jobinfo>
 </pgm>
 </xmlservice>
-""")
-    
+""") # noqa E501
+
     tk = iToolKit()
-    tk.add(iPgm('zzcallnot','ZZCALLNOT', {'lib': 'XMLSERVICE'}))
-    
+    tk.add(iPgm('zzcallnot', 'ZZCALLNOT', {'lib': 'XMLSERVICE'}))
+
     tk.call(transport)
-    
+
     zzcallnot = tk.dict_out('zzcallnot')
-    
+
     for k, v in zzcallnot.items():
         if not k.startswith('error'):
             continue
-        
+
         if 'errnoxml' not in v:
             continue
-        
+
         assert(v['errnoxml'] in ('1100005', '1100016'))
-    

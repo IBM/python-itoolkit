@@ -8,14 +8,6 @@ except ImportError:
     pass
 from ..transport.database import DatabaseTransport
 
-warnings.simplefilter('always', DeprecationWarning)
-warnings.warn(
-    "This module is deprecated,"
-    " use itoolkit.transport.DatabaseTransport instead",
-    category=DeprecationWarning,
-    stacklevel=2)
-warnings.simplefilter('default', DeprecationWarning)
-
 
 class iDB2Call(DatabaseTransport): # noqa N801
     """
@@ -43,7 +35,13 @@ class iDB2Call(DatabaseTransport): # noqa N801
        (obj)
     """
     def __init__(self, iuid=None, ipwd=None, idb2='*LOCAL', ictl='*here *cdata',
-                 ipc='*na', isiz=512000, ilib=None):
+                 ipc='*na', isiz=None, ilib=None):
+        warnings.warn(
+            "iDB2Call is deprecated, "
+            "use itoolkit.transport.DatabaseTransport instead",
+            category=DeprecationWarning,
+            stacklevel=2)
+
         if hasattr(iuid, 'cursor'):
             # iuid is a PEP-249 connection object, just store it
             conn = iuid
@@ -54,10 +52,14 @@ class iDB2Call(DatabaseTransport): # noqa N801
         else:
             # user id and password passed, connect using ibm_db_dbi
             ipwd = ipwd if ipwd else os.getenv('PASSWORD', None)
-            self.conn = connect(database=idb2, user=iuid, password=ipwd)
+            conn = connect(database=idb2, user=iuid, password=ipwd)
 
         if ilib is None:
             ilib = os.getenv('XMLSERVICE', 'QXMLSERV')
+
+        if isiz is not None:
+            msg = "isiz is deprecated and ignored"
+            warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
 
         super(iDB2Call, self).__init__(conn=conn, ctl=ictl, ipc=ipc,
                                        schema=ilib)

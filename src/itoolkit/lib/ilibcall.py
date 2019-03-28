@@ -2,13 +2,6 @@
 import warnings
 from ..transport.direct import DirectTransport
 
-warnings.simplefilter('always', DeprecationWarning)
-warnings.warn(
-    "This module is deprecated, use itoolkit.transport.DirectTransport instead",
-    category=DeprecationWarning,
-    stacklevel=2)
-warnings.simplefilter('default', DeprecationWarning)
-
 
 class iLibCall(DirectTransport): # noqa N801 gotta live with history
     """
@@ -24,6 +17,12 @@ class iLibCall(DirectTransport): # noqa N801 gotta live with history
       none
     """
     def __init__(self, ictl='*here *cdata', ipc='*na', iccsid=0, pccsid=1208):
+        warnings.warn(
+            "iLibCall is deprecated, "
+            "use itoolkit.transport.DirectTransport instead",
+            category=DeprecationWarning,
+            stacklevel=2)
+
         if iccsid != 0:
             raise ValueError("iccsid must be 0 (job ccsid)")
 

@@ -40,7 +40,8 @@ class HttpTransport(XmlServiceTransport):
         self.uid = user
         self.pwd = password
         self.db = database
-        self.out_size = 16 * 1000 * 1000
+
+    OUT_SIZE = 16 * 1000 * 1000
 
     def call(self, tk):
         data = urlencode({
@@ -50,7 +51,7 @@ class HttpTransport(XmlServiceTransport):
             'ipc': self.ipc,
             'ctl': self.ctl,
             'xmlin': tk.xml_in(),
-            'xmlout': self.out_size
+            'xmlout': self.OUT_SIZE
         }).encode('utf-8')
 
         with contextlib.closing(urlopen(self.url, data)) as f:

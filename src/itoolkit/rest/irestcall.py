@@ -3,13 +3,6 @@ import warnings
 import os
 from ..transport.http import HttpTransport
 
-warnings.simplefilter('always', DeprecationWarning)
-warnings.warn(
-    "This module is deprecated, use itoolkit.transport.HttpTransport instead",
-    category=DeprecationWarning,
-    stacklevel=2)
-warnings.simplefilter('default', DeprecationWarning)
-
 
 class iRestCall(HttpTransport): # noqa N801
     """
@@ -34,6 +27,12 @@ class iRestCall(HttpTransport): # noqa N801
       none
     """
     def __init__(self, iurl, iuid, ipwd=None, idb2=0, ictl=0, ipc=0, isiz=0):
+        warnings.warn(
+            "iRestCall is deprecated, "
+            "use itoolkit.transport.HttpTransport instead",
+            category=DeprecationWarning,
+            stacklevel=2)
+
         if not ictl:
             ictl = '*here *cdata'
 
@@ -45,6 +44,10 @@ class iRestCall(HttpTransport): # noqa N801
 
         if not idb2:
             idb2 = '*LOCAL'
+
+        if isiz not in (0, self.OUT_SIZE):
+            msg = "isiz is deprecated, changed to {}".format(self.OUT_SIZE)
+            warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
 
         super(iRestCall, self).__init__(url=iurl, user=iuid, password=ipwd,
                                         database=idb2, ctl=ictl, ipc=ipc)

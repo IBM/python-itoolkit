@@ -1,4 +1,4 @@
-__version__ = "1.5.1"
+__version__ = "1.6.0-dev"
 
 from .itoolkit import iToolKit
 from .itoolkit import iCmd

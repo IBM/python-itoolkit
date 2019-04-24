@@ -72,6 +72,35 @@ Contributing
 
 Please read the [contribution guidelines](CONTRIBUTING.md).
 
+Releasing a New Version
+-----------------------
+
+Run the following commands
+
+```
+# checkout and pull the latest code from master
+git checkout master
+git pull
+
+# bump to a release version (a tag and commit are made)
+bumpversion release
+
+# remove any old distributions
+rm dist/*
+
+# build the new distribution
+python setup.py sdist
+
+# bump to the new dev version (a commit is made)
+bumpversion --no-tag patch
+
+# push the new tag and commits
+git push origin master --tags
+
+# upload the distribution to PyPI
+twine upload dist/*
+```
+
 License
 -------
 

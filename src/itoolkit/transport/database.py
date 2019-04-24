@@ -15,15 +15,15 @@ class DatabaseTransport(XmlServiceTransport):
         to use
       **kwargs: Base transport options. See `XmlServiceTransport`.
     """
-    def __init__(self, conn, *args, schema='QXMLSERV', **kwargs):
-        # TODO: When we drop Python 2 support, change *args to * and
-        # remove this block of code. *args is used to make schema
-        # a keyword-only argument
-        if len(args):
-            raise TypeError(
-                "__init__() takes 1 positional argument, but {} were given"
-                .format(len(args)+1)
-            )
+    def __init__(self, conn, **kwargs):
+        # TODO: When we drop Python 2 support, add `*, schema='QXMLSERV'`
+        # to the function variables, to make schema a keyword-only argument
+        # and remove this block of code
+        if 'schema' in kwargs:
+            schema = kwargs['schema']
+            del kwargs['schema']
+        else:
+            schema = 'QXMLSERV'
 
         if not hasattr(conn, 'cursor'):
             raise ValueError(
@@ -36,9 +36,9 @@ class DatabaseTransport(XmlServiceTransport):
 
         self.conn = conn
 
+        self.procedure = "iPLUGR512K"
         if schema:
-            self.procedure = schema + "."
-        self.procedure += "iPLUGR512K"
+            self.procedure = schema + "." + self.procedure
 
         # We could simplify to just using execute, since we don't care
         # about output parameters, but ibm_db throws weird errors when

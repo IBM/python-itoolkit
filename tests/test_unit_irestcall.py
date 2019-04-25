@@ -1,10 +1,17 @@
 import pytest
+import sys
 
 from itoolkit import iToolKit
 from itoolkit.rest.irestcall import iRestCall
 
 from contextlib import contextmanager
-from urllib.parse import parse_qs
+if sys.version_info >= (3, 0):
+    if sys.version_info >= (3, 6):
+        from urllib.parse import parse_qs
+    else:
+        from urllib.parse import urlencode
+else:
+    from urllib import urlencode
 
 pytestmark = \
     pytest.mark.filterwarnings("ignore:.*iRestCall.*:DeprecationWarning")
@@ -24,28 +31,43 @@ def mock_http_urlopen(mocker):
 def assert_urlopen_params_correct(mock_urlopen, url, uid, pwd, db2='*LOCAL',
                                   ipc='*na', ctl='*here *cdata',
                                   xmlout=str(iRestCall.OUT_SIZE)):
-    mock_urlopen.assert_called_once()
+    # assert_called_once only available in Python 3.6+
+    if sys.version_info >= (3, 6):
+        mock_urlopen.assert_called_once()
 
-    args, kwargs = mock_urlopen.call_args
+        args, kwargs = mock_urlopen.call_args
 
-    assert len(kwargs) == 0
-    assert len(args) == 2
+        assert len(kwargs) == 0
+        assert len(args) == 2
 
-    assert args[0] == url
+        assert args[0] == url
 
-    data = {key.decode('utf-8'): value[0].decode('utf-8') for (key, value)
-            in parse_qs(args[1]).items()}
+        data = {key.decode('utf-8'): value[0].decode('utf-8') for (key, value)
+                in parse_qs(args[1]).items()}
 
-    exp_data = dict(
-        uid=uid,
-        pwd=pwd,
-        db2=db2,
-        ipc=ipc,
-        ctl=ctl,
-        xmlout=xmlout,
-        xmlin=XMLIN + "\n",
-    )
-    assert data == exp_data
+        exp_data = dict(
+            uid=uid,
+            pwd=pwd,
+            db2=db2,
+            ipc=ipc,
+            ctl=ctl,
+            xmlout=xmlout,
+            xmlin=XMLIN + "\n",
+        )
+        assert data == exp_data
+    else:
+        mock_urlopen.assert_called_once_with(url, urlencode({
+                'db2': db2,
+                'uid': uid,
+                'pwd': pwd,
+                'ipc': ipc,
+                'ctl': ctl,
+                'xmlin': XMLIN + "\n",
+                'xmlout': int(xmlout)
+        }).encode("utf-8"))
+
+    
+
 
 
 def test_irestcall_transport_minimal(mocker):

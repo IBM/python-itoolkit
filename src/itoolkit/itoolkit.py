@@ -53,8 +53,6 @@ Import:
   2) XMLSERVICE db2 call (QSQSRVR job) - local/remote
   from itoolkit import *
   from itoolkit.transport import DatabaseTransport
-  itransport = DatabaseTransport()
-  -- or -
   conn = ibm_db_dbi.connect()
   itransport = DatabaseTransport(conn)
 

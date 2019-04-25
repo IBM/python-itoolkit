@@ -11,8 +11,10 @@ itoolkit is a Python interface to the [XMLSERVICE](https://bitbucket.org/inext/x
 ```python
 from itoolkit import *
 from itoolkit.transport import DatabaseTransport
+import ibm_db_dbi
 
-itransport = DatabaseTransport()
+conn = ibm_db_dbi.connect()
+itransport = DatabaseTransport(conn)
 itool = iToolKit()
 
 itool.add(iCmd5250('wrkactjob', 'WRKACTJOB'))
@@ -22,7 +24,7 @@ wrkactjob = itool.dict_out('wrkactjob')
 print(wrkactjob)
 ```
 
-For more, check out the [samples](samples/icmd_rtvjoba.py).
+For more, check out the [samples](samples).
 
 Feature Support
 ---------------

@@ -77,9 +77,15 @@ Import:
   2) XMLSERVICE db2 call (QSQSRVR job) - local/remote
   from itoolkit import *
   from itoolkit.transport import DatabaseTransport
-  itransport = DatabaseTransport(user,password)
-  -- or -
-  conn = ibm_db.connect(database, user, password)
+  # Connect to any PEP-249 compliant driver which can call XMLSERVICE stored procedures
+  # eg. ibm_db_dbi
+  import ibm_db_dbi
+  conn = ibm_db_dbi.connect()
+
+  # eg. or PyODBC
+  import pyodbc
+  conn = pyodbc.connect('DSN=mydsn;UID=...')
+
   itransport = DatabaseTransport(conn)
   Note:
   XMLSERVICE library search order:

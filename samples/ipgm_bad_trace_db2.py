@@ -1,7 +1,9 @@
 from itoolkit import *
 from itoolkit.transport import DatabaseTransport
+import ibm_db_dbi
 
-itransport = DatabaseTransport('adc') # export PASSWORD=mypass
+conn = ibm_db_dbi.connect()
+itransport = DatabaseTransport(conn)
 
 itool = iToolKit()
 itool.add(

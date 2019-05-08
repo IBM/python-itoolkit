@@ -73,6 +73,13 @@ Database Transport
    :members:
    :inherited-members:
 
+SSH Transport
+~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: SshTransport
+   :members:
+   :inherited-members:
+
 
 Direct Memory Transport
 ~~~~~~~~~~~~~~~~~~~~~~~

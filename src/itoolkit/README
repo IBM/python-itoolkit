@@ -29,6 +29,7 @@ Transport classes:
   class DirectTransport:      Transport XMLSERVICE direct job call (within job/process calls).
   class DatabaseTransport:    Transport XMLSERVICE calls over database connection.
   class HttpTransport:        Transport XMLSERVICE calls over standard HTTP rest.
+  class SshTransport:         Transport XMLSERVICE calls over SSH.
 
 XMLSERVICE classes:
   Base:

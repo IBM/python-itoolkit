@@ -25,6 +25,13 @@ Transports:
   3) XMLSERVICE http/rest/web call (Apache job)
   from itoolkit.transport import HttpTransport
   itransport = HttpTransport(url, user, password)
+
+  4) XMLService ssh call
+  import paramiko
+  ssh = paramiko.SSHClient()
+  ssh.set_missing_host_key_policy(paramiko.WarningPolicy())
+  ssh.connect("hostname", username="username", password="password")
+  itransport = SshTransport(ssh)
 """
 from itoolkit.transport import DirectTransport
 itransport = DirectTransport()

@@ -3,7 +3,7 @@ from setuptools import setup, find_packages, Extension
 
 setup(
     name='itoolkit',
-    version='1.6.0-dev',
+    version='1.6.0',
     description='IBM i XMLSERVICE toolkit for Python',
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

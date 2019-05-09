@@ -384,17 +384,18 @@ class iPgm (iBase): # noqa N801
         super(iPgm, self).__init__(iopt, opts)
         self.pcnt = 0
 
-    def addParm(self, obj): # noqa N802
+    def addParm(self, obj, iopt={}): # noqa N802
         """Add a parameter child node.
 
         Args:
           obj   (obj): iData object or iDs object.
+          iopt (dict): options to pass to iParm constructor
 
         Returns:
           (void)
         """
         self.pcnt += 1
-        p = iParm('p' + str(self.pcnt))
+        p = iParm('p' + str(self.pcnt), iopt)
         p.add(obj)
         self.add(p)
         return self

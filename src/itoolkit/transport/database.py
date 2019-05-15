@@ -61,6 +61,6 @@ class DatabaseTransport(XmlServiceTransport):
 
         # call the procedure using the correct method for this
         # cursor type, which we ascertained in the constructor
-        getattr(cursor, self.func)(cursor, self.query, parms)
+        getattr(cursor, self.func)(self.query, parms)
 
         return "".join(row[0] for row in cursor).rstrip('\0')

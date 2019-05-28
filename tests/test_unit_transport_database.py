@@ -36,7 +36,7 @@ def test_database_transport_execute_schema(database_execute):
     cursor.__iter__.assert_called_once()
 
     assert len(cursor.execute.call_args[0]) > 0
-    assert schema in cursor.execute.call_args[0][1]  # argument 0 is self
+    assert schema in cursor.execute.call_args[0][0]
 
 
 def test_database_transport_callproc_schema(database_execute):
@@ -51,4 +51,4 @@ def test_database_transport_callproc_schema(database_execute):
     cursor.__iter__.assert_called_once()
 
     assert len(cursor.execute.call_args[0]) > 0
-    assert schema in cursor.execute.call_args[0][1]  # argument 0 is self
+    assert schema in cursor.execute.call_args[0][0]

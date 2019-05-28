@@ -15,7 +15,9 @@ XMLIN = "<?xml version='1.0'?>\n<xmlservice></xmlservice>"
 def test_idb2call_transport_minimal_callproc(database_callproc):
     transport = iDB2Call(database_callproc)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     cursor = database_callproc.cursor()
 
@@ -26,7 +28,9 @@ def test_idb2call_transport_minimal_callproc(database_callproc):
 def test_idb2call_transport_minimal_execute(database_execute):
     transport = iDB2Call(database_execute)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     cursor = database_execute.cursor()
 
@@ -48,7 +52,9 @@ def test_idb2call_with_ibm_db(mocker, database_callproc):
     conn = MockConn()
     transport = iDB2Call(conn)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     Connection.assert_called_once_with(conn)
 
@@ -74,7 +80,9 @@ def test_idb2call_with_uid_pwd(mocker, database_callproc):
 
     transport = iDB2Call(user, password)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     kwargs = dict(database='*LOCAL', user=user, password=password)
     connect.assert_called_once_with(**kwargs)

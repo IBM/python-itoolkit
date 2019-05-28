@@ -5,7 +5,9 @@ from itoolkit.transport import DatabaseTransport
 def test_database_transport_callproc(database_callproc):
     transport = DatabaseTransport(database_callproc)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     cursor = database_callproc.cursor()
 
@@ -16,7 +18,9 @@ def test_database_transport_callproc(database_callproc):
 def test_database_transport_execute(database_execute):
     transport = DatabaseTransport(database_execute)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     cursor = database_execute.cursor()
 
@@ -28,7 +32,9 @@ def test_database_transport_execute_schema(database_execute):
     schema = 'MYSCHEMA'
     transport = DatabaseTransport(database_execute, schema=schema)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     cursor = database_execute.cursor()
 
@@ -43,7 +49,9 @@ def test_database_transport_callproc_schema(database_execute):
     schema = 'MYSCHEMA'
     transport = DatabaseTransport(database_execute, schema=schema)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     cursor = database_execute.cursor()
 

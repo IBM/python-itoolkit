@@ -73,4 +73,4 @@ class iDB2Call(DatabaseTransport): # noqa N801
         Returns:
           The XML returned from XMLSERVICE
         """
-        super(iDB2Call, self).call(itool)
+        return super(iDB2Call, self).call(itool)

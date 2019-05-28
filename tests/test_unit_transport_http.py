@@ -17,7 +17,7 @@ XMLIN = "<?xml version='1.0'?>\n<xmlservice></xmlservice>"
 def mock_http_urlopen(mocker):
     mock_urlopen = mocker.patch('itoolkit.transport.http.urlopen')
     mock_response = mocker.Mock()
-    mock_response.read.side_effect = XMLIN.encode('utf-8')
+    mock_response.read.side_effect = (XMLIN.encode('utf-8'), )
     mock_urlopen.return_value = mock_response
 
     return mock_urlopen
@@ -71,7 +71,9 @@ def test_http_transport_minimal(mocker):
 
     transport = HttpTransport(url, user, password)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     assert_urlopen_params_correct(
         mock_urlopen,
@@ -91,7 +93,9 @@ def test_http_transport_with_database(mocker):
 
     transport = HttpTransport(url, user, password, database=database)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     assert_urlopen_params_correct(
         mock_urlopen,

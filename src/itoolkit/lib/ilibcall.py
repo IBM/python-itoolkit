@@ -40,4 +40,4 @@ class iLibCall(DirectTransport): # noqa N801 gotta live with history
         Returns:
           The XML returned from XMLSERVICE
         """
-        super(iLibCall, self).call(itool)
+        return super(iLibCall, self).call(itool)

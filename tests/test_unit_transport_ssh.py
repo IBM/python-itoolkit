@@ -23,7 +23,9 @@ def test_ssh_transport_minimal(mocker):
 
     transport = SshTransport(ssh_client)
     tk = iToolKit()
-    transport.call(tk)
+    out = transport.call(tk)
+
+    assert isinstance(out, (bytes, str))
 
     command = "/QOpenSys/pkgs/bin/xmlservice-cli"
     ssh_client.exec_command.assert_called_once_with(command)

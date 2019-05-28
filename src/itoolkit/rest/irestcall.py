@@ -61,4 +61,4 @@ class iRestCall(HttpTransport): # noqa N801
         Returns:
           The XML returned from XMLSERVICE
         """
-        super(iRestCall, self).call(itool)
+        return super(iRestCall, self).call(itool)

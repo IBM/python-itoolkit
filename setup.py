@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages, Extension
+from platform import system
 
 
 setup(
@@ -16,7 +17,7 @@ setup(
     ext_modules=[
         Extension('itoolkit/transport/_direct',
                   ['src/itoolkit/transport/direct.c'])
-    ],
+    ] if system() == 'OS400' else [],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 2.7",

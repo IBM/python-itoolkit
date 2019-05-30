@@ -3,9 +3,9 @@ import sys
 from .base import XmlServiceTransport
 try:
     from . import _direct
+    # Guard against the dummy version of _direct (for non-PASE builds)
     _available = hasattr(_direct, '_xmlservice')
 except ImportError:
-    # For Sphinx build
     _available = False
 
 __all__ = [

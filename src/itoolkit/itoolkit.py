@@ -113,6 +113,13 @@ import xml.dom.minidom
 import re
 import time
 
+try:
+    from shlex import quote
+except ImportError:
+    # python2 has shlex, but not shlex.quote
+    # Implement a crude equivalent. We don't care about Python 2 that much
+    def quote(s):
+        return '"{}"'.format(s)
 
 class iBase(object): # noqa N801
     """
@@ -329,7 +336,7 @@ class iCmd5250(iSh): # noqa N801
     """
 
     def __init__(self, ikey, icmd, iopt={}):
-        cmd = "/QOpenSys/usr/bin/system " + icmd
+        cmd = "/QOpenSys/usr/bin/system " + quote(icmd)
         super(iCmd5250, self).__init__(ikey, cmd, iopt)
 
 

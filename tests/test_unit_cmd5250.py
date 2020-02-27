@@ -18,6 +18,7 @@ def test_5250():
 
     assert(element.text == "/QOpenSys/usr/bin/system WRKACTJOB")
 
+
 def test_5250_error_on():
     cmd = 'WRKACTJOB'
     key = 'rtoiu1nqew'
@@ -115,4 +116,3 @@ def test_5250_inner_string():
     assert(element.attrib['var'] == key)
 
     assert(element.text == """/QOpenSys/usr/bin/system 'wrklnk '"'"'/test/file'"'"''""")
-

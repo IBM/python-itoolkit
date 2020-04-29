@@ -622,10 +622,10 @@ class iData (iBase): # noqa N801
         http://yips.idevcloud.com/wiki/index.php/XMLService/DataTypes
 
     .. versionchanged:: 1.6.3
-        `ival` now supports non-string parameters.
+        `ival` is now optional and supports non-string parameters.
     """
 
-    def __init__(self, ikey, itype, ival, iopt={}):
+    def __init__(self, ikey, itype, ival="", iopt={}):
         opts = {
             'i': ikey,
             'k': 'data',

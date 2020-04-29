@@ -45,3 +45,15 @@ def test_data_and_options():
     for k, v in opts.items():
         assert(element.attrib[k] == str(v))
     assert(element.text == value)
+
+
+def test_data_default_value():
+    key = 'madsn'
+    datatype = '10a'
+
+    element = ET.fromstring(iData(key, datatype).xml_in())
+
+    assert(element.tag == 'data')
+    assert(element.attrib['var'] == key)
+    assert(element.attrib['type'] == datatype)
+    assert(element.text is None)

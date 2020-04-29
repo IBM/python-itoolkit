@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "itoolkit"
+version = "1.7.0-dev"
+description = "IBM i XMLSERVICE toolkit for Python"
+readme = "README.md"
+homepage = "https://github.com/IBM/python-itoolkit"
+repository = "https://github.com/IBM/python-itoolkit"
+documentation = "https://python-itoolkit.readthedocs.io"
+license = "MIT"
+authors = [
+    "Kevin Adler <kadler@us.ibm.com>",
+    "Tony Cairns <adc@us.ibm.com>",
+]
+packages = [
+    { include = "itoolkit", from = "src" },
+    # source distribution-only files here:
+    { include = "tests", format = "sdist" },
+    { include = "samples", format = "sdist" },
+    { include = "docs", format = "sdist" },
+    { include = "CONTRIBUTING.md", format = "sdist" },
+    { include = "contributors.txt", format = "sdist" },
+]
+
+[tool.poetry.dependencies]
+python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+
+[tool.poetry.dev-dependencies]
+pytest = ">=4.0.1"
+pytest-mock = ">=1.10.0"
+flake8 = ">=3.6.0"
+mock = "^3.0.5"
+bumpversion = "^0.5.0"
+
+[build-system]
+requires = ["poetry>=1.0", "setuptools>=39.2"]
+build-backend = "poetry.masonry.api"

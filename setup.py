@@ -8,7 +8,7 @@ setup(
     description='IBM i XMLSERVICE toolkit for Python',
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url='https://bitbucket.org/litmis/python-itoolkit',
+    url='https://github.com/IBM/python-itoolkit',
     author="IBM",
     license='MIT',
     zip_safe=False,

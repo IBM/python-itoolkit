@@ -4,7 +4,7 @@ from platform import system
 
 setup(
     name='itoolkit',
-    version='1.6.3-dev',
+    version='1.7.0-dev',
     description='IBM i XMLSERVICE toolkit for Python',
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

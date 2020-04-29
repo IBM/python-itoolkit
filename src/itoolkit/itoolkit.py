@@ -196,7 +196,7 @@ class iBase(object): # noqa N801
         xmli += '<' + self.opt['k']
         for k, v in self.opt.items():
             if len(k) > 1:
-                xmli += " " + k + "='" + v + "'"
+                xmli += " " + k + "='" + str(v) + "'"
         xmli += " var='" + self.opt['i'] + "'>"
         if len(self.opt['v']) > 0:
             xmli += '<![CDATA[' + self.opt['v'] + ']]>'
@@ -608,13 +608,16 @@ class iData (iBase): # noqa N801
 
         For more info on data types you can use, refer to
         http://yips.idevcloud.com/wiki/index.php/XMLService/DataTypes
+
+    .. versionchanged:: 1.6.3
+        `ival` now supports non-string parameters.
     """
 
     def __init__(self, ikey, itype, ival, iopt={}):
         opts = {
             'i': ikey,
             'k': 'data',
-            'v': ival,
+            'v': str(ival) if ival is not None else "",
             'type': itype
         }
         super(iData, self).__init__(iopt, opts)

@@ -16,10 +16,11 @@ matrix:
           dist: xenial
 
 install:
-  - pip install -r requirements.txt
+  - pip install --upgrade pip
+  - pip install poetry
+  - poetry install --no-root
 
 script:
-  - python setup.py build
-  - python setup.py install
+  - pip install .
   - python -m pytest tests
-  - flake8 src
+  - python -m flake8 src

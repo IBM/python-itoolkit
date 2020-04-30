@@ -1,5 +1,4 @@
-from setuptools import setup, find_packages, Extension
-from platform import system
+from setuptools import setup, find_packages
 
 
 setup(
@@ -14,10 +13,6 @@ setup(
     zip_safe=False,
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    ext_modules=[
-        Extension('itoolkit/transport/_direct',
-                  ['src/itoolkit/transport/direct.c'])
-    ] if system() == 'OS400' else [],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 2.7",

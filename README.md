@@ -33,13 +33,6 @@ Feature Support
 - Call CL Commands
 - Call PASE shell commands
 
-iLibCall and 64-bit Support
----------------------------
-
-:rotating_light: WARNING WARNING WARNING :rotating_light:
-
-Due to limitations in XMLSERVICE, using iLibCall in a 64-bit process results in failure. See [this bug](https://github.com/IBM/python-itoolkit/issues/17) for more info.
-
 Documentation
 -------------
 

@@ -91,9 +91,13 @@ Direct Memory Transport
    This transport will only work when run on an IBM i system. On other operating
    systems, calling it will fail with a :class:`RuntimeError`.
 .. warning::
-   This transport does not currently work on 64-bit versions of Python due to
-   `this bug`_.
-.. _this bug: https://github.com/IBM/python-itoolkit/issues/17
+   When using a 64-bit Python, this transport will only work with XMLSERVICE
+   2.0.1 or higher. When using the system XMLSERVICE in QXMLSERV, the following
+   PTFs are available to fix this problem:
+
+   - IBM i 7.4 - SI70669
+   - IBM i 7.3 - SI70668
+   - IBM i 7.2 - SI70667
    
 
 Deprecated Transports

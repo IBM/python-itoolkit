@@ -1,2 +1,0 @@
-recursive-include samples *.py README
-recursive-include tests *.py

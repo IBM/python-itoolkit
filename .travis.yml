@@ -2,18 +2,18 @@ language: python
 
 matrix:
     include:
+        - python: 3.8
         - python: 3.7
-          dist: xenial
         - python: 3.6
-          dist: xenial
+          dist: bionic
         - python: 3.5
-          dist: trusty
+          dist: xenial 
         - python: 3.4
-          dist: trusty
+          dist: xenial
         - python: 2.7
-          dist: xenial
-        - python: pypy3.5
-          dist: xenial
+          dist: bionic
+        - python: pypy3
+        - python: nightly
 
 install:
   - pip install --upgrade pip

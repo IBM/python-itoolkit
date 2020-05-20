@@ -5,6 +5,8 @@ Python XMLSERVICE Toolkit
 [![Latest version released on PyPi](https://img.shields.io/pypi/v/itoolkit.svg)](https://pypi.python.org/pypi/itoolkit)
 [![](https://img.shields.io/pypi/pyversions/itoolkit.svg)](https://pypi.org/project/itoolkit/)
 [![Documentation Status](https://readthedocs.org/projects/python-itoolkit/badge/?version=latest)](https://python-itoolkit.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/IBM/python-itoolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/IBM/python-itoolkit)
+
 
 itoolkit is a Python interface to the [XMLSERVICE](https://github.com/IBM/xmlservice) toolkit for the [IBM i](https://en.wikipedia.org/wiki/IBM_i) platform.
 
@@ -53,13 +55,13 @@ Tests
 To test the installed itoolkit
 
 ```bash
-python -m pytest tests
+python -m pytest
 ```
 
 To test the local code:
 
 ```bash
-PYTHONPATH=src python -m pytest tests
+PYTHONPATH=src python -m pytest
 ```
 
 Contributing

@@ -124,11 +124,12 @@ class _XMLSERVICE:
         path = "{library}/XMLSTOREDP".format(library=library)
         actgrp = _ILELOADX(path.encode(), ILELOAD_LIBOBJ)
         if actgrp == 0xffffffffffffffff:
-            raise OSError("{path} not found".format(path))
+            raise OSError("{path} not found".format(path=path))
 
         self._RUNASCII = ILEPointer()
         if _ILESYMX(self._RUNASCII, actgrp, b"RUNASCII") != ILESYM_PROCEDURE:
-            raise OSError("RUNASCII procedure not found in {path}".format(path))
+            raise OSError("RUNASCII procedure not found in {path}"
+                          .format(path=path))
 
     def __call__(self, xmlin, ipc, ctl):
         ipc = c_char_p(ipc.encode())

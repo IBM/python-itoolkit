@@ -13,12 +13,14 @@ authors = [
 ]
 packages = [
     { include = "itoolkit", from = "src" },
-    # source distribution-only files here:
-    { include = "tests", format = "sdist" },
-    { include = "samples", format = "sdist" },
-    { include = "docs", format = "sdist" },
-    { include = "CONTRIBUTING.md", format = "sdist" },
-    { include = "contributors.txt", format = "sdist" },
+]
+include = [
+    { path = "tests/*", format = "sdist" },
+    { path = "samples/*", format = "sdist" },
+    { path = "docs/*", format = "sdist" },
+    { path = "setup.cfg", format = "sdist" },
+    { path = "CONTRIBUTING.md", format = "sdist" },
+    { path = "contributors.txt", format = "sdist" },
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -39,5 +41,5 @@ mock = "^3.0.5"
 bumpversion = "^0.5.0"
 
 [build-system]
-requires = ["poetry>=1.0", "setuptools>=39.2"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0a6"]
+build-backend = "poetry.core.masonry.api"

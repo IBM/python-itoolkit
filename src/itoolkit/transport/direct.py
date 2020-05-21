@@ -19,6 +19,10 @@ class DirectTransport(XmlServiceTransport):
 
     Args:
       **kwargs: Base transport options. See `XmlServiceTransport`.
+
+    Example:
+        >>> from itoolkit.transport import DirectTransport
+        >>> transport = DirectTransport()
     """
     def __init__(self, **kwargs):
         super(DirectTransport, self).__init__(**kwargs)

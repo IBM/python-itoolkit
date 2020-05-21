@@ -36,17 +36,24 @@ class SshTransport(XmlServiceTransport):
         sshclient (paramiko.SSHClient): connected and authenticated connection
 
     Example:
-        from itoolkit.transport import SshTransport
-        import paramiko
-        ssh = paramiko.SSHClient()
-        # configure paramiko. Using only WarningPolicy() is not secure
-        ssh.set_missing_host_key_policy(paramiko.WarningPolicy())
-        ssh.connect(host, username="linux", password="linux1")
-        itransport = SshTransport(ssh)
+        >>> from itoolkit.transport import SshTransport
+        >>> import paramiko
+        >>> ssh = paramiko.SSHClient()
+        >>> ssh.set_missing_host_key_policy(paramiko.WarningPolicy())
+        >>> ssh.connect(host, username="user", password="pass")
+        >>> transport = SshTransport(ssh)
+
+    .. warning::
+
+        Using WarningPolicy is shown only as an example and could lead to
+        security issues. Please refer to the `set_missing_host_key_policy`_
+        docs for more info on other policies that may be more appropriate.
+
+    .. _set_missing_host_key_policy: http://docs.paramiko.org/en/stable/api/client.html#paramiko.client.SSHClient.set_missing_host_key_policy
 
     Returns:
        (obj)
-    """
+    """  # noqa: E501 See https://github.com/PyCQA/pycodestyle/issues/888
 
     def __init__(self, sshclient=None):
         # TODO: allow connection to be materialized from IBM Cloud deployments

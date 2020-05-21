@@ -7,13 +7,26 @@ __all__ = [
 
 
 class DatabaseTransport(XmlServiceTransport):
-    """Call XMLSERVICE using a database connection
+    r"""Call XMLSERVICE using a database connection
 
     Args:
       conn: An active database connection object (PEP-249)
       schema (str, optional): The XMLSERVICE stored procedure schema
         to use
       **kwargs: Base transport options. See `XmlServiceTransport`.
+    Examples:
+        Connecting to XMLSERVICE over ODBC with the default \*LOCAL DSN on
+        IBM i.
+
+        >>> from itoolkit.transport import DatabaseTransport
+        >>> import pyodbc
+        >>> transport = DatabaseTransport(pyodbc.connect('DSN=*LOCAL'))
+
+        Connecting to XMLSERVICE with ibm_db_dbi on IBM i.
+
+        >>> from itoolkit.transport import DatabaseTransport
+        >>> import ibm_db_dbi
+        >>> transport = DatabaseTransport(ibm_db_dbi.connect())
     """
     def __init__(self, conn, **kwargs):
         # TODO: When we drop Python 2 support, add `*, schema='QXMLSERV'`

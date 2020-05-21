@@ -27,6 +27,11 @@ class HttpTransport(XmlServiceTransport):
       password (str, optional): Database password
       database (str, optional): Database name (RDB) to connect to
       **kwargs: Base transport options. See `XmlServiceTransport`.
+
+    Example:
+        >>> from itoolkit.transport import HttpTransport
+        >>> endpoint = 'https://example.com/cgi-bin/xmlcgi.pgm'
+        >>> transport = HttpTransport(endpoint, 'user', 'pass')
     """
     def __init__(self, url, user, password, database='*LOCAL', **kwargs):
         super(HttpTransport, self).__init__(**kwargs)

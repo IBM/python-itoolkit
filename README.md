@@ -8,7 +8,9 @@ Python XMLSERVICE Toolkit
 [![codecov](https://codecov.io/gh/IBM/python-itoolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/IBM/python-itoolkit)
 
 
-itoolkit is a Python interface to the [XMLSERVICE](https://github.com/IBM/xmlservice) toolkit for the [IBM i](https://en.wikipedia.org/wiki/IBM_i) platform.
+itoolkit is a Python interface to the
+[XMLSERVICE](https://github.com/IBM/xmlservice) toolkit for the
+[IBM i](https://en.wikipedia.org/wiki/IBM_i) platform.
 
 ```python
 from itoolkit import *

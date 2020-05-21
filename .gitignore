@@ -7,3 +7,5 @@ docs/_build
 .eggs
 *.so
 poetry.lock
+.coverage
+coverage.xml

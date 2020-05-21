@@ -28,6 +28,14 @@ print(wrkactjob)
 
 For more, check out the [samples](samples).
 
+Supported Python Versions
+-------------------------
+
+python-itoolkit currently supports Python 2.7 and Python 3.4+.
+
+:warning: Note: python-itoolkit 1.x will be the last series to support Python
+2.7, 3.4, and 3.5. These versions will no longer be supported in python-itoolkit 2.0.
+
 Feature Support
 ---------------
 

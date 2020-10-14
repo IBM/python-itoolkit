@@ -67,7 +67,7 @@ class DatabaseTransport(XmlServiceTransport):
             ('proc', 'procedure')
         ])
 
-    def call(self, tk):
+    def _call(self, tk):
         cursor = self.conn.cursor()
 
         parms = (self.ipc, self.ctl, tk.xml_in())

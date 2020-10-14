@@ -35,4 +35,10 @@ class XmlServiceTransport(object):
         Returns:
           str: The XML returned from XMLSERVICE
         """
+        return self._call(tk)
+
+    def _call(self, tk):
+        """Called by :py:func:`call`. This should be overridden by subclasses
+        to the call function instead of overriding :py:func:`call` directly.
+        """
         raise NotImplementedError

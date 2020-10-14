@@ -55,10 +55,13 @@ class SshTransport(XmlServiceTransport):
        (obj)
     """  # noqa: E501 See https://github.com/PyCQA/pycodestyle/issues/888
 
-    def __init__(self, sshclient=None):
+    def __init__(self, sshclient=None, **kwargs):
         # TODO: allow connection to be materialized from IBM Cloud deployments
         if not hasattr(sshclient, "exec_command"):
             raise Exception("An instance of paramiko.SSHClient is required")
+
+        super(SshTransport, self).__init__(**kwargs)
+
         self.conn = sshclient
 
     def call(self, tk):

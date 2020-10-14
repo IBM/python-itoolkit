@@ -103,3 +103,6 @@ class SshTransport(XmlServiceTransport):
         stdout.channel.close()
         stderr.channel.close()
         return xml_out
+
+    def _close(self):
+        self.conn.close()

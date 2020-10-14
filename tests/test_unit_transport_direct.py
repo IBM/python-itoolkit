@@ -1,7 +1,7 @@
 import pytest
 import sys
 
-from itoolkit import iToolKit
+from itoolkit import iToolKit, TransportClosedException
 from itoolkit.transport import DirectTransport
 import itoolkit.transport.direct
 
@@ -63,3 +63,14 @@ def test_direct_transport(mocker):
 
     assert_xmlservice_params_correct(mock)
     assert isinstance(out, (bytes, str))
+
+
+def test_direct_transport_call_raises_when_closed(mocker):
+    mock = mock_direct(mocker)
+
+    transport = DirectTransport()
+    transport.close()
+
+    with pytest.raises(TransportClosedException):
+        tk = iToolKit()
+        out = transport.call(tk)

@@ -1,6 +1,7 @@
+import pytest
 import sys
 
-from itoolkit import iToolKit
+from itoolkit import iToolKit, TransportClosedException
 from itoolkit.transport import HttpTransport
 
 if sys.version_info >= (3, 0):
@@ -104,3 +105,19 @@ def test_http_transport_with_database(mocker):
         pwd=password,
         db2=database
     )
+
+
+def test_http_transport_call_raises_when_closed(mocker):
+    mock_urlopen = mock_http_urlopen(mocker)
+
+    url = 'http://example.com/cgi-bin/xmlcgi.pgm'
+    user = 'dummy'
+    password = 'passw0rd'
+    database = 'MYDB'
+
+    transport = HttpTransport(url, user, password, database=database)
+    transport.close()
+
+    with pytest.raises(TransportClosedException):
+        tk = iToolKit()
+        out = transport.call(tk)

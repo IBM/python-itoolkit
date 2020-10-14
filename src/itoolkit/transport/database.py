@@ -77,3 +77,6 @@ class DatabaseTransport(XmlServiceTransport):
         getattr(cursor, self.func)(self.query, parms)
 
         return "".join(row[0] for row in cursor).rstrip('\0')
+
+    def _close(self):
+        self.conn.close()

@@ -1158,6 +1158,9 @@ class iToolKit(object): # noqa N801
 
         Returns:
           none
+
+        Raises:
+          TransportClosedException: If the transport has been closed.
         """
         if self.trace_fd:
             self.trace_write('***********************')

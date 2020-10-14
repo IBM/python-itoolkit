@@ -1,25 +1,27 @@
 language: python
 
-matrix:
-    include:
-        - python: 3.8
-        - python: 3.7
-        - python: 3.6
-          dist: bionic
-        - python: 3.5
-          dist: xenial 
-        - python: 2.7
-          dist: bionic
-        - python: pypy3
-        - python: nightly
+jobs:
+  include:
+    - python: 3.8
+    - python: 3.7
+    - python: 3.6
+      dist: bionic
+    - python: 3.5
+      dist: xenial
+    - python: 2.7
+      dist: bionic
+    - python: pypy3
+    - python: nightly
+  allow_failures:
+    python: nightly
 
 before_install:
   - pip install --upgrade pip
-  - pip install poetry
+  - curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
   - pip install codecov
 
 install:
-  - poetry install --no-root
+  - ~/.poetry/bin/poetry install --no-root
 
 script:
   - pip install .

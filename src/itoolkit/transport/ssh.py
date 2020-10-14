@@ -64,7 +64,7 @@ class SshTransport(XmlServiceTransport):
 
         self.conn = sshclient
 
-    def call(self, tk):
+    def _call(self, tk):
         """Call xmlservice with accumulated input XML.
 
         Args:

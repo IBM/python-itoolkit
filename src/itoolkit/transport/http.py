@@ -48,7 +48,7 @@ class HttpTransport(XmlServiceTransport):
 
     OUT_SIZE = 16 * 1000 * 1000
 
-    def call(self, tk):
+    def _call(self, tk):
         data = urlencode({
             'db2': self.db,
             'uid': self.uid,

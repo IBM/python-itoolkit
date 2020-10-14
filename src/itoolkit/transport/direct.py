@@ -27,7 +27,7 @@ class DirectTransport(XmlServiceTransport):
     def __init__(self, **kwargs):
         super(DirectTransport, self).__init__(**kwargs)
 
-    def call(self, tk):
+    def _call(self, tk):
         try:
             data = _direct.xmlservice(tk.xml_in(), self.ctl, self.ipc)
 

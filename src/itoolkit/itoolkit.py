@@ -204,12 +204,12 @@ class iBase(object): # noqa N801
 
         # build my children
         parent = xml.dom.minidom.parseString(xmli).firstChild
-        for obj in self.opt['_children']:
-            if parent.tagName == "sql" and isinstance(obj, iSqlParm):
-                parent.childNodes[1].appendChild(obj.make())
-            else:
-                parent.appendChild(obj.make())
+        self._make_children(parent)
         return parent
+
+    def _make_children(self, parent):
+        for obj in self.opt['_children']:
+            parent.appendChild(obj.make())
 
 
 class iCmd(iBase): # noqa N801
@@ -718,6 +718,11 @@ class iSqlExecute (SqlBaseAction): # noqa N801
         """
         self.add(obj)
         return self
+
+    def _make_children(self, parent):
+        # parent is <sql>, but we need to append to the execute tag
+        for obj in self.opt['_children']:
+            parent.childNodes[1].appendChild(obj.make())
 
 
 class iSqlFetch (SqlBaseAction): # noqa N801

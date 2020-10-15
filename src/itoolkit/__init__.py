@@ -1,21 +1,21 @@
 __version__ = "2.0.0-dev"
 
-from .itoolkit import iToolKit
-from .itoolkit import iCmd
-from .itoolkit import iCmd5250
-from .itoolkit import iSh
-from .itoolkit import iPgm
-from .itoolkit import iSrvPgm
-from .itoolkit import iRet
-from .itoolkit import iDS
-from .itoolkit import iData
-from .itoolkit import iSqlQuery
-from .itoolkit import iSqlExecute
-from .itoolkit import iSqlPrepare
-from .itoolkit import iSqlFetch
-from .itoolkit import iSqlFree
-from .itoolkit import iSqlParm
-from .itoolkit import iXml
+from .toolkit import iToolKit
+from .command import iCmd
+from .shell import iCmd5250
+from .shell import iSh
+from .program_call import iPgm
+from .program_call import iSrvPgm
+from .program_call import iRet
+from .program_call import iDS
+from .program_call import iData
+from .sql import iSqlQuery
+from .sql import iSqlExecute
+from .sql import iSqlPrepare
+from .sql import iSqlFetch
+from .sql import iSqlFree
+from .sql import iSqlParm
+from .base import iXml
 from .errors import TransportError
 from .errors import TransportClosedException
 

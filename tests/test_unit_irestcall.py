@@ -13,7 +13,7 @@ else:
 pytestmark = \
     pytest.mark.filterwarnings("ignore:.*iRestCall.*:DeprecationWarning")
 
-XMLIN = "<?xml version='1.0'?>\n<xmlservice></xmlservice>"
+XMLIN = "<?xml version=\"1.0\" ?><xmlservice/>"
 
 
 def mock_http_urlopen(mocker):
@@ -49,7 +49,7 @@ def assert_urlopen_params_correct(mock_urlopen, url, uid, pwd, db2='*LOCAL',
             ipc=ipc,
             ctl=ctl,
             xmlout=xmlout,
-            xmlin=XMLIN + "\n",
+            xmlin=XMLIN,
         )
         assert data == exp_data
     else:
@@ -59,7 +59,7 @@ def assert_urlopen_params_correct(mock_urlopen, url, uid, pwd, db2='*LOCAL',
                 'pwd': pwd,
                 'ipc': ipc,
                 'ctl': ctl,
-                'xmlin': XMLIN + "\n",
+                'xmlin': XMLIN,
                 'xmlout': int(xmlout)
         }).encode("utf-8"))
 

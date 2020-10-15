@@ -14,7 +14,7 @@ def test_sql_fetch():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -47,7 +47,7 @@ def test_sql_fetch_error_on():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -77,7 +77,7 @@ def test_sql_fetch_error_off():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -107,7 +107,7 @@ def test_sql_fetch_block_set():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -137,7 +137,7 @@ def test_sql_fetch_desc_on():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -167,7 +167,7 @@ def test_sql_fetch_desc_off():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -197,7 +197,7 @@ def test_sql_fetch_stmt_set():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -227,7 +227,7 @@ def test_sql_fetch_rec_set():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 

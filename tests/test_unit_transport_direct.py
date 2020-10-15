@@ -5,7 +5,7 @@ from itoolkit import iToolKit
 from itoolkit.transport import DirectTransport, TransportClosedError
 import itoolkit.transport.direct
 
-XMLIN = "<?xml version='1.0'?>\n<xmlservice></xmlservice>"
+XMLIN = "<?xml version=\"1.0\" ?><xmlservice/>"
 
 
 def mock_direct(mocker):
@@ -24,8 +24,6 @@ def assert_xmlservice_params_correct(mock_direct, ipc='*na',
                                      ctl='*here *cdata'):
     mock_xmlservice = mock_direct.xmlservice
 
-    xml = XMLIN + "\n"
-
     # assert_called_once only available in Python 3.6+
     if sys.version_info >= (3, 6):
         mock_xmlservice.assert_called_once()
@@ -35,7 +33,7 @@ def assert_xmlservice_params_correct(mock_direct, ipc='*na',
         assert len(kwargs) == 0
         assert len(args) == 3
 
-        assert args[0] == xml
+        assert args[0] == XMLIN
         assert args[1] == ctl
         assert args[2] == ipc
     else:

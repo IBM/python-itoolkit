@@ -178,38 +178,34 @@ class iBase(object): # noqa N801
         """
         return self.make().toxml()
 
-    def make(self):
+    def make(self, doc=None):
         """Assemble coherent mini dom xml, including child nodes.
 
         Returns:
           xml.dom.minidom (obj)
         """
 
-        # XMLSERVICE
-        xmli = ""
-        if '_outer-tag' in self.opt:
-            xmli += '<' + self.opt['_outer-tag'] + " var='" + \
-                self.opt['_id'] + "'>\n"
+        if not doc:
+            doc = xml.dom.minidom.Document()
 
-        xmli += '<' + self.opt['_tag']
-        for k, v in self.opt.items():
-            if k[0] != '_':
-                xmli += " " + k + "='" + str(v) + "'"
-        xmli += " var='" + self.opt['_id'] + "'>"
-        if len(self.opt['_value']) > 0:
-            xmli += '<![CDATA[' + self.opt['_value'] + ']]>'
-        xmli += '</' + self.opt['_tag'] + '>' + "\n"
-        if '_outer-tag' in self.opt:
-            xmli += '</' + self.opt['_outer-tag'] + '>' + "\n"
+        return self._make(doc)
 
-        # build my children
-        parent = xml.dom.minidom.parseString(xmli).firstChild
-        self._make_children(parent)
-        return parent
+    def _make(self, doc):
+        tag = doc.createElement(self.opt['_tag'])
+        tag.setAttribute('var', self.opt['_id'])
 
-    def _make_children(self, parent):
-        for obj in self.opt['_children']:
-            parent.appendChild(obj.make())
+        for attr, value in self.opt.items():
+            if not attr.startswith('_'):
+                tag.setAttribute(attr, str(value))
+
+        if len(self.opt['_value']):
+            value = doc.createCDATASection(self.opt['_value'])
+            tag.appendChild(value)
+
+        for child in self.opt['_children']:
+            tag.appendChild(child.make(doc))
+
+        return tag
 
 
 class iCmd(iBase): # noqa N801
@@ -606,7 +602,15 @@ class iData (iBase): # noqa N801
 
 
 class SqlBaseAction (iBase):
-    pass
+    def _make(self, doc):
+        node = super()._make(doc)
+
+        # Create a surrounding <sql> tag
+        sql_node = doc.createElement('sql')
+        sql_node.setAttribute('var', self.opt['_id'])
+        sql_node.appendChild(node)
+
+        return sql_node
 
 class iSqlQuery (SqlBaseAction): # noqa N801
     """
@@ -632,7 +636,6 @@ class iSqlQuery (SqlBaseAction): # noqa N801
     def __init__(self, ikey, isql, iopt={}):
         opts = {
             '_id': ikey,
-            '_outer-tag': 'sql',
             '_tag': 'query',
             '_value': isql,
             'error': 'fast'
@@ -669,7 +672,6 @@ class iSqlPrepare (SqlBaseAction): # noqa N801
     def __init__(self, ikey, isql, iopt={}):
         opts = {
             '_id': ikey,
-            '_outer-tag': 'sql',
             '_tag': 'prepare',
             '_value': isql,
             'error': 'fast'
@@ -702,7 +704,6 @@ class iSqlExecute (SqlBaseAction): # noqa N801
     def __init__(self, ikey, iopt={}):
         opts = {
             '_id': ikey,
-            '_outer-tag': 'sql',
             '_tag': 'execute',
             '_value': '',
             'error': 'fast'
@@ -718,11 +719,6 @@ class iSqlExecute (SqlBaseAction): # noqa N801
         """
         self.add(obj)
         return self
-
-    def _make_children(self, parent):
-        # parent is <sql>, but we need to append to the execute tag
-        for obj in self.opt['_children']:
-            parent.childNodes[1].appendChild(obj.make())
 
 
 class iSqlFetch (SqlBaseAction): # noqa N801
@@ -745,7 +741,6 @@ class iSqlFetch (SqlBaseAction): # noqa N801
     def __init__(self, ikey, iopt={}):
         opts = {
             '_id': ikey,
-            '_outer-tag': 'sql',
             '_tag': 'fetch',
             '_value': '',
             'block': 'all',
@@ -822,7 +817,6 @@ class iSqlFree (SqlBaseAction): # noqa N801
     def __init__(self, ikey, iopt={}):
         opts = {
             '_id': ikey,
-            '_outer-tag': 'sql',
             '_tag': 'free',
             '_value': '',
             'error': 'fast'
@@ -860,18 +854,18 @@ class iXml(iBase): # noqa N801
         """
         raise
 
-    def make(self):
+    def _make(self, _doc):
         """Assemble coherent mini dom xml.
 
         Returns:
           xml.dom.minidom (obj)
         """
         try:
-            dom = xml.dom.minidom.parseString(self.xml_body).firstChild
+            node = xml.dom.minidom.parseString(self.xml_body).firstChild
         except xml.parsers.expat.ExpatError as e:
             e.args += (self.xml_body,)
             raise
-        return dom
+        return node
 
 
 class iToolKit(object): # noqa N801
@@ -958,11 +952,15 @@ class iToolKit(object): # noqa N801
         Returns:
           xml
         """
-        xmli = "<?xml version='1.0'?>\n<xmlservice>"
-        for v in self.input:
-            xmli += v.xml_in()
-        xmli += "</xmlservice>\n"
-        return xmli
+        doc = xml.dom.minidom.Document()
+
+        root = doc.createElement("xmlservice")
+        doc.appendChild(root)
+
+        for item in self.input:
+            root.appendChild(item._make(doc))
+
+        return doc.toxml()
 
     def xml_out(self):
         """return raw xml output.

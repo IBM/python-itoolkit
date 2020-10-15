@@ -9,7 +9,7 @@ if sys.version_info >= (3, 6):
 else:
     from urllib.parse import urlencode
 
-XMLIN = "<?xml version='1.0'?>\n<xmlservice></xmlservice>"
+XMLIN = "<?xml version=\"1.0\" ?><xmlservice/>"
 
 
 def mock_http_urlopen(mocker):
@@ -45,7 +45,7 @@ def assert_urlopen_params_correct(mock_urlopen, url, uid, pwd, db2='*LOCAL',
             ipc=ipc,
             ctl=ctl,
             xmlout=xmlout,
-            xmlin=XMLIN + "\n",
+            xmlin=XMLIN,
         )
         assert data == exp_data
     else:

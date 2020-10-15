@@ -14,7 +14,7 @@ def test_sql_execute():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -44,7 +44,7 @@ def test_sql_execute_error_on():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -74,7 +74,7 @@ def test_sql_execute_error_off():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -104,7 +104,7 @@ def test_sql_execute_conn_set():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -134,7 +134,7 @@ def test_sql_execute_stmt_set():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -164,7 +164,7 @@ def test_sql_execute_options_set():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -197,7 +197,7 @@ def test_sql_execute_add_one_parm():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 
@@ -236,7 +236,7 @@ def test_sql_execute_add_two_parms():
     assert('var' in element.attrib)
     assert(element.attrib['var'] == key)
 
-    assert(element.text == '\n')
+    assert(element.text is None)
 
     children = tuple(iter(element))
 

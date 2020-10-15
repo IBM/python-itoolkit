@@ -137,10 +137,10 @@ class iBase(object): # noqa N801
 
     Notes:
       iopt  (dict): XMLSERVICE elements, attributes and values
-                    'k' - element <x>
-                    'v' - value <x>value</x>
-                    'i' - attribute <x var='ikey'>
-                    'c' - iBase children
+                    '_tag' - element <x>
+                    'value' - value <x>value</x>
+                    'id' - attribute <x var='ikey'>
+                    'children' - iBase children
                     ... many more idft + iopt ...
                     'error' - <x 'error'='fast'>
     """
@@ -151,7 +151,7 @@ class iBase(object): # noqa N801
         self.opt.update(iopt)
 
         # my children objects
-        self.opt['c'] = []
+        self.opt['_children'] = []
 
     def add(self, obj):
         """Additional mini dom xml child nodes.
@@ -168,7 +168,7 @@ class iBase(object): # noqa N801
               .addParm(iData('INCHARA','1a','a')) <--- child of iPgm
             )
         """
-        self.opt['c'].append(obj)
+        self.opt['_children'].append(obj)
 
     def xml_in(self):
         """Return XML string of collected mini dom xml child nodes.
@@ -184,23 +184,27 @@ class iBase(object): # noqa N801
         Returns:
           xml.dom.minidom (obj)
         """
+
         # XMLSERVICE
         xmli = ""
-        if 'j' in self.opt:
-            xmli += '<' + self.opt['j'] + " var='" + self.opt['i'] + "'>\n"
-        xmli += '<' + self.opt['k']
+        if '_outer-tag' in self.opt:
+            xmli += '<' + self.opt['_outer-tag'] + " var='" + \
+                self.opt['_id'] + "'>\n"
+
+        xmli += '<' + self.opt['_tag']
         for k, v in self.opt.items():
-            if len(k) > 1:
+            if k[0] != '_':
                 xmli += " " + k + "='" + str(v) + "'"
-        xmli += " var='" + self.opt['i'] + "'>"
-        if len(self.opt['v']) > 0:
-            xmli += '<![CDATA[' + self.opt['v'] + ']]>'
-        xmli += '</' + self.opt['k'] + '>' + "\n"
-        if 'j' in self.opt:
-            xmli += '</' + self.opt['j'] + '>' + "\n"
+        xmli += " var='" + self.opt['_id'] + "'>"
+        if len(self.opt['_value']) > 0:
+            xmli += '<![CDATA[' + self.opt['_value'] + ']]>'
+        xmli += '</' + self.opt['_tag'] + '>' + "\n"
+        if '_outer-tag' in self.opt:
+            xmli += '</' + self.opt['_outer-tag'] + '>' + "\n"
+
         # build my children
         parent = xml.dom.minidom.parseString(xmli).firstChild
-        for obj in self.opt['c']:
+        for obj in self.opt['_children']:
             if parent.tagName == "sql" and isinstance(obj, iSqlParm):
                 parent.childNodes[1].appendChild(obj.make())
             else:
@@ -242,9 +246,9 @@ class iCmd(iBase): # noqa N801
 
     def __init__(self, ikey, icmd, iopt={}):
         opts = {
-            'i': ikey,
-            'k': 'cmd',
-            'v': icmd,
+            '_id': ikey,
+            '_tag': 'cmd',
+            '_value': icmd,
             'exec': 'rexx' if '?' in icmd else 'cmd',
             'error': 'fast'
         }
@@ -285,9 +289,9 @@ class iSh(iBase): # noqa N801
 
     def __init__(self, ikey, icmd, iopt={}):
         opts = {
-            'i': ikey,
-            'k': 'sh',
-            'v': icmd,
+            '_id': ikey,
+            '_tag': 'sh',
+            '_value': icmd,
             'error': 'fast'
         }
         super().__init__(iopt, opts)
@@ -362,9 +366,9 @@ class iPgm (iBase): # noqa N801
 
     def __init__(self, ikey, iname, iopt={}):
         opts = {
-            'i': ikey,
-            'k': 'pgm',
-            'v': '',
+            '_id': ikey,
+            '_tag': 'pgm',
+            '_value': '',
             'name': iname,
             'error': 'fast'
         }
@@ -461,9 +465,9 @@ class iParm (iBase): # noqa N801
 
     def __init__(self, ikey, iopt={}):
         opts = {
-            'i': ikey,
-            'k': 'parm',
-            'v': '',
+            '_id': ikey,
+            '_tag': 'parm',
+            '_value': '',
             'io': 'both'
         }
         super().__init__(iopt, opts)
@@ -493,9 +497,9 @@ class iRet (iBase): # noqa N801
 
     def __init__(self, ikey):
         opts = {
-            'i': ikey,
-            'k': 'return',
-            'v': ''
+            '_id': ikey,
+            '_tag': 'return',
+            '_value': ''
         }
         super().__init__({}, opts)
 
@@ -528,9 +532,9 @@ class iDS (iBase): # noqa N801
 
     def __init__(self, ikey, iopt={}):
         opts = {
-            'i': ikey,
-            'k': 'ds',
-            'v': ''
+            '_id': ikey,
+            '_tag': 'ds',
+            '_value': ''
         }
         super().__init__(iopt, opts)
 
@@ -593,9 +597,9 @@ class iData (iBase): # noqa N801
 
     def __init__(self, ikey, itype, ival="", iopt={}):
         opts = {
-            'i': ikey,
-            'k': 'data',
-            'v': str(ival) if ival is not None else "",
+            '_id': ikey,
+            '_tag': 'data',
+            '_value': str(ival) if ival is not None else "",
             'type': itype
         }
         super().__init__(iopt, opts)
@@ -624,10 +628,10 @@ class iSqlQuery (iBase): # noqa N801
 
     def __init__(self, ikey, isql, iopt={}):
         opts = {
-            'i': ikey,
-            'j': 'sql',
-            'k': 'query',
-            'v': isql,
+            '_id': ikey,
+            '_outer-tag': 'sql',
+            '_tag': 'query',
+            '_value': isql,
             'error': 'fast'
         }
         super().__init__(iopt, opts)
@@ -661,10 +665,10 @@ class iSqlPrepare (iBase): # noqa N801
 
     def __init__(self, ikey, isql, iopt={}):
         opts = {
-            'i': ikey,
-            'j': 'sql',
-            'k': 'prepare',
-            'v': isql,
+            '_id': ikey,
+            '_outer-tag': 'sql',
+            '_tag': 'prepare',
+            '_value': isql,
             'error': 'fast'
         }
         super().__init__(iopt, opts)
@@ -694,10 +698,10 @@ class iSqlExecute (iBase): # noqa N801
 
     def __init__(self, ikey, iopt={}):
         opts = {
-            'i': ikey,
-            'j': 'sql',
-            'k': 'execute',
-            'v': '',
+            '_id': ikey,
+            '_outer-tag': 'sql',
+            '_tag': 'execute',
+            '_value': '',
             'error': 'fast'
         }
         super().__init__(iopt, opts)
@@ -732,10 +736,10 @@ class iSqlFetch (iBase): # noqa N801
 
     def __init__(self, ikey, iopt={}):
         opts = {
-            'i': ikey,
-            'j': 'sql',
-            'k': 'fetch',
-            'v': '',
+            '_id': ikey,
+            '_outer-tag': 'sql',
+            '_tag': 'fetch',
+            '_value': '',
             'block': 'all',
             'error': 'fast'
         }
@@ -770,9 +774,9 @@ class iSqlParm (iBase): # noqa N801
 
     def __init__(self, ikey, ival, iopt={}):
         opts = {
-            'i': ikey,
-            'k': 'parm',
-            'v': ival,
+            '_id': ikey,
+            '_tag': 'parm',
+            '_value': ival,
             'io': 'both'
         }
         super().__init__(iopt, opts)
@@ -809,10 +813,10 @@ class iSqlFree (iBase): # noqa N801
 
     def __init__(self, ikey, iopt={}):
         opts = {
-            'i': ikey,
-            'j': 'sql',
-            'k': 'free',
-            'v': '',
+            '_id': ikey,
+            '_outer-tag': 'sql',
+            '_tag': 'free',
+            '_value': '',
             'error': 'fast'
         }
         super().__init__(iopt, opts)

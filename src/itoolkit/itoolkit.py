@@ -605,7 +605,10 @@ class iData (iBase): # noqa N801
         super().__init__(iopt, opts)
 
 
-class iSqlQuery (iBase): # noqa N801
+class SqlBaseAction (iBase):
+    pass
+
+class iSqlQuery (SqlBaseAction): # noqa N801
     """
     IBM i XMLSERVICE call DB2 execute direct SQL statement.
 
@@ -637,7 +640,7 @@ class iSqlQuery (iBase): # noqa N801
         super().__init__(iopt, opts)
 
 
-class iSqlPrepare (iBase): # noqa N801
+class iSqlPrepare (SqlBaseAction): # noqa N801
     """
     IBM i XMLSERVICE call DB2 prepare SQL statement.
 
@@ -674,7 +677,7 @@ class iSqlPrepare (iBase): # noqa N801
         super().__init__(iopt, opts)
 
 
-class iSqlExecute (iBase): # noqa N801
+class iSqlExecute (SqlBaseAction): # noqa N801
     """
     IBM i XMLSERVICE call execute a DB2 prepare SQL statement.
 
@@ -717,7 +720,7 @@ class iSqlExecute (iBase): # noqa N801
         return self
 
 
-class iSqlFetch (iBase): # noqa N801
+class iSqlFetch (SqlBaseAction): # noqa N801
     """
     IBM i XMLSERVICE call DB2 fetch results/rows of SQL statement.
 
@@ -782,7 +785,7 @@ class iSqlParm (iBase): # noqa N801
         super().__init__(iopt, opts)
 
 
-class iSqlFree (iBase): # noqa N801
+class iSqlFree (SqlBaseAction): # noqa N801
     """
     IBM i XMLSERVICE call DB2 free open handles.
 

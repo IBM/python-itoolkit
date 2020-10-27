@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "itoolkit"
-version = "1.7.0-dev"
+version = "1.7.0-rc"
 description = "IBM i XMLSERVICE toolkit for Python"
 readme = "README.md"
 homepage = "https://github.com/IBM/python-itoolkit"

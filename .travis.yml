@@ -10,8 +10,6 @@ jobs:
       dist: bionic
     - python: 3.5
       dist: xenial
-    - python: 2.7
-      dist: bionic
     - python: pypy3
     - python: nightly
   allow_failures:

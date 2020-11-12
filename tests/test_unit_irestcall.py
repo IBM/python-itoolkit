@@ -5,13 +5,10 @@ from itoolkit import iToolKit
 from itoolkit.rest.irestcall import iRestCall
 
 from contextlib import contextmanager
-if sys.version_info >= (3, 0):
-    if sys.version_info >= (3, 6):
-        from urllib.parse import parse_qs
-    else:
-        from urllib.parse import urlencode
+if sys.version_info >= (3, 6):
+    from urllib.parse import parse_qs
 else:
-    from urllib import urlencode
+    from urllib.parse import urlencode
 
 pytestmark = \
     pytest.mark.filterwarnings("ignore:.*iRestCall.*:DeprecationWarning")

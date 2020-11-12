@@ -1,7 +1,4 @@
-try:
-  import queue
-except ImportError:
-  import Queue as queue
+import queue
 import threading
 import urllib
 from itoolkit.transport import HttpTransport

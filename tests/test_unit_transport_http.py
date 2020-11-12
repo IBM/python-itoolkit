@@ -4,13 +4,10 @@ import sys
 from itoolkit import iToolKit, TransportClosedException
 from itoolkit.transport import HttpTransport
 
-if sys.version_info >= (3, 0):
-    if sys.version_info >= (3, 6):
-        from urllib.parse import parse_qs
-    else:
-        from urllib.parse import urlencode
+if sys.version_info >= (3, 6):
+    from urllib.parse import parse_qs
 else:
-    from urllib import urlencode
+    from urllib.parse import urlencode
 
 XMLIN = "<?xml version='1.0'?>\n<xmlservice></xmlservice>"
 

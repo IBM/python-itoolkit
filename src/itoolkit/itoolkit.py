@@ -113,18 +113,8 @@ import xml.dom.minidom
 import re
 import time
 
-try:
-    from shlex import quote
-except ImportError:
-    # python2 has shlex, but not shlex.quote
-    # Implement a crude equivalent. We don't care about Python 2 that much
-    def quote(s):
-        if ' ' not in s:
-            return s
+from shlex import quote
 
-        # remove first and last space to be less confusing
-        quote_replacement = """ '"'"' """[1:-1]
-        return "'" + s.replace("'", quote_replacement) + "'"
 
 class iBase(object): # noqa N801
     """

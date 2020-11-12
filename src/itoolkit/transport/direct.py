@@ -42,10 +42,7 @@ class DirectTransport(XmlServiceTransport):
                     "Perhaps you need to apply PTF SI70667, SI70668 or SI70669?"
                 )
 
-            if sys.version_info >= (3, 0):
-                return data.decode('utf-8')
-            else:
-                return data
+            return data.decode('utf-8')
         except NameError:
             # When we drop support for Python 2:
             # raise RuntimeError("Not supported on this platform") from None

@@ -3,11 +3,8 @@ from .base import XmlServiceTransport
 import contextlib
 import sys
 
-if sys.version_info >= (3, 0):
-    from urllib.request import urlopen
-    from urllib.parse import urlencode
-else:
-    from urllib import urlencode, urlopen
+from urllib.request import urlopen
+from urllib.parse import urlencode
 
 __all__ = [
     'HttpTransport'

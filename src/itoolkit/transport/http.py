@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from .base import XmlServiceTransport
 import contextlib
-import sys
 
 from urllib.request import urlopen
 from urllib.parse import urlencode

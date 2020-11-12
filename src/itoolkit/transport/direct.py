@@ -24,7 +24,7 @@ class DirectTransport(XmlServiceTransport):
         >>> transport = DirectTransport()
     """
     def __init__(self, **kwargs):
-        super(DirectTransport, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def _call(self, tk):
         try:

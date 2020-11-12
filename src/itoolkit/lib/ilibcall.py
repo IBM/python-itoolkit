@@ -29,7 +29,7 @@ class iLibCall(DirectTransport): # noqa N801 gotta live with history
         if pccsid != 1208:
             raise ValueError("pccsid must be 1208 (UTF-8)")
 
-        super(iLibCall, self).__init__(ctl=ictl, ipc=ipc)
+        super().__init__(ctl=ictl, ipc=ipc)
 
     def call(self, itool):
         """Call XMLSERVICE with accumulated actions.
@@ -40,4 +40,4 @@ class iLibCall(DirectTransport): # noqa N801 gotta live with history
         Returns:
           The XML returned from XMLSERVICE
         """
-        return super(iLibCall, self).call(itool)
+        return super().call(itool)

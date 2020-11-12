@@ -61,8 +61,7 @@ class iDB2Call(DatabaseTransport): # noqa N801
             msg = "isiz is deprecated and ignored"
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
 
-        super(iDB2Call, self).__init__(conn=conn, ctl=ictl, ipc=ipc,
-                                       schema=ilib)
+        super().__init__(conn=conn, ctl=ictl, ipc=ipc, schema=ilib)
 
     def call(self, itool):
         """Call XMLSERVICE with accumulated actions.
@@ -73,4 +72,4 @@ class iDB2Call(DatabaseTransport): # noqa N801
         Returns:
           The XML returned from XMLSERVICE
         """
-        return super(iDB2Call, self).call(itool)
+        return super().call(itool)

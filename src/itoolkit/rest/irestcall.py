@@ -49,8 +49,8 @@ class iRestCall(HttpTransport): # noqa N801
             msg = "isiz is deprecated, changed to {}".format(self.OUT_SIZE)
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
 
-        super(iRestCall, self).__init__(url=iurl, user=iuid, password=ipwd,
-                                        database=idb2, ctl=ictl, ipc=ipc)
+        super().__init__(url=iurl, user=iuid, password=ipwd, database=idb2,
+                         ctl=ictl, ipc=ipc)
 
     def call(self, itool):
         """Call XMLSERVICE with accumulated actions.
@@ -61,4 +61,4 @@ class iRestCall(HttpTransport): # noqa N801
         Returns:
           The XML returned from XMLSERVICE
         """
-        return super(iRestCall, self).call(itool)
+        return super().call(itool)

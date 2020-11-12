@@ -68,7 +68,7 @@ class MemPointer(ILEPointer):
     _pack_ = 16
 
     def __init__(self, addr=0):
-        super(MemPointer, self).__int__()
+        super().__int__()
         self.hi = 0
         self.lo = addr
 

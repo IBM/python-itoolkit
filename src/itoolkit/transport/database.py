@@ -45,7 +45,7 @@ class DatabaseTransport(XmlServiceTransport):
         if not isinstance(schema, str) and schema is not None:
             raise ValueError("schema must be a string or None")
 
-        super(DatabaseTransport, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.conn = conn
 

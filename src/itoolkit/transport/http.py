@@ -30,7 +30,7 @@ class HttpTransport(XmlServiceTransport):
         >>> transport = HttpTransport(endpoint, 'user', 'pass')
     """
     def __init__(self, url, user, password, database='*LOCAL', **kwargs):
-        super(HttpTransport, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.trace_attrs.extend([
             'url',
             ('uid', 'user'),

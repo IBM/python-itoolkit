@@ -252,7 +252,7 @@ class iCmd(iBase): # noqa N801
             'exec': 'rexx' if '?' in icmd else 'cmd',
             'error': 'fast'
         }
-        super(iCmd, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iSh(iBase): # noqa N801
@@ -294,7 +294,7 @@ class iSh(iBase): # noqa N801
             'v': icmd,
             'error': 'fast'
         }
-        super(iSh, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iCmd5250(iSh): # noqa N801
@@ -332,7 +332,7 @@ class iCmd5250(iSh): # noqa N801
 
     def __init__(self, ikey, icmd, iopt={}):
         cmd = "/QOpenSys/usr/bin/system " + quote(icmd)
-        super(iCmd5250, self).__init__(ikey, cmd, iopt)
+        super().__init__(ikey, cmd, iopt)
 
 
 class iPgm (iBase): # noqa N801
@@ -383,7 +383,7 @@ class iPgm (iBase): # noqa N801
             'name': iname,
             'error': 'fast'
         }
-        super(iPgm, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
         self.pcnt = 0
 
     def addParm(self, obj, iopt={}): # noqa N802
@@ -435,7 +435,7 @@ class iSrvPgm (iPgm): # noqa N801
     def __init__(self, ikey, iname, ifunc, iopt={}):
         iopt = iopt.copy()
         iopt['func'] = ifunc
-        super(iSrvPgm, self).__init__(ikey, iname, iopt)
+        super().__init__(ikey, iname, iopt)
 
     def addRet(self, obj): # noqa N802
         """Add a return structure child node.
@@ -487,7 +487,7 @@ class iParm (iBase): # noqa N801
             'v': '',
             'io': 'both'
         }
-        super(iParm, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iRet (iBase): # noqa N801
@@ -518,7 +518,7 @@ class iRet (iBase): # noqa N801
             'k': 'return',
             'v': ''
         }
-        super(iRet, self).__init__({}, opts)
+        super().__init__({}, opts)
 
 
 class iDS (iBase): # noqa N801
@@ -553,7 +553,7 @@ class iDS (iBase): # noqa N801
             'k': 'ds',
             'v': ''
         }
-        super(iDS, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
     def addData(self, obj): # noqa N802
         """Add a iData or iDS child node.
@@ -622,7 +622,7 @@ class iData (iBase): # noqa N801
             'v': str(ival) if ival is not None else "",
             'type': itype
         }
-        super(iData, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iSqlQuery (iBase): # noqa N801
@@ -654,7 +654,7 @@ class iSqlQuery (iBase): # noqa N801
             'v': isql,
             'error': 'fast'
         }
-        super(iSqlQuery, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iSqlPrepare (iBase): # noqa N801
@@ -691,7 +691,7 @@ class iSqlPrepare (iBase): # noqa N801
             'v': isql,
             'error': 'fast'
         }
-        super(iSqlPrepare, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iSqlExecute (iBase): # noqa N801
@@ -724,7 +724,7 @@ class iSqlExecute (iBase): # noqa N801
             'v': '',
             'error': 'fast'
         }
-        super(iSqlExecute, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
         self.pcnt = 0
 
     def addParm(self, obj): # noqa N802
@@ -769,7 +769,7 @@ class iSqlFetch (iBase): # noqa N801
             'block': 'all',
             'error': 'fast'
         }
-        super(iSqlFetch, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iSqlParm (iBase): # noqa N801
@@ -805,7 +805,7 @@ class iSqlParm (iBase): # noqa N801
             'v': ival,
             'io': 'both'
         }
-        super(iSqlParm, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iSqlFree (iBase): # noqa N801
@@ -845,7 +845,7 @@ class iSqlFree (iBase): # noqa N801
             'v': '',
             'error': 'fast'
         }
-        super(iSqlFree, self).__init__(iopt, opts)
+        super().__init__(iopt, opts)
 
 
 class iXml(iBase): # noqa N801
@@ -867,7 +867,7 @@ class iXml(iBase): # noqa N801
     """
 
     def __init__(self, ixml):
-        super(iXml, self).__init__()
+        super().__init__()
         self.xml_body = ixml
 
     def add(self, obj):

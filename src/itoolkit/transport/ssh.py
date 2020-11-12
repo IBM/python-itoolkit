@@ -60,7 +60,7 @@ class SshTransport(XmlServiceTransport):
         if not hasattr(sshclient, "exec_command"):
             raise Exception("An instance of paramiko.SSHClient is required")
 
-        super(SshTransport, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.conn = sshclient
 

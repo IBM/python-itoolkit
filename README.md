@@ -3,7 +3,7 @@ Python XMLSERVICE Toolkit
 
 [![Build Status](https://github.com/IBM/python-itoolkit/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/IBM/python-itoolkit/actions/workflows/build.yml)
 [![Latest version released on PyPi](https://img.shields.io/pypi/v/itoolkit.svg)](https://pypi.python.org/pypi/itoolkit)
-[![](https://img.shields.io/pypi/pyversions/itoolkit.svg)](https://pypi.org/project/itoolkit/)
+[![Python Version Support](https://img.shields.io/pypi/pyversions/itoolkit.svg)](https://pypi.org/project/itoolkit/)
 [![Documentation Status](https://readthedocs.org/projects/python-itoolkit/badge/?version=latest)](https://python-itoolkit.readthedocs.io/en/latest/?badge=latest)
 
 

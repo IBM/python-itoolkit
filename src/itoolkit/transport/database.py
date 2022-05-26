@@ -76,7 +76,9 @@ class DatabaseTransport(XmlServiceTransport):
         # cursor type, which we ascertained in the constructor
         getattr(cursor, self.func)(self.query, parms)
 
-        return "".join(row[0] for row in cursor).rstrip('\0')
+        # Use fetchall since not all adapters support the PEP-249 cursor
+        # iteration extension eg. JayDeBeApi
+        return "".join(row[0] for row in cursor.fetchall()).rstrip('\0')
 
     def _close(self):
         self.conn.close()

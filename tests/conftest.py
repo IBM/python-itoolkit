@@ -44,7 +44,7 @@ def mock_database(use_callproc):
     conn = Mock()
 
     cursor = MagicMock()
-    cursor.__iter__.return_value = [(XML,)]
+    cursor.fetchall.return_value = [(XML,)]
 
     if use_callproc:
         cursor.callproc.return_value = True

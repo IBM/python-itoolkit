@@ -22,7 +22,7 @@ def test_idb2call_transport_minimal_callproc(database_callproc):
     cursor = database_callproc.cursor()
 
     cursor.callproc.assert_called_once()
-    cursor.__iter__.assert_called_once()
+    cursor.fetchall.assert_called_once()
 
 
 def test_idb2call_transport_minimal_execute(database_execute):
@@ -35,7 +35,7 @@ def test_idb2call_transport_minimal_execute(database_execute):
     cursor = database_execute.cursor()
 
     cursor.execute.assert_called_once()
-    cursor.__iter__.assert_called_once()
+    cursor.fetchall.assert_called_once()
 
 
 def test_idb2call_with_ibm_db(mocker, database_callproc):
@@ -61,7 +61,7 @@ def test_idb2call_with_ibm_db(mocker, database_callproc):
     cursor = database_callproc.cursor()
 
     cursor.callproc.assert_called_once()
-    cursor.__iter__.assert_called_once()
+    cursor.fetchall.assert_called_once()
 
 
 def test_idb2call_with_uid_pwd(mocker, database_callproc):
@@ -90,4 +90,4 @@ def test_idb2call_with_uid_pwd(mocker, database_callproc):
     cursor = database_callproc.cursor()
 
     cursor.callproc.assert_called_once()
-    cursor.__iter__.assert_called_once()
+    cursor.fetchall.assert_called_once()

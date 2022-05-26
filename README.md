@@ -5,7 +5,6 @@ Python XMLSERVICE Toolkit
 [![Latest version released on PyPi](https://img.shields.io/pypi/v/itoolkit.svg)](https://pypi.python.org/pypi/itoolkit)
 [![](https://img.shields.io/pypi/pyversions/itoolkit.svg)](https://pypi.org/project/itoolkit/)
 [![Documentation Status](https://readthedocs.org/projects/python-itoolkit/badge/?version=latest)](https://python-itoolkit.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/IBM/python-itoolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/IBM/python-itoolkit)
 
 
 itoolkit is a Python interface to the

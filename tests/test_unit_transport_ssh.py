@@ -1,7 +1,7 @@
 import pytest
 
-from itoolkit import iToolKit, TransportClosedException
-from itoolkit.transport import SshTransport
+from itoolkit import iToolKit
+from itoolkit.transport import SshTransport, TransportClosedError
 
 
 def mock_ssh(mocker):
@@ -39,6 +39,6 @@ def test_ssh_transport_raises_when_closed(mocker):
     transport = SshTransport(ssh_client)
     transport.close()
 
-    with pytest.raises(TransportClosedException):
+    with pytest.raises(TransportClosedError):
         tk = iToolKit()
         out = transport.call(tk)

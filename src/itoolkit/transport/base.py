@@ -1,4 +1,4 @@
-from ..errors import TransportClosedException
+from .errors import TransportClosedError
 
 
 class XmlServiceTransport(object):
@@ -56,15 +56,15 @@ class XmlServiceTransport(object):
         """This should be called by any subclass function which uses
         resources which may have been released when `close` is called."""
         if not self._is_open:
-            raise TransportClosedException()
+            raise TransportClosedError()
 
     def close(self):
         """Close the connection now rather than when :py:func:`__del__` is
         called.
 
         The transport will be unusable from this point forward and a
-        :py:exc:`TransportClosedException` exception will be raised if any
-        operation is attempted with the transport.
+        :py:exc:`itoolkit.transport.TransportClosedError` exception will be
+        raised if any operation is attempted with the transport.
         """
         self._close()
         self._is_open = False

@@ -1,8 +1,8 @@
 import pytest
 import sys
 
-from itoolkit import iToolKit, TransportClosedException
-from itoolkit.transport import HttpTransport
+from itoolkit import iToolKit
+from itoolkit.transport import HttpTransport, TransportClosedError
 
 if sys.version_info >= (3, 6):
     from urllib.parse import parse_qs
@@ -115,6 +115,6 @@ def test_http_transport_call_raises_when_closed(mocker):
     transport = HttpTransport(url, user, password, database=database)
     transport.close()
 
-    with pytest.raises(TransportClosedException):
+    with pytest.raises(TransportClosedError):
         tk = iToolKit()
         out = transport.call(tk)

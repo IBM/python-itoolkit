@@ -16,6 +16,7 @@ from .itoolkit import iSqlFetch
 from .itoolkit import iSqlFree
 from .itoolkit import iSqlParm
 from .itoolkit import iXml
+from .errors import TransportError
 from .errors import TransportClosedException
 
 __all__ = [
@@ -35,5 +36,6 @@ __all__ = [
     'iSqlParm',
     'iSqlFree',
     'iXml',
+    'TransportError',
     'TransportClosedException',
 ]

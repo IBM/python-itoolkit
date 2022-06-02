@@ -1,8 +1,8 @@
 import pytest
 import sys
 
-from itoolkit import iToolKit, TransportClosedException
-from itoolkit.transport import DirectTransport
+from itoolkit import iToolKit
+from itoolkit.transport import DirectTransport, TransportClosedError
 import itoolkit.transport.direct
 
 XMLIN = "<?xml version='1.0'?>\n<xmlservice></xmlservice>"
@@ -71,6 +71,6 @@ def test_direct_transport_call_raises_when_closed(mocker):
     transport = DirectTransport()
     transport.close()
 
-    with pytest.raises(TransportClosedException):
+    with pytest.raises(TransportClosedError):
         tk = iToolKit()
         out = transport.call(tk)

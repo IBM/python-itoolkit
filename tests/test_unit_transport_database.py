@@ -1,7 +1,7 @@
 import pytest
 
-from itoolkit import iToolKit, TransportClosedException
-from itoolkit.transport import DatabaseTransport
+from itoolkit import iToolKit
+from itoolkit.transport import DatabaseTransport, TransportClosedError
 
 def test_database_transport_callproc(database_callproc):
     transport = DatabaseTransport(database_callproc)
@@ -68,7 +68,7 @@ def test_database_transport_call_raises_when_closed(database_execute):
     transport = DatabaseTransport(database_execute, schema=schema)
     transport.close()
 
-    with pytest.raises(TransportClosedException):
+    with pytest.raises(TransportClosedError):
         tk = iToolKit()
         out = transport.call(tk)
 

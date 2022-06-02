@@ -4,6 +4,7 @@ from .database import DatabaseTransport
 from .direct import DirectTransport
 from .http import HttpTransport
 from .ssh import SshTransport
+from .errors import TransportClosedError
 
 __all__ = [
     'XmlServiceTransport',
@@ -11,4 +12,5 @@ __all__ = [
     'DirectTransport',
     'HttpTransport',
     'SshTransport',
+    'TransportClosedError',
 ]

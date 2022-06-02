@@ -50,6 +50,22 @@ Toolkit Operations
    :inherited-members:
 
 
+Exceptions
+----------
+.. module:: itoolkit
+
+.. autoclass:: TransportError
+   :members:
+
+.. autoclass:: TransportClosedException
+   :members:
+.. deprecated:: 2.0.0
+
+.. module:: itoolkit.transport
+
+.. autoclass:: TransportClosedError
+   :members:
+
 
 Transports
 ----------

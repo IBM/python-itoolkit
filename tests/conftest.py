@@ -68,5 +68,12 @@ def database_execute():
 
 
 @pytest.fixture
+def database_close_exception():
+    conn = mock_database(use_callproc=True)
+    conn.close.side_effect = RuntimeError
+    return conn
+
+
+@pytest.fixture
 def database():
     return mock_database(use_callproc=True)

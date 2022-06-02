@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from .base import XmlServiceTransport
 
 __all__ = [
@@ -81,4 +83,12 @@ class DatabaseTransport(XmlServiceTransport):
         return "".join(row[0] for row in cursor.fetchall()).rstrip('\0')
 
     def _close(self):
-        self.conn.close()
+        try:
+            self.conn.close()
+        except RuntimeError:
+            # JayDeBeApi can fail to close a connection with
+            # jpype._core.JVMNotRunning: Java Virtual Machine is not running
+            #
+            # Doesn't seem to be anything reasonable to do but log the
+            # exception and continue.
+            logging.exception("Unexpected exception closing database connection")

@@ -71,3 +71,21 @@ def test_database_transport_call_raises_when_closed(database_execute):
     with pytest.raises(TransportClosedException):
         tk = iToolKit()
         out = transport.call(tk)
+
+
+def test_database_transport_logs_exception_on_close(database_close_exception, caplog, capsys):
+    schema = 'MYSCHEMA'
+    transport = DatabaseTransport(database_close_exception, schema=schema)
+
+    tk = iToolKit()
+    out = transport.call(tk)
+
+    with capsys.disabled():
+        transport.close()
+
+    assert len(caplog.records) == 1
+    l = caplog.records[0]
+    assert l.levelname == "ERROR"
+    assert 'Unexpected exception' in l.message
+
+    caplog.clear()

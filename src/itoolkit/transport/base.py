@@ -34,13 +34,17 @@ class XmlServiceTransport(object):
         return output
 
     def call(self, tk):
-        """Call XMLSERVICE with accumulated actions
+        """Call XMLSERVICE with accumulated actions.
 
         Args:
           tk (iToolKit): An iToolkit object
 
         Returns:
           str: The XML returned from XMLSERVICE
+
+        Attention:
+          Subclasses should implement :py:func:`_call` to call XMLSERVICE
+          instead of overriding this method.
         """
         self._ensure_open()
 
@@ -65,6 +69,10 @@ class XmlServiceTransport(object):
         The transport will be unusable from this point forward and a
         :py:exc:`itoolkit.transport.TransportClosedError` exception will be
         raised if any operation is attempted with the transport.
+
+        Attention:
+          Subclasses should implement :py:func:`_close` to free its resources
+          instead of overriding this method.
         """
         self._close()
         self._is_open = False

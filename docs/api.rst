@@ -80,21 +80,18 @@ HTTP Transport
 
 .. autoclass:: HttpTransport
    :members:
-   :inherited-members:
 
 Database Transport
 ~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: DatabaseTransport
    :members:
-   :inherited-members:
 
 SSH Transport
 ~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: SshTransport
    :members:
-   :inherited-members:
 
 
 Direct Memory Transport
@@ -102,7 +99,6 @@ Direct Memory Transport
 
 .. autoclass:: DirectTransport
    :members:
-   :inherited-members:
 .. note::
    This transport will only work when run on an IBM i system. On other operating
    systems, calling it will fail with a :class:`RuntimeError`.

@@ -1151,7 +1151,7 @@ class iToolKit(object): # noqa N801
 
         Raises:
           itoolkit.transport.TransportClosedError: If the transport has been
-          closed.
+            closed.
         """
         if self.trace_fd:
             self.trace_write('***********************')

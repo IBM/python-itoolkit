@@ -20,7 +20,6 @@ Toolkit Operations
    :members:
    :inherited-members:
 
-
 .. autoclass:: iSrvPgm
    :members:
    :inherited-members:
@@ -48,23 +47,6 @@ Toolkit Operations
 .. autoclass:: iData
    :members:
    :inherited-members:
-
-
-Exceptions
-----------
-.. module:: itoolkit
-
-.. autoclass:: TransportError
-   :members:
-
-.. autoclass:: TransportClosedException
-   :members:
-.. deprecated:: 2.0.0
-
-.. module:: itoolkit.transport
-
-.. autoclass:: TransportClosedError
-   :members:
 
 
 Transports
@@ -111,6 +93,30 @@ Direct Memory Transport
    - IBM i 7.3 - SI70668
    - IBM i 7.2 - SI70667
    
+
+Exceptions
+----------
+.. module:: itoolkit
+   :noindex:
+
+.. autoclass:: TransportError
+   :members:
+
+
+.. module:: itoolkit.transport
+   :noindex:
+
+.. autoclass:: TransportClosedError
+   :members:
+
+
+.. module:: itoolkit
+   :noindex:
+
+.. autoclass:: TransportClosedException
+   :members:
+.. deprecated:: 2.0.0
+
 
 Deprecated Transports
 ---------------------

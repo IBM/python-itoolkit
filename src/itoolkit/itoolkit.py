@@ -117,14 +117,15 @@ from shlex import quote
 
 
 class iBase(object): # noqa N801
-    """
-    IBM i XMLSERVICE call addable operation(s).
+    """IBM i XMLSERVICE call addable operation(s).
 
-      Args:
-        iopt (dict): user options (see descendents)
-        idft (dict): default options (see descendents)
+    Args:
+      iopt (dict): user options (see descendents)
+      idft (dict): default options (see descendents)
 
-      Example:
+    Example:
+      Calling a CL command and shell script::
+
         itransport = DirectTransport()
         itool = iToolKit()
         itool.add(iCmd('chglibl', 'CHGLIBL LIBL(XMLSERVICE)'))
@@ -132,17 +133,14 @@ class iBase(object): # noqa N801
         ... so on ...
         itool.call(itransport)
 
-      Returns:
-        iBase (obj)
-
-      Notes:
-        iopt  (dict): XMLSERVICE elements, attributes and values
-                      'k' - element <x>
-                      'v' - value <x>value</x>
-                      'i' - attribute <x var='ikey'>
-                      'c' - iBase children
-                      ... many more idft + iopt ...
-                      'error' - <x 'error'='fast'>
+    Notes:
+      iopt  (dict): XMLSERVICE elements, attributes and values
+                    'k' - element <x>
+                    'v' - value <x>value</x>
+                    'i' - attribute <x var='ikey'>
+                    'c' - iBase children
+                    ... many more idft + iopt ...
+                    'error' - <x 'error'='fast'>
     """
 
     def __init__(self, iopt={}, idft={}):
@@ -160,10 +158,12 @@ class iBase(object): # noqa N801
           obj (iBase) : additional child object
 
         Example:
-          itool = iToolKit()
-          itool.add(
-            iPgm('zzcall','ZZCALL')             <--- child of iToolkit
-            .addParm(iData('INCHARA','1a','a')) <--- child of iPgm
+          Adding a program::
+
+            itool = iToolKit()
+            itool.add(
+              iPgm('zzcall','ZZCALL')             <--- child of iToolkit
+              .addParm(iData('INCHARA','1a','a')) <--- child of iPgm
             )
 
         Returns:
@@ -216,8 +216,8 @@ class iBase(object): # noqa N801
 
 
 class iCmd(iBase): # noqa N801
-    """
-    IBM i XMLSERVICE call *CMD not returning *OUTPUT.
+    r"""
+    IBM i XMLSERVICE call \*CMD not returning \*OUTPUT.
 
     Args:
       ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
@@ -225,10 +225,13 @@ class iCmd(iBase): # noqa N801
       iopt (dict): option - dictionay of options (below)
         {'error':'on|off|fast'}   : XMLSERVICE error option
         {'exec':cmd|system|rexx'} : XMLSERVICE command type {'exec':'cmd'}
-                                     RTVJOBA CCSID(?N)      {'exec':'rex'}
+        RTVJOBA CCSID(?N)      {'exec':'rex'}
+
     Example:
-      iCmd('chglibl', 'CHGLIBL LIBL(XMLSERVICE) CURLIB(XMLSERVICE)')
-      iCmd('rtvjoba', 'RTVJOBA CCSID(?N) OUTQ(?)')
+      Example calling two CL commands::
+
+        iCmd('chglibl', 'CHGLIBL LIBL(XMLSERVICE) CURLIB(XMLSERVICE)')
+        iCmd('rtvjoba', 'RTVJOBA CCSID(?N) OUTQ(?)')
 
     Returns:
       iCmd (obj)
@@ -298,8 +301,8 @@ class iSh(iBase): # noqa N801
 
 
 class iCmd5250(iSh): # noqa N801
-    """
-    IBM i XMLSERVICE call 5250 *CMD returning *OUTPUT.
+    r"""
+    IBM i XMLSERVICE call 5250 \*CMD returning \*OUTPUT.
 
     Args:
       ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
@@ -336,43 +339,32 @@ class iCmd5250(iSh): # noqa N801
 
 
 class iPgm (iBase): # noqa N801
-    """
-    IBM i XMLSERVICE call *PGM.
+    r"""
+    IBM i XMLSERVICE call \*PGM.
 
     Args:
       ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      iname (str): IBM i *PGM or *SRVPGM name
+      iname (str): IBM i \*PGM or \*SRVPGM name
       iopt (dict): option - dictionay of options (below)
         {'error':'on|off|fast'} : XMLSERVICE error choice {'error':'fast'}
-        {'func':'MYFUNC'}       : IBM i *SRVPGM function export.
+        {'func':'MYFUNC'}       : IBM i \*SRVPGM function export.
         {'lib':'mylib'}         : IBM i library name
         {'mode':'opm|ile'}      : XMLSERVICE error choice {'mode':'ile'}
 
     Example:
-     iPgm('zzcall','ZZCALL')
-     .addParm(iData('var1','1a','a'))
-     .addParm(iData('var2','1a','b'))
-     .addParm(iData('var3','7p4','32.1234'))
-     .addParm(iData('var4','12p2','33.33'))
-     .addParm(
-      iDS('var5')
-      .addData(iData('d5var1','1a','a'))
-      .addData(iData('d5var2','1a','b'))
-      .addData(iData('d5var3','7p4','32.1234'))
-      .addData(iData('d5var4','12p2','33.33'))
-      )
+      Example calling the `ZZCALL` program with 5 arguments::
 
-    Returns:
-      iPgm (obj)
-
-    Notes:
-      pgm:
-        <pgm name=''
-          [lib=''
-           func=''
-           mode='opm|ile'
-           error='on|off|fast'                        (1.7.6)
-           ]> ... </pgm>
+        iPgm('zzcall','ZZCALL')
+            .addParm(iData('var1','1a','a'))
+            .addParm(iData('var2','1a','b'))
+            .addParm(iData('var3','7p4','32.1234'))
+            .addParm(iData('var4','12p2','33.33'))
+            .addParm(iDS('var5')
+                .addData(iData('d5var1','1a','a'))
+                .addData(iData('d5var2','1a','b'))
+                .addData(iData('d5var3','7p4','32.1234'))
+                .addData(iData('d5var4','12p2','33.33'))
+            )
     """
 
     def __init__(self, ikey, iname, iopt={}):
@@ -404,13 +396,13 @@ class iPgm (iBase): # noqa N801
 
 
 class iSrvPgm (iPgm): # noqa N801
-    """
-    IBM i XMLSERVICE call *SRVPGM.
+    r"""
+    IBM i XMLSERVICE call \*SRVPGM.
 
     Args:
       ikey  (str): XML <ikey>...operation ...</ikey> for parsing output.
-      iname (str): IBM i *PGM or *SRVPGM name
-      ifunc (str): IBM i *SRVPGM function export.
+      iname (str): IBM i \*PGM or \*SRVPGM name
+      ifunc (str): IBM i \*SRVPGM function export.
       iopt (dict): option - dictionay of options (below)
         {'error':'on|off|fast'} : XMLSERVICE error choice {'error':'fast'}
         {'lib':'mylib'}         : IBM i library name
@@ -1073,10 +1065,10 @@ class iToolKit(object): # noqa N801
             return output
 
     def trace_open(self, iname='*terminal'):
-        """Open trace *terminal or file /tmp/python_toolkit_(iname).log (1.2+)
+        r"""Open trace \*terminal or file /tmp/python_toolkit_(iname).log (1.2+)
 
         Args:
-          iname  (str): trace *terminal or file /tmp/python_toolkit_(iname).log
+          iname  (str): trace \*terminal or file /tmp/python_toolkit_(iname).log
 
         Returns:
           (void)

@@ -1023,11 +1023,12 @@ class iToolKit(object): # noqa N801
             return output
 
     def trace_open(self, iname='*terminal'):
-        r"""Open trace \*terminal or file /tmp/python_toolkit_(iname).log (1.2+)
+        r"""Open trace \*terminal or file /tmp/python_toolkit_(iname).log
 
         Args:
           iname  (str): trace \*terminal or file /tmp/python_toolkit_(iname).log
 
+        .. versionadded:: 1.2
         """
         if self.trace_fd:
             self.trace_close()
@@ -1037,10 +1038,12 @@ class iToolKit(object): # noqa N801
             self.trace_fd = open('/tmp/python_toolkit_' + iname + '.log', 'a+')
 
     def trace_write(self, itext):
-        """Write trace text (1.2+)
+        """Write trace text
 
         Args:
           itext  (str): trace text
+
+        .. versionadded:: 1.2
         """
         if self.trace_fd:
             try:
@@ -1052,9 +1055,11 @@ class iToolKit(object): # noqa N801
                 self.trace_close()
 
     def trace_hexdump(self, itext):
-        """Write trace hexdump (1.2+)
+        """Write trace hexdump
         Args:
           itext  (str): trace text
+
+        .. versionadded:: 1.2
         """
         if self.trace_fd:
             result = ''
@@ -1070,7 +1075,9 @@ class iToolKit(object): # noqa N801
                 self.trace_write(result + " " + text)
 
     def trace_close(self):
-        """End trace (1.2+)
+        """End trace
+
+        .. versionadded:: 1.2
         """
         if self.trace_fd:
             if '*' not in str(self.trace_fd):

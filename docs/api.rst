@@ -115,7 +115,6 @@ Exceptions
 
 .. autoclass:: TransportClosedException
    :members:
-.. deprecated:: 2.0.0
 
 
 Deprecated Transports

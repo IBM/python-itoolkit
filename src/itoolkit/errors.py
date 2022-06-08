@@ -4,9 +4,16 @@ __all__ = [
 ]
 
 class TransportError(Exception):
-    """Base exception class for all transport errors"""
+    """Base exception class for all transport errors
+
+    .. versionadded:: 1.7.1
+    """
     pass
 
 class TransportClosedException(TransportError):
-    """Deprecated alias of :py:exc:`itoolkit.transport.TransportClosedError`"""
+    """Alias of :py:exc:`itoolkit.transport.TransportClosedError`
+
+    .. deprecated:: 1.7.1
+      Use :py:exc:`itoolkit.transport.TransportClosedError` instead.
+    """
     pass

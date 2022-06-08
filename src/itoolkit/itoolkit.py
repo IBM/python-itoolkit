@@ -165,17 +165,11 @@ class iBase(object): # noqa N801
               iPgm('zzcall','ZZCALL')             <--- child of iToolkit
               .addParm(iData('INCHARA','1a','a')) <--- child of iPgm
             )
-
-        Returns:
-          (void)
         """
         self.opt['c'].append(obj)
 
     def xml_in(self):
         """Return XML string of collected mini dom xml child nodes.
-
-        Args:
-          none
 
         Returns:
           XML (str)
@@ -184,9 +178,6 @@ class iBase(object): # noqa N801
 
     def make(self):
         """Assemble coherent mini dom xml, including child nodes.
-
-        Args:
-          none
 
         Returns:
           xml.dom.minidom (obj)
@@ -384,9 +375,6 @@ class iPgm (iBase): # noqa N801
         Args:
           obj   (obj): iData object or iDs object.
           iopt (dict): options to pass to iParm constructor
-
-        Returns:
-          (void)
         """
         self.pcnt += 1
         p = iParm('p' + str(self.pcnt), iopt)
@@ -434,9 +422,6 @@ class iSrvPgm (iPgm): # noqa N801
 
         Args:
           obj   (obj): iData object or iDs object.
-
-        Returns:
-          (void)
         """
         self.pcnt += 1
         p = iRet('r' + str(self.pcnt))
@@ -552,9 +537,6 @@ class iDS (iBase): # noqa N801
 
         Args:
           obj   (obj): iData object or iDs object.
-
-        Returns:
-          (void)
         """
         self.add(obj)
         return self
@@ -724,9 +706,6 @@ class iSqlExecute (iBase): # noqa N801
 
         Args:
           obj   (obj): iSqlParm object.
-
-        Returns:
-          (void)
         """
         self.add(obj)
         return self
@@ -747,9 +726,6 @@ class iSqlFetch (iBase): # noqa N801
 
     Example:
       see iSqlPrepare or iSqlQuery
-
-    Returns:
-      none
     """
 
     def __init__(self, ikey, iopt={}):
@@ -873,9 +849,6 @@ class iXml(iBase): # noqa N801
     def make(self):
         """Assemble coherent mini dom xml.
 
-        Args:
-          none
-
         Returns:
           xml.dom.minidom (obj)
         """
@@ -943,12 +916,6 @@ class iToolKit(object): # noqa N801
     def clear(self):
         """Clear collecting child objects.
 
-        Args:
-          none
-
-        Returns:
-          (void)
-
         Notes:
           <?xml version='1.0'?>
           <xmlservice>
@@ -961,10 +928,7 @@ class iToolKit(object): # noqa N801
         """Add additional child object.
 
         Args:
-          none
-
-        Returns:
-          none
+          obj
 
         Notes:
           <?xml version='1.0'?>
@@ -974,9 +938,6 @@ class iToolKit(object): # noqa N801
 
     def xml_in(self):
         """return raw xml input.
-
-        Args:
-          none
 
         Returns:
           xml
@@ -989,9 +950,6 @@ class iToolKit(object): # noqa N801
 
     def xml_out(self):
         """return raw xml output.
-
-        Args:
-          none
 
         Returns:
           xml
@@ -1070,8 +1028,6 @@ class iToolKit(object): # noqa N801
         Args:
           iname  (str): trace \*terminal or file /tmp/python_toolkit_(iname).log
 
-        Returns:
-          (void)
         """
         if self.trace_fd:
             self.trace_close()
@@ -1085,9 +1041,6 @@ class iToolKit(object): # noqa N801
 
         Args:
           itext  (str): trace text
-
-        Returns:
-          (void)
         """
         if self.trace_fd:
             try:
@@ -1102,8 +1055,6 @@ class iToolKit(object): # noqa N801
         """Write trace hexdump (1.2+)
         Args:
           itext  (str): trace text
-        Returns:
-          (void)
         """
         if self.trace_fd:
             result = ''
@@ -1120,12 +1071,6 @@ class iToolKit(object): # noqa N801
 
     def trace_close(self):
         """End trace (1.2+)
-
-        Args:
-          none
-
-        Returns:
-          (void)
         """
         if self.trace_fd:
             if '*' not in str(self.trace_fd):
@@ -1137,9 +1082,6 @@ class iToolKit(object): # noqa N801
 
         Args:
           itrans (obj): XMLSERVICE transport object
-
-        Returns:
-          none
 
         Raises:
           itoolkit.transport.TransportClosedError: If the transport has been
@@ -1199,9 +1141,6 @@ class iToolKit(object): # noqa N801
 
     def _dom_out(self):
         """return xmlservice dom output.
-
-        Args:
-          none
 
         Returns:
           xml.dom

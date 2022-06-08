@@ -22,9 +22,6 @@ class iRestCall(HttpTransport): # noqa N801
     Example:
       from itoolkit.rest.irestcall import *
       itransport = iRestCall(url,user,password)
-
-    Returns:
-      none
     """
     def __init__(self, iurl, iuid, ipwd=None, idb2=0, ictl=0, ipc=0, isiz=0):
         warnings.warn(

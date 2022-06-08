@@ -12,9 +12,6 @@ class iLibCall(DirectTransport): # noqa N801 gotta live with history
       ipc    (str): optional - XMLSERVICE job route for *sbmjob '/tmp/myunique'
       iccsid (int): optional - XMLSERVICE EBCDIC CCSID (0 = default jobccsid)
       pccsid (int): optional - XMLSERVICE ASCII CCSID
-
-    Returns:
-      none
     """
     def __init__(self, ictl='*here *cdata', ipc='*na', iccsid=0, pccsid=1208):
         warnings.warn(

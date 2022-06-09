@@ -112,6 +112,8 @@ Links:
 import xml.dom.minidom
 import re
 import time
+import logging
+import warnings
 
 from shlex import quote
 
@@ -911,7 +913,9 @@ class iToolKit(object): # noqa N801
 
         self.input = []
         self.domo = ""
-        self.trace_fd = False
+
+        self.logger = logging.getLogger('itoolkit-trace')
+        self.trace_handler = None
 
     def clear(self):
         """Clear collecting child objects.
@@ -1023,66 +1027,56 @@ class iToolKit(object): # noqa N801
             return output
 
     def trace_open(self, iname='*terminal'):
-        r"""Open trace \*terminal or file /tmp/python_toolkit_(iname).log
+        r"""Open trace file.
+
+        If ``iname`` is "\*terminal", trace will output to ``sys.stdout``.
+        Otherwise, a file path with the format /tmp/python_toolkit_(iname).log
+        is used to open a trace file in append mode.
 
         Args:
-          iname  (str): trace \*terminal or file /tmp/python_toolkit_(iname).log
+          iname  (str): Name of trace file or "\*terminal" for ``sys.stdout``
 
         .. versionadded:: 1.2
+        .. deprecated:: 2.0
+          See :ref:`Tracing <tracing>`.
         """
-        if self.trace_fd:
-            self.trace_close()
+        warnings.warn(
+                "trace_open is deprecated, use the logging module instead",
+                category=DeprecationWarning,
+                stacklevel=2)
+
+        self.trace_close()
+
         if '*' in iname:
-            self.trace_fd = iname
+            self.trace_handler = logging.StreamHandler(sys.stdout)
         else:
-            self.trace_fd = open('/tmp/python_toolkit_' + iname + '.log', 'a+')
+            path = f'/tmp/python_toolkit_{iname}.log'
+            self.trace_handler = logging.FileHandler(path)
 
-    def trace_write(self, itext):
-        """Write trace text
-
-        Args:
-          itext  (str): trace text
-
-        .. versionadded:: 1.2
-        """
-        if self.trace_fd:
-            try:
-                if '*' in str(self.trace_fd):
-                    print(itext)
-                else:
-                    self.trace_fd.write(itext + '\n')
-            except Exception:
-                self.trace_close()
-
-    def trace_hexdump(self, itext):
-        """Write trace hexdump
-        Args:
-          itext  (str): trace text
-
-        .. versionadded:: 1.2
-        """
-        if self.trace_fd:
-            result = ''
-            text = ''
-            for c in itext:
-                result += "%02x" % ord(c)
-                text += re.sub(r'[\x00-\x1F]', '.', c)
-                if len(result) >= 32:
-                    self.trace_write(result + " " + text)
-                    result = ''
-                    text = ''
-            if len(result):
-                self.trace_write(result + " " + text)
+        self.logger.setLevel(logging.INFO)
+        self.logger.addHandler(self.trace_handler)
 
     def trace_close(self):
-        """End trace
+        """End trace and close trace file.
 
         .. versionadded:: 1.2
+        .. deprecated:: 2.0
+          See :ref:`Tracing <tracing>`.
         """
-        if self.trace_fd:
-            if '*' not in str(self.trace_fd):
-                self.trace_fd.close()
-        self.trace_fd = False
+        warnings.warn("trace_close is deprecated", category=DeprecationWarning,
+                      stacklevel=2)
+
+        if not self.trace_handler:
+            return
+
+        self.logger.removeHandler(self.trace_handler)
+        try:
+            self.trace_handler.close()
+        except AttributeError:
+            # logging.StreamHandler doesn't support close
+            pass
+
+        self.trace_handler = None
 
     def call(self, itrans):
         """Call xmlservice with accumulated input XML.
@@ -1094,12 +1088,12 @@ class iToolKit(object): # noqa N801
           itoolkit.transport.TransportClosedError: If the transport has been
             closed.
         """
-        if self.trace_fd:
-            self.trace_write('***********************')
-            self.trace_write('control ' + time.strftime("%c"))
-            self.trace_write(itrans.trace_data())
-            self.trace_write('input ' + time.strftime("%c"))
-            self.trace_write(self.xml_in())
+        self.logger.info('***********************')
+        self.logger.info('control ' + time.strftime("%c"))
+        self.logger.info(itrans.trace_data())
+        self.logger.info('input ' + time.strftime("%c"))
+        self.logger.info(self.xml_in())
+
         # step 1 -- make call
         step = 1
         xml_out = itrans.call(self)
@@ -1110,18 +1104,28 @@ class iToolKit(object): # noqa N801
 </xmlservice>"""
         # step 1 -- parse return
         try:
-            if self.trace_fd:
-                self.trace_write('output ' + time.strftime("%c"))
-                self.trace_write(xml_out)
+            self.logger.info('output ' + time.strftime("%c"))
+            self.logger.info(xml_out)
             domo = xml.dom.minidom.parseString(xml_out)
         except Exception:
             step = 2
         # step 2 -- bad parse, try modify bad output
         if step == 2:
             try:
-                if self.trace_fd:
-                    self.trace_write('parse (fail) ' + time.strftime("%c"))
-                    self.trace_hexdump(xml_out)
+                self.logger.info('parse (fail) ' + time.strftime("%c"))
+
+                def to_printable(c):
+                    s = chr(c)
+                    return s if s.isprintable() else '.'
+
+                data = xml_out.encode()
+                for i in range(0, len(data), 16):
+                    chunk = data[i:i+16]
+
+                    hex = chunk.hex().ljust(32)
+                    text = "".join([to_printable(_) for _ in chunk])
+                    self.logger.info(f'{hex} {text}')
+
                 clean1 = re.sub(r'[\x00-\x1F\x3C\x3E]', ' ', xml_out)
                 clean = re.sub(' +', ' ', clean1)
                 xml_out2 = """<?xml version='1.0'?>
@@ -1139,8 +1143,7 @@ class iToolKit(object): # noqa N801
 <error>*NOPARSE</error>
 </xmlservice>"""
             domo = xml.dom.minidom.parseString(xml_out2)
-        if self.trace_fd:
-            self.trace_write(
+        self.logger.info(
                 'parse step: ' +
                 str(step) +
                 ' (1-ok, 2-*BADPARSE, 3-*NOPARSE)')

@@ -15,6 +15,9 @@ class MockTransport(object):
     def call(self, tk):
         return self._out
 
+    def trace_data(self):
+        return ""
+
 
 class MockCursor(object):
     def __init__(self):

@@ -59,4 +59,5 @@ Table of Contents
    :maxdepth: 1 
 
    api
+   tracing
    examples

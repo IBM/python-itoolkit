@@ -1,7 +1,7 @@
 from .errors import TransportClosedError
 
 
-class XmlServiceTransport(object):
+class XmlServiceTransport:
     """XMLSERVICE transport base class
 
     Args:

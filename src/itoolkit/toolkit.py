@@ -6,7 +6,7 @@ import logging
 import warnings
 
 
-class iToolKit(object): # noqa N801
+class iToolKit: # noqa N801
     """
     Main iToolKit XMLSERVICE collector and output parser.
 

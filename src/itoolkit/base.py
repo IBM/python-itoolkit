@@ -1,6 +1,6 @@
 import xml.dom.minidom
 
-class iBase(object): # noqa N801
+class iBase: # noqa N801
     """IBM i XMLSERVICE call addable operation(s).
 
     Args:

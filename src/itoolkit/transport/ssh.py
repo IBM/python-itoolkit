@@ -23,6 +23,8 @@ Notes:
 """
 from .base import XmlServiceTransport
 
+import socket
+
 __all__ = [
     'SshTransport'
 ]
@@ -75,33 +77,45 @@ class SshTransport(XmlServiceTransport):
         """
         command = "/QOpenSys/pkgs/bin/xmlservice-cli"
         stdin, stdout, stderr = self.conn.exec_command(command)
+        channel = stdout.channel
+
         xml_in = tk.xml_in()
         stdin.write(xml_in.encode())
-        stdin.flush()
-        stdin.channel.shutdown_write()
+        stdin.close()
+        channel.shutdown_write()
+
+        # Disable blocking I/O
+        # chan.settimeout(0.0) is equivalent to chan.setblocking(0)
+        # https://docs.paramiko.org/en/stable/api/channel.html#paramiko.channel.Channel.settimeout
+        channel.settimeout(0.0)
 
         # rather than doing all this loop-de-loop, we could instead just use
         # a single call to stdout.readlines(), but there is a remote
         # possibility that the process is hanging writing to a filled-up
-        # stderr pipe. So, we read a little from both until we're all done
+        # stderr pipe. So, we read from both until we're all done
         err_out = b""
         xml_out = b""
-        blockSize = 64  # arbitrary
-        while not stderr.closed or not stdout.closed:
-            if not stderr.closed:
-                newData = stderr.read(blockSize)
-            if not newData:
-                stderr.close()  # reaching EOF doesn't implicitly close
-            else:
-                err_out += newData
-            if not stdout.closed:
-                newData = stdout.read(blockSize)
-            if not newData:
-                stdout.close()  # reaching EOF doesn't implicitly close
-            else:
-                xml_out += newData
-        stdout.channel.close()
-        stderr.channel.close()
+
+        # Convenience wrapper for reading data from stdout/stderr
+        # Returns empty binary string if EOF *or* timeout (no data)
+        # Closes file on EOF
+        def read_data(f):
+            if f.closed:
+                return b""
+
+            try:
+                data = f.read()
+                if not data:
+                    f.close()
+                return data
+            except socket.timeout:
+                return b""
+
+        while not all((stdout.closed, stderr.closed)):
+            xml_out += read_data(stdout)
+            err_out += read_data(stderr)
+
+        channel.close()
         return xml_out
 
     def _close(self):

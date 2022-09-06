@@ -30,7 +30,10 @@ def test_ssh_transport_minimal(mocker):
     assert isinstance(out, (bytes, str))
 
     command = "/QOpenSys/pkgs/bin/xmlservice-cli"
-    ssh_client.exec_command.assert_called_once_with(command)
+    ssh_client.exec_command.assert_called_once()
+
+    args = ssh_client.exec_command.call_args
+    assert args[0] == (command,)
 
 
 def test_ssh_transport_raises_when_closed(mocker):

@@ -14,9 +14,9 @@ itoolkit is a Python interface to the
 ```python
 from itoolkit import *
 from itoolkit.transport import DatabaseTransport
-import ibm_db_dbi
+import pyodbc
 
-conn = ibm_db_dbi.connect()
+conn = pyodbc.connect("DSN=*LOCAL")
 itransport = DatabaseTransport(conn)
 itool = iToolKit()
 

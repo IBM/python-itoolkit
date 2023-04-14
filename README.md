@@ -27,7 +27,7 @@ wrkactjob = itool.dict_out('wrkactjob')
 print(wrkactjob)
 ```
 
-For more, check out the [samples](samples).
+For more, check out the [samples](https://python-itoolkit.readthedocs.io/en/latest/examples.html).
 
 Supported Python Versions
 -------------------------
@@ -76,7 +76,7 @@ PYTHONPATH=src python -m pytest
 Contributing
 ------------
 
-Please read the [contribution guidelines](CONTRIBUTING.md).
+Please read the [contribution guidelines](https://github.com/IBM/python-itoolkit/blob/main/CONTRIBUTING.md).
 
 Releasing a New Version
 -----------------------
@@ -104,4 +104,4 @@ git push origin master --tags
 License
 -------
 
-MIT - See [LICENSE](LICENSE)
+MIT - See [LICENSE](https://github.com/IBM/python-itoolkit/blob/main/LICENSE)

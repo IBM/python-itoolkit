@@ -10,3 +10,4 @@ poetry.lock
 .coverage
 coverage.xml
 .vscode
+.venv/

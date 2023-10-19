@@ -48,6 +48,10 @@ coverage = [
     { version = ">=6.3.0", python = ">=3.7" },
     { version = ">=4.5.4", python = "<3.7" },
 ]
+coveralls = [
+    { version = ">=3.3.0", python = ">=3.5" },
+    { version = "<2", python = "<3.5" },
+]
 pytest-cov = "~2.8"
 flake8 = ">=3.6.0"
 mock = "^3.0.5"

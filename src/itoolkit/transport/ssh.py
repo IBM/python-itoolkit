@@ -1,3 +1,5 @@
+# Copyright contributors to the python-itoolkit project 
+# SPDX-License-Identifier: MIT
 # -*- coding: utf-8 -*-
 """
 XMLSERVICE ssh call (ssh job, often in QUSRWRK)

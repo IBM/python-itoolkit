@@ -1,3 +1,5 @@
+# Copyright contributors to the python-itoolkit project 
+# SPDX-License-Identifier: MIT
 # -*- coding: utf-8 -*-
 from .base import XmlServiceTransport
 from .database import DatabaseTransport

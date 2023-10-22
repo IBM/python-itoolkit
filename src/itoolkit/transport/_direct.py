@@ -1,3 +1,5 @@
+# Copyright contributors to the python-itoolkit project 
+# SPDX-License-Identifier: MIT
 import os
 
 from ctypes import c_int, c_uint, c_int16, c_ulonglong, c_void_p, c_char_p, \

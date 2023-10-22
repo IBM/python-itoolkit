@@ -1,4 +1,5 @@
-
+# Copyright contributors to the python-itoolkit project 
+# SPDX-License-Identifier: MIT
 import xml.dom.minidom
 import re
 import sys

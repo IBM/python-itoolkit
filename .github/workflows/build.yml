@@ -34,6 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         poetry config virtualenvs.create false
+        poetry self add virtualenv@20.30.0 # https://github.com/python-poetry/poetry/issues/10378#issuecomment-2858311161
         poetry install
     - name: Run tests
       run: python -m pytest tests

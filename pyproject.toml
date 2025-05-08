@@ -8,7 +8,7 @@ repository = "https://github.com/IBM/python-itoolkit"
 documentation = "https://python-itoolkit.readthedocs.io"
 license = "MIT"
 authors = [
-    "Kevin Adler <kadler@us.ibm.com>",
+    "Korinne Adler <kadler@us.ibm.com>",
     "Tony Cairns <adc@us.ibm.com>",
 ]
 packages = [
@@ -30,7 +30,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.6.0,<3.12.0"
+python = ">=3.9.0,<3.14.0"
 
 
 [tool.poetry.dev-dependencies]
@@ -41,15 +41,12 @@ pytest = [
 ]
 pytest-mock = [
     { version = ">=3.7.0", python = ">=3.7" },
-    { version = ">=1.10.0", python = "<3.7" },
 ]
 coverage = [
     { version = ">=6.3.0", python = ">=3.7" },
-    { version = ">=4.5.4", python = "<3.7" },
 ]
 coveralls = [
     { version = ">=3.3.0", python = ">=3.5" },
-    { version = "<2", python = "<3.5" },
 ]
 pytest-cov = "~2.8"
 flake8 = ">=3.6.0"

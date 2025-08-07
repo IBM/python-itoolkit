@@ -1,3 +1,5 @@
+# Copyright contributors to the python-itoolkit project 
+# SPDX-License-Identifier: MIT
 # -*- coding: utf-8 -*-
 import warnings
 from ..transport.direct import DirectTransport

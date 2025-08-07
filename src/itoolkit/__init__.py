@@ -1,3 +1,5 @@
+# Copyright contributors to the python-itoolkit project 
+# SPDX-License-Identifier: MIT
 __version__ = "2.0.0-dev"
 
 from .toolkit import iToolKit

@@ -5,6 +5,10 @@ on:
     tags:
       - '*.*.*'
 
+permissions:
+  id-token: write # OIDC token
+  contents: write # create a release
+
 jobs:
   Release:
     runs-on: ubuntu-latest
